@@ -26,7 +26,7 @@ title: Apache Incubator DevLake Helm Chart
 To install the chart with release name `devlake`:
 
 ```shell
-helm repo add devlake https://charts.apiseven.com
+helm repo add devlake https://merico-dev.github.io/devlake-helm-chart
 helm repo update
 helm install devlake devlake/devlake --create-namespace  --namespace devlake
 ```
