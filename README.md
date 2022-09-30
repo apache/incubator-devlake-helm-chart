@@ -34,6 +34,11 @@ Then you can visit:
     config-ui by url `http://YOUR-NODE-IP:30090`
     grafana by url `http://YOUR-NODE-IP:30091`
 
+## Update
+
+```shell
+helm repo update
+```
 
 ## Uninstall
 
