@@ -1,6 +1,4 @@
----
-title: Apache Incubator DevLake Helm Chart
----
+# Apache Incubator DevLake Helm Chart
 
 <!--
 #
