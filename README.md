@@ -26,8 +26,14 @@ To install the chart with release name `devlake`:
 ```shell
 helm repo add devlake https://merico-dev.github.io/devlake-helm-chart
 helm repo update
-helm install devlake devlake/devlake --create-namespace  --namespace devlake
+helm install devlake devlake/devlake
+kubectl port-forward service/devlake-ui  30090:32001
+kubectl port-forward service/devlake-grafana  30091:32002
 ```
+Then you can visit:
+    config-ui by url `http://YOUR-NODE-IP:30090`
+    grafana by url `http://YOUR-NODE-IP:30091`
+
 
 ## Uninstall
 
