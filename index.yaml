@@ -1,13 +1,30 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 apiVersion: v1
 entries:
   devlake:
   - apiVersion: v2
     appVersion: 0.13.0
-    created: "2022-10-19T08:55:40.34536+08:00"
+    created: "2022-10-19T09:02:24.43027+08:00"
     description: Apache DevLake is an open-source dev data platform that ingests,
       analyzes, and visualizes the fragmented data from DevOps tools to distill insights
       for engineering productivity.
-    digest: 473fb53c77105ce24045e0a98c94320f13dbdb7da3eb846709995ff2f5db5f8b
+    digest: aa0dd92a058a4c8688696cffaa3359940811ae4aefe3fab32259effbd994adac
     home: https://devlake.apache.org/
     icon: https://devlake.apache.org/img/logo.svg
     keywords:
@@ -20,4 +37,4 @@ entries:
     urls:
     - https://merico-dev.github.io/devlake-helm-chart/devlake-0.2.0.tgz
     version: 0.2.0
-generated: "2022-10-19T08:55:40.344703+08:00"
+generated: "2022-10-19T09:02:24.429661+08:00"
