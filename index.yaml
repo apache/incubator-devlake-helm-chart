@@ -3,11 +3,11 @@ entries:
   devlake:
   - apiVersion: v2
     appVersion: 0.13.0
-    created: "2022-09-30T21:03:00.348225+08:00"
+    created: "2022-10-19T08:55:40.34536+08:00"
     description: Apache DevLake is an open-source dev data platform that ingests,
       analyzes, and visualizes the fragmented data from DevOps tools to distill insights
       for engineering productivity.
-    digest: 6041f9f113a5e532917a2dd348017ba2fc38f6e5ae6fc6b62a53e2a3941567d6
+    digest: 473fb53c77105ce24045e0a98c94320f13dbdb7da3eb846709995ff2f5db5f8b
     home: https://devlake.apache.org/
     icon: https://devlake.apache.org/img/logo.svg
     keywords:
@@ -20,4 +20,4 @@ entries:
     urls:
     - https://merico-dev.github.io/devlake-helm-chart/devlake-0.2.0.tgz
     version: 0.2.0
-generated: "2022-09-30T21:03:00.347714+08:00"
+generated: "2022-10-19T08:55:40.344703+08:00"
