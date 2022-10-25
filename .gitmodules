@@ -5,6 +5,3 @@
 [submodule ".github/actions/chart-releaser-action"]
 	path = .github/actions/chart-releaser-action
 	url = git@github.com:helm/chart-releaser-action.git
-[submodule ".github/actions/.github/actions/chart-releaser-action"]
-	path = .github/actions/.github/actions/chart-releaser-action
-	url = git@github.com:helm/chart-releaser-action.git
