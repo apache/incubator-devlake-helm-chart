@@ -16,5 +16,8 @@
 #
 
 github:
+  features:
+    issues: false
+    projects: false
   ghp_branch:  gh-pages
   ghp_path:    /
