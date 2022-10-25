@@ -25,10 +25,6 @@ github:
     - k8s
     - kubernetes
 
-  features:
-    issues: true
-    projects: true
-
   enabled_merge_buttons:
     squash:  true
     merge:   false
