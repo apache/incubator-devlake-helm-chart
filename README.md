@@ -35,7 +35,7 @@ kubectl port-forward service/devlake-ui  30090:4000
 ```
 and open another terminal:
 ```shell
-kubectl port-forward service/devlake-ui  30091:3000
+kubectl port-forward service/devlake-grafana  30091:3000
 ```
 
 Then you can visit:
