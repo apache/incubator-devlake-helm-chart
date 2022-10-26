@@ -27,12 +27,20 @@ To install the chart with release name `devlake`:
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 helm install devlake devlake/devlake
-kubectl port-forward service/devlake-ui  30090:32001
-kubectl port-forward service/devlake-grafana  30091:32002
 ```
+
+If you are using minikube inside your mac, please use the following command to forward the port:
+```shell
+kubectl port-forward service/devlake-ui  30090:4000
+```
+and open another terminal:
+```shell
+kubectl port-forward service/devlake-ui  30091:3000
+```
+
 Then you can visit:
     config-ui by url `http://YOUR-NODE-IP:30090`
-    grafana by url `http://YOUR-NODE-IP:30091`
+    grafana by url http://YOUR-NODE-IP:30091
 
 ## Update
 
