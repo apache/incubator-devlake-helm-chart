@@ -21,4 +21,4 @@ github:
     projects: false
     settings: true
   ghp_branch:  gh-pages
-  ghp_path:    /
+  ghp_path:    
