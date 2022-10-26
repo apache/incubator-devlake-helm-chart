@@ -18,8 +18,8 @@
 Welcome to use devlake.
 
 Now please run following commands:
-  kubectl port-forward service/devlake-ui  30090:32001
-  kubectl port-forward service/devlake-grafana  30091:32002
+  kubectl port-forward service/devlake-ui  30090:4000
+  kubectl port-forward service/devlake-grafana  30091:3000
 Now you can visit:
     config-ui by url `http://YOUR-NODE-IP:30090`
     grafana by url `http://YOUR-NODE-IP:30091`
