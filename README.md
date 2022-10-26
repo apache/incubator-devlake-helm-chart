@@ -24,7 +24,7 @@
 To install the chart with release name `devlake`:
 
 ```shell
-helm repo add devlake https://merico-dev.github.io/devlake-helm-chart
+helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 helm install devlake devlake/devlake
 kubectl port-forward service/devlake-ui  30090:32001
