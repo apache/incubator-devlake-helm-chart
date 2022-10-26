@@ -48,7 +48,7 @@ spec:
   ports:
     - protocol: TCP
       name: grafana
-      port: {{ .Values.service.grafanaPort }}
+      port: 3000
       targetPort: 3000
       {{- if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.service.grafanaPort }}
@@ -90,7 +90,7 @@ spec:
   ports:
     - protocol: TCP
       name: ui
-      port: {{ .Values.service.uiPort }}
+      port: 4000
       targetPort: 4000
       {{- if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.service.uiPort }}
