@@ -40,7 +40,7 @@ kubectl port-forward service/devlake-ui  30091:3000
 
 Then you can visit:
     config-ui by url `http://YOUR-NODE-IP:30090`
-    grafana by url http://YOUR-NODE-IP:30091
+    grafana by url `http://YOUR-NODE-IP:30091`
 
 ## Update
 
