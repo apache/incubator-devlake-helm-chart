@@ -10,7 +10,7 @@
 
 clone the code
 ```
-helm install devlake deployment/helm
+helm install devlake charts/devlake
 ```
 
 And visit your devlake Config-UI  from the nodePort (32001 by default) and Grafana Dashboard from the nodePort ( 32002 by default.)
