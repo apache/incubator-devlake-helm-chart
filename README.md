@@ -19,6 +19,8 @@
 #
 -->
 
+Thanks to @matrixji who initiated all content in `apache/incubator-devlake`, this repo is copied from directory deployment/helm in repo `apache/incubator-devlake`! Also thanks to @lshmouse, @shubham-cmyk and @SnowMoon-Dev for the contribution for devlake helm deployment.
+
 ## Install
 
 To install the chart with release name `devlake`:
@@ -55,3 +57,6 @@ To uninstall/delete the `devlake` release:
 ```shell
 helm uninstall devlake
 ```
+
+## Original pr in apache/incubator-devlake
+https://github.com/apache/incubator-devlake/pulls?q=is%3Apr+helm+is%3Aclosed
