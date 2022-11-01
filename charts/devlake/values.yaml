@@ -50,7 +50,7 @@ mysql:
   # image for mysql
   image:
     repository: mysql
-    tag: 8.0.30
+    tag: 8
     pullPolicy: IfNotPresent
 
   # resources config for mysql if have
