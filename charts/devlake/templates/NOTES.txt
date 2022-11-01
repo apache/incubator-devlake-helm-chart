@@ -17,9 +17,12 @@
 
 Welcome to use devlake.
 
-Now please run following commands:
-  kubectl port-forward service/devlake-ui  30090:4000
-  kubectl port-forward service/devlake-grafana  30091:3000
-Now you can visit:
-    config-ui by url `http://YOUR-NODE-IP:30090`
-    grafana by url `http://YOUR-NODE-IP:30091`
+{{- if .Values.ingress.enabled }}
+Now please visit:
+  {{ include "devlake.uiEndpoint" . }}
+{{- else if contains "NodePort" .Values.service.type }}
+Now please get the URL by running these commands:
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "devlake.fullname" . }}-ui)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- end }}
