@@ -35,18 +35,7 @@ spec:
         devlakeComponent: grafana
     spec:
       initContainers:
-        - name: waiting-mysql-ready
-          image: "{{ .Values.alpine.image.repository }}:{{ .Values.alpine.image.tag }}"
-          imagePullPolicy: {{ .Values.alpine.image.pullPolicy }}
-          command:
-            - 'sh'
-            - '-c'
-            - |
-              until nc -z -w 2 {{ include "mysql.server" . }} {{ include "mysql.port" . }} ; do
-                echo wait for mysql ready ...
-                sleep 2
-              done
-              echo mysql is ready
+        {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
       containers:
         - name: grafana
           image: "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag }}"
@@ -65,21 +54,29 @@ spec:
               mountPath: /etc/localtime
               readOnly: true
             {{- end }}
+            - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
+              mountPath: /etc/grafana/provisioning/datasources/datasource.yml
+              subPath: grafana-datasource.yml
           envFrom:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
           env:
-              - name: GF_SERVER_ROOT_URL
-                value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
-                - name: MYSQL_URL
-                  value: {{ include "mysql.server" . }}:{{ include "mysql.port" . }}
+            - name: GF_SERVER_ROOT_URL
+              value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+            - name: MYSQL_URL
+              value: {{ include "mysql.server" . }}:{{ include "mysql.port" . }}
+            - name: POSTGRES_URL
+              value: {{ include "pgsql.server" . }}:{{ include "pgsql.port" . }}
       volumes:
-          {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-grafana-localtime
-            hostPath:
-              path: {{ .Values.option.localtime }}
-              type: File
+        {{- if ne .Values.option.localtime "" }}
+        - name: {{ include "devlake.fullname" . }}-grafana-localtime
+          hostPath:
+            path: {{ .Values.option.localtime }}
+            type: File
         {{- end }}
+        - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
+          configMap:
+            name: {{ include "devlake.fullname" . }}-grafana-datasource
 
 ---
 # devlake-ui
@@ -110,16 +107,16 @@ spec:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
           env:
-              - name: DEVLAKE_ENDPOINT
-            # TODO: remove hardcoded `cluster.local`
-                value: {{ include "devlake.fullname" . }}-lake.{{ .Release.Namespace }}.svc.cluster.local:8080
-                - name: GRAFANA_ENDPOINT
-                value: {{ include "devlake.fullname" . }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:3000
+            - name: DEVLAKE_ENDPOINT
+              # TODO: remove hardcoded `cluster.local`
+              value: {{ include "devlake.fullname" . }}-lake.{{ .Release.Namespace }}.svc.cluster.local:8080
+            - name: GRAFANA_ENDPOINT
+              value: {{ include "devlake.fullname" . }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:3000
           volumeMounts:
-              {{- if ne .Values.option.localtime "" }}
-                - name: {{ include "devlake.fullname" . }}-ui-localtime
-                mountPath: /etc/localtime
-                readOnly: true
+            {{- if ne .Values.option.localtime "" }}
+            - name: {{ include "devlake.fullname" . }}-ui-localtime
+              mountPath: /etc/localtime
+              readOnly: true
             {{- end }}
       volumes:
         {{- if ne .Values.option.localtime "" }}

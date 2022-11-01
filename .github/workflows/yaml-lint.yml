@@ -30,4 +30,4 @@ jobs:
       - name: install latest helm
         run: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
       - name: lint helm chart
-        run: helm lint deployment/helm --strict
+        run: helm lint charts/devlake --strict

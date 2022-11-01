@@ -23,11 +23,11 @@ on:
     branches:
       - main
     paths:
-      - deployment/helm/**
+      - charts/devlake/**
       - .github/workflows/deploy-test.yml
   pull_request:
     paths:
-      - deployment/helm/**
+      - charts/devlake/**
       - .github/workflows/deploy-test.yml
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        database_type: ["mysql-builtin", "mysql-external"]
+        database_type: ["mysql-builtin", "mysql-external", "pgsql-builtin"]
     steps:
       - name: Creating kind cluster
         uses: container-tools/kind-action@v1
@@ -53,23 +53,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Currently needs 6mins to build all images, so maybe enabled later in scheduled jobs.
-      # - name: Build container images
-      #   run: |
-      #     docker build -t kind-registry:5000/deploy-test-lake:latest .
-      #     docker build -t kind-registry:5000/deploy-test-grafana:latest grafana
-      #     docker build -t kind-registry:5000/deploy-test-ui:latest config-ui
-      #     docker push kind-registry:5000/deploy-test-lake:latest
-      #     docker push kind-registry:5000/deploy-test-grafana:latest
-      #     docker push kind-registry:5000/deploy-test-ui:latest
-
       - name: Helm install devlake
         if: matrix.database_type == 'mysql-external'
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm install mysql bitnami/mysql --set auth.rootPassword=admin --set auth.database=lake --set auth.username=merico --set auth.password=merico
           # external mysql at service: mysql
-          helm install --wait --timeout 300s deploy-test deployment/helm \
+          helm install --wait --timeout 300s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.useExternal=true \
             --set mysql.externalServer=mysql \
@@ -82,9 +72,21 @@ jobs:
         run: |
           export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
           echo Node IP: ${NODE_IP}
-          helm install --wait --timeout 300s deploy-test deployment/helm \
+          helm install --wait --timeout 300s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.image.tag=8-debian \
+            --set option.localtime=""
+          kubectl get pods -o wide
+          kubectl get services -o wide
+      
+      - name: Helm install devlake
+        if: matrix.database_type == 'pgsql-builtin'
+        run: |
+          export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+          echo Node IP: ${NODE_IP}
+          helm install --wait --timeout 300s deploy-test charts/devlake \
+            --set service.uiPort=30000 \
+            --set option.database=pgsql \
             --set option.localtime=""
           kubectl get pods -o wide
           kubectl get services -o wide

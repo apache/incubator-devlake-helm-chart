@@ -118,3 +118,81 @@ The mysql port
 {{- 3306 }}
 {{- end }}
 {{- end }}
+
+{{/*
+The pgsql server
+*/}}
+{{- define "pgsql.server" -}}
+{{- if .Values.pgsql.useExternal }}
+{{- .Values.pgsql.externalServer }}
+{{- else }}
+{{- print (include "devlake.fullname" . ) "-pgsql" }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+The pgsql port
+*/}}
+{{- define "pgsql.port" -}}
+{{- if .Values.pgsql.useExternal }}
+{{- .Values.pgsql.externalPort }}
+{{- else }}
+{{- 5432 }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+The database server
+*/}}
+{{- define "database.server" -}}
+{{- if eq .Values.option.database "mysql" }}
+{{- include "mysql.server" . }}
+{{- else if eq .Values.option.database "pgsql" }}
+{{- include "pgsql.server" . }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+The database port
+*/}}
+{{- define "database.port" -}}
+{{- if eq .Values.option.database "mysql" }}
+{{- include "mysql.port" . }}
+{{- else if eq .Values.option.database "pgsql" }}
+{{- include "pgsql.port" . }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+The database url
+*/}}
+{{- define "database.url" -}}
+{{- if eq .Values.option.database "mysql" -}}
+mysql://{{ .Values.mysql.username }}:{{ .Values.mysql.password }}@{{ include "mysql.server" . }}:{{ include "mysql.port" . }}/{{ .Values.mysql.database }}?charset=utf8mb4&parseTime=True
+{{- else if eq .Values.option.database "pgsql" -}}
+postgres://{{ .Values.pgsql.username }}:{{ .Values.pgsql.password }}@{{ include "pgsql.server" . }}:{{ include "pgsql.port" . }}/{{ .Values.pgsql.database }}
+{{- end }}
+{{- end }}
+
+
+{{/*
+The probe for check database connection
+*/}}
+{{- define "common.initContainerWaitDatabase" -}}
+- name: waiting-database-ready
+  image: "{{ .Values.alpine.image.repository }}:{{ .Values.alpine.image.tag }}"
+  imagePullPolicy: {{ .Values.alpine.image.pullPolicy }}
+  command:
+    - 'sh'
+    - '-c'
+    - |
+      until nc -z -w 2 {{ include "database.server" . }} {{ include "database.port" . }} ; do
+        echo wait for database ready ...
+        sleep 2
+      done
+      echo database is ready
+{{- end }}
