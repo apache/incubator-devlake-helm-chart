@@ -67,6 +67,22 @@ spec:
               value: {{ include "mysql.server" . }}:{{ include "mysql.port" . }}
             - name: POSTGRES_URL
               value: {{ include "pgsql.server" . }}:{{ include "pgsql.port" . }}
+          {{- with .Values.grafana.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.grafana.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.grafana.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.grafana.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         {{- if ne .Values.option.localtime "" }}
         - name: {{ include "devlake.fullname" . }}-grafana-localtime
@@ -118,6 +134,22 @@ spec:
               mountPath: /etc/localtime
               readOnly: true
             {{- end }}
+          {{- with .Values.ui.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.ui.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ui.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ui.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         {{- if ne .Values.option.localtime "" }}
         - name: {{ include "devlake.fullname" . }}-ui-localtime
