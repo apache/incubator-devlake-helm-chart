@@ -217,6 +217,9 @@ spec:
       labels:
         {{- include "devlake.selectorLabels" . | nindent 8 }}
         devlakeComponent: lake
+      annotations:
+        # Force reload on config changes
+        checksum/devlake-config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
