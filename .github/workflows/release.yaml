@@ -9,8 +9,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    paths:
-      - charts/**
     steps:
       - name: Checkout
         uses: actions/checkout@v2
