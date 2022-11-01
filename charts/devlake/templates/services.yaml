@@ -14,8 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# mysql services
+# database services
 ---
+
+{{- if eq .Values.option.database "mysql" }}
 {{- if not .Values.mysql.useExternal }}
 apiVersion: v1
 kind: Service
@@ -32,6 +34,25 @@ spec:
       name: mysql
       port: 3306
       targetPort: 3306
+{{- end }}
+{{- else if eq .Values.option.database "pgsql" }}
+{{- if not .Values.pgsql.useExternal }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "devlake.fullname" . }}-pgsql
+  labels:
+    {{- include "devlake.labels" . | nindent 4 }}
+spec:
+  selector:
+    {{- include "devlake.selectorLabels" . | nindent 4 }}
+    devlakeComponent: pgsql
+  ports:
+    - protocol: TCP
+      name: pgsql
+      port: 5432
+      targetPort: 5432
+{{- end }}
 {{- end }}
 
 # grafana services
@@ -55,8 +76,6 @@ spec:
       {{- if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.service.grafanaPort }}
       {{- end }}
-
-
 
 # devlake services
 ---

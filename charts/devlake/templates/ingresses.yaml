@@ -76,9 +76,9 @@ spec:
               service:
                 name: {{ include "devlake.fullname" . }}-ui
                 port:
-                  number: {{ .Values.service.uiPort }}
+                  number: 4000
               {{- else }}
               serviceName: {{ include "devlake.fullname" . }}-ui
-              servicePort: {{ .Values.service.uiPort }}
+              servicePort: 4000
               {{- end }}
 {{- end }}
