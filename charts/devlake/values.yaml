@@ -145,6 +145,8 @@ lake:
   affinity: {}
 
   loggingDir: "/app/logs"
+  # debug, info, warn, error
+  loggingLevel: "info"
 
 ui:
   image:
