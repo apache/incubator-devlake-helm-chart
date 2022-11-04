@@ -17,7 +17,7 @@
 
 github:
   features:
-    issues: false
+    issues: true
     projects: false
     
   ghp_branch:  gh-pages
