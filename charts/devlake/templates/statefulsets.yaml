@@ -244,6 +244,16 @@ spec:
               value: "{{ include "database.url" . }}"
             - name: ENV_PATH
               value: /app/config/.env
+            - name: API_TIMEOUT
+              value: "{{ .Values.lake.dotenv.API_TIMEOUT }}"
+            - name: API_RETRY
+              value: "{{ .Values.lake.dotenv.API_RETRY }}"
+            - name: API_REQUESTS_PER_HOUR
+              value: "{{ .Values.lake.dotenv.API_REQUESTS_PER_HOUR }}"
+            - name: PIPELINE_MAX_PARALLEL
+              value: "{{ .Values.lake.dotenv.PIPELINE_MAX_PARALLEL }}"
+            - name: IN_SECURE_SKIP_VERIFY
+              value: "{{ .Values.lake.dotenv.IN_SECURE_SKIP_VERIFY }}"
           volumeMounts:
             - mountPath: /app/config
               name: {{ include "devlake.fullname" . }}-lake-config
