@@ -110,6 +110,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | lake.image.pullPolicy         | pullPolicy for lake's image                                | Always              |
 | lake.loggingDir               | log dir for the lake server                                | /app/logs           |
 | lake.loggingLevel             | log level for the lake server                              | info                |
+| lake.dotenv                   | initial configurations for injecting to lake's .env        | see Values.yaml     |
 | ui.image.repository           | repository for ui's image                                  | mericodev/config-ui |
 | ui.image.tag                  | image tag for ui's image                                   | latest              |
 | ui.image.pullPolicy           | pullPolicy for ui's image                                  | Always              |
