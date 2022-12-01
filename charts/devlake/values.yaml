@@ -135,6 +135,12 @@ lake:
     # the storage class for pv, leave empty will using default
     class: ""
     size: 100Mi
+  dotenv:
+    API_TIMEOUT: "120s"
+    API_RETRY: "3"
+    API_REQUESTS_PER_HOUR: "10000"
+    PIPELINE_MAX_PARALLEL: "1"
+    IN_SECURE_SKIP_VERIFY: "false"
 
   # If hostNetwork is true, then dnsPolicy is set to ClusterFirstWithHostNet
   hostNetwork: false
