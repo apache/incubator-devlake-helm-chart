@@ -223,6 +223,31 @@ spec:
     spec:
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
+        - name: patch-env
+          image: "{{ .Values.alpine.image.repository }}:{{ .Values.alpine.image.tag }}"
+          imagePullPolicy: {{ .Values.alpine.image.pullPolicy }}
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              touch /app/config/.env
+              function patch_env() {
+                if grep -w ${key}= /app/config/.env ; then
+                  echo ${key} already set
+                else
+                  echo >> /app/config/.env
+                  echo ${key}=${val} >> /app/config/.env
+                  echo ${key}=${val} patched
+                  grep -w ${key}= /app/config/.env
+                fi
+              }
+              {{- range $k, $v := .Values.lake.dotenv }}
+                key={{ $k }} val={{ $v }} patch_env
+              {{- end }}
+              exit 0
+          volumeMounts:
+            - mountPath: /app/config
+              name: {{ include "devlake.fullname" . }}-lake-config
       containers:
         - name: lake
           image: "{{ .Values.lake.image.repository }}:{{ .Values.lake.image.tag }}"
