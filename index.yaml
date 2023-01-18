@@ -19,7 +19,7 @@ entries:
     type: application
     urls:
     - https://github.com/apache/incubator-devlake-helm-chart/releases/download/devlake-v0.15.1/devlake-v0.15.1.tgz
-    version: v0.15.1
+    version: v0.14.9
   - apiVersion: v2
     appVersion: v0.15.0-rc2
     created: "2023-01-13T07:39:09.498036236Z"
@@ -38,7 +38,7 @@ entries:
     type: application
     urls:
     - https://github.com/apache/incubator-devlake-helm-chart/releases/download/devlake-v0.15.0/devlake-v0.15.0.tgz
-    version: v0.15.0
+    version: v0.14.8
   - apiVersion: v2
     appVersion: v0.14.6
     created: "2022-12-01T11:04:56.486106516Z"
