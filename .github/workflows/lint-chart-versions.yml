@@ -51,7 +51,7 @@ jobs:
           base_version_patch=$(echo $base_chart_version_text | sed 's/v//;' | cut -d. -f 3)
           base_version=$(expr ${base_version_major} \* 1000000 + ${base_version_minor} \* 1000 + $base_version_patch)
           chart_version=$(expr ${chart_version_major} \* 1000000 + ${chart_version_minor} \* 1000 + $chart_version_patch)
-          if [[ $chart_version > $base_version ]] ; then
+          if [[ $chart_version >= $base_version ]] ; then
             echo chart version from $base_version to $chart_version
             echo chart version from $base_version to $chart_version :green_heart: >> $GITHUB_STEP_SUMMARY
           else
