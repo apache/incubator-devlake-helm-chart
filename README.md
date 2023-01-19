@@ -31,6 +31,12 @@ helm repo update
 helm install devlake devlake/devlake
 ```
 
+You can also install the specific version of chart, for example, we want to install v0.15.0-rc4:
+
+```shell
+helm install devlake devlake/devlake --version=v0.15.0-rc4
+```
+
 If you are using minikube inside your mac, please use the following command to forward the port:
 ```shell
 kubectl port-forward service/devlake-ui  30090:4000
