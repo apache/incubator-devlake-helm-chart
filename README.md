@@ -28,12 +28,6 @@ To install the chart with release name `devlake`:
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
-helm install devlake devlake/devlake
-```
-
-You can also install the specific version of chart, for example, we want to install v0.15.0-rc4:
-
-```shell
 helm install devlake devlake/devlake --version=v0.15.0-rc4
 ```
 
@@ -54,7 +48,7 @@ Then you can visit:
 
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake
+helm upgrade --install devlake devlake/devlake --version=v0.15.0-rc4
 ```
 
 ## Uninstall
