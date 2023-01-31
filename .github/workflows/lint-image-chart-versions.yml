@@ -20,13 +20,13 @@ jobs:
           devlake_version_text=$(yq .lake.image.tag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
           grafana_version_text=$(yq .grafana.image.tag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
           configui_version_text=$(yq .ui.image.tag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
-          if [[ $chart_version_text != $devlake_version_text ]] ; then
+          if [[ v$chart_version_text != $devlake_version_text ]] ; then
             echo chart version $chart_version_text is not equal to  devlake version $devlake_version_text
             exit 1
-          elif [[ $chart_version_text != $grafana_version_text ]] ; then
+          elif [[ v$chart_version_text != $grafana_version_text ]] ; then
             echo chart version $chart_version_text is not equal to  grafana version $grafana_version_text
             exit 1
-          elif [[ $chart_version_text != $devlake_version_text ]] ; then
+          elif [[ v$chart_version_text != $devlake_version_text ]] ; then
             echo chart version $chart_version_text is not equal to  configui version $configui_version_text
             exit 1
           else 
