@@ -28,7 +28,7 @@ To install the chart with release name `devlake`:
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
-helm install devlake devlake/devlake --version=v0.15.0-rc4
+helm install devlake devlake/devlake --version=v0.15.0-rc5
 ```
 
 If you are using minikube inside your mac, please use the following command to forward the port:
@@ -48,7 +48,7 @@ Then you can visit:
 
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=v0.15.0-rc4
+helm upgrade --install devlake devlake/devlake --version=v0.15.0-rc5
 ```
 
 ## Uninstall
