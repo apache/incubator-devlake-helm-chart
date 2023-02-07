@@ -17,17 +17,9 @@ jobs:
         run: |
           set -e
           chart_version_text=$(yq .version ${GITHUB_WORKSPACE}/charts/devlake/Chart.yaml)
-          devlake_version_text=$(yq .lake.image.tag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
-          grafana_version_text=$(yq .grafana.image.tag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
-          configui_version_text=$(yq .ui.image.tag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
-          if [[ v$chart_version_text != $devlake_version_text ]] ; then
-            echo chart version $chart_version_text is not equal to  devlake version $devlake_version_text
-            exit 1
-          elif [[ v$chart_version_text != $grafana_version_text ]] ; then
-            echo chart version $chart_version_text is not equal to  grafana version $grafana_version_text
-            exit 1
-          elif [[ v$chart_version_text != $devlake_version_text ]] ; then
-            echo chart version $chart_version_text is not equal to  configui version $configui_version_text
+          image_version_text=$(yq .imageTag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
+          if [[ v$chart_version_text != $image_version_text ]] ; then
+            echo chart version $chart_version_text is not equal to devlake version $image_version_text
             exit 1
           else 
             echo all images version are equal to chart version

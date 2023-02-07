@@ -17,6 +17,7 @@
 
 # replica count for dev
 replicaCount: 1
+imageTag: v0.15.1-beta3
 
 mysql:
   # if use external mysql server, please set true
@@ -113,7 +114,6 @@ grafana:
   # image for grafana
   image:
     repository: apache/devlake-dashboard
-    tag: v0.15.0-rc5
     pullPolicy: Always
 
   resources: {}
@@ -128,7 +128,6 @@ grafana:
 lake:
   image:
     repository: apache/devlake
-    tag: v0.15.0-rc5
     pullPolicy: Always
   # storage for config
   storage:
@@ -160,7 +159,6 @@ lake:
 ui:
   image:
     repository: apache/devlake-config-ui
-    tag: v0.15.0-rc5
     pullPolicy: Always
 
   resources: {}
