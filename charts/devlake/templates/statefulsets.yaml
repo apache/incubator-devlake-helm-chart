@@ -250,7 +250,7 @@ spec:
               name: {{ include "devlake.fullname" . }}-lake-config
       containers:
         - name: lake
-          image: "{{ .Values.lake.image.repository }}:{{ .Values.lake.image.tag }}"
+          image: "{{ .Values.lake.image.repository }}:{{ .Values.imageTag }}"
           imagePullPolicy: {{ .Values.lake.image.pullPolicy }}
           ports:
             - containerPort: 8080
