@@ -29,7 +29,7 @@ type: application
 
 
 # Chart version
-version: 0.15.1-beta3
+version: 0.15.0
 
 # devlake version
-appVersion: v0.15.1-beta3
+appVersion: v0.15.0
