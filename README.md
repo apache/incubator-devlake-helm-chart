@@ -48,7 +48,7 @@ Then you can visit:
 
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=v0.15.1-beta3
+helm upgrade --install devlake devlake/devlake --version=0.15.0
 ```
 
 ## Uninstall
