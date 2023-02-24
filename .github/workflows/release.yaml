@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - charts/**
+      - '!**.md'
 jobs:
   release:
     runs-on: ubuntu-latest
