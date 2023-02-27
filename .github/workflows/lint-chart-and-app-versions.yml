@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - charts/**
+      - '!**.md'
 jobs:
   check_chart_version_matches_app_version:
     name: chart version matches app version

@@ -29,6 +29,7 @@ on:
     paths:
       - charts/devlake/**
       - .github/workflows/deploy-test.yml
+      - '!**.md'
 
 jobs:
   deploy-with-helm:
