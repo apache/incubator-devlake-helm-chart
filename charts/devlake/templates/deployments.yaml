@@ -65,8 +65,6 @@ spec:
               value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
             - name: MYSQL_URL
               value: {{ include "mysql.server" . }}:{{ include "mysql.port" . }}
-            - name: POSTGRES_URL
-              value: {{ include "pgsql.server" . }}:{{ include "pgsql.port" . }}
           {{- with .Values.grafana.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
