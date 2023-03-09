@@ -15,132 +15,76 @@
 # limitations under the License.
 #
 
-# replica count for dev
-replicaCount: 1
-imageTag: v0.15.1-beta6
-
-mysql:
-  # if use external mysql server, please set true
-  #   by default using false, chart will create a single mysql instance
-  useExternal: false
-
-  # the external mysql server address
-  externalServer: 127.0.0.1
-
-  # external mysql port
-  externalPort: 3306
-
-  # the username for devlake database
-  username: merico
-
-  # the password for devlake database
-  password: merico
-
-  # the database for devlake
-  database: lake
-
-  # root password for mysql, only used when use_external=true
-  rootPassword: admin
-
-  # storage for mysql
-  storage:
-    # the storage class for pv, leave empty will using default
-    class: ""
-    size: 50Gi
-
-  # image for mysql
-  image:
-    repository: mysql
-    tag: 8
-    pullPolicy: IfNotPresent
-
-  # resources config for mysql if have
-  resources: {}
-
-  # nodeSelector config for mysql if have
-  nodeSelector: {}
-
-  # tolerations config for mysql if have
-  tolerations: []
-
-  # affinity config for mysql if have
-  affinity: {}
-
-grafana:
-  # image for grafana
-  image:
-    repository: apache/devlake-dashboard
-    pullPolicy: Always
-
-  resources: {}
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
+global:
+  imageTag: v0.15.1-beta6
+  storageClass: ""
 
 lake:
   image:
     repository: apache/devlake
-    pullPolicy: Always
-  # storage for config
-  storage:
-    # the storage class for pv, leave empty will using default
-    class: ""
+    pullPolicy: IfNotPresent
+  persistence:
     size: 100Mi
+  logging:
+    # debug, info, warn, error
+    level: "info"
+    directory: "/app/logs"
   dotenv:
     API_TIMEOUT: "120s"
     API_RETRY: "3"
     API_REQUESTS_PER_HOUR: "10000"
     PIPELINE_MAX_PARALLEL: "1"
     IN_SECURE_SKIP_VERIFY: "false"
-
-  # If hostNetwork is true, then dnsPolicy is set to ClusterFirstWithHostNet
-  hostNetwork: false
-
   resources: {}
-
   nodeSelector: {}
-
   tolerations: []
-
   affinity: {}
 
-  loggingDir: "/app/logs"
-  # debug, info, warn, error
-  loggingLevel: "info"
+mysql:
+  external:
+    enabled: false
+    server: 127.0.0.1
+    port: 3306
+    rootPassword: admin
+  username: merico
+  password: merico
+  database: lake
+  image:
+    repository: mysql
+    tag: 8
+    pullPolicy: IfNotPresent
+  persistence:
+    size: 10Gi
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+grafana:
+  image:
+    repository: apache/devlake-dashboard
+    pullPolicy: IfNotPresent
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 ui:
   image:
     repository: apache/devlake-config-ui
-    pullPolicy: Always
-
-  resources: {}
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
+    pullPolicy: IfNotPresent
   basicAuth:
     enabled: false
     user: admin
     password: admin
-
-# alpine image for some init containers
-alpine:
-  image:
-    repository: alpine
-    tag: 3.16
-    pullPolicy: IfNotPresent
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 service:
   # service type: NodePort/ClusterIP
   type: NodePort
-  # node port for devlake-ui if NodePort is enabled
   uiPort: 32001
   grafanaPort : 32002
 
@@ -148,24 +92,8 @@ ingress:
   enabled: false
   enableHttps: false
   className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  # domain name for hosting devlake
   hostname: localhost
-  # url prefix, not works right now, keep "/"
   prefix: /
-  # if using https provides the certificates secret name
   tlsSecretName: ""
-  # ingress http port
   httpPort: 80
-  # ingress https port
   httpsPort: 443
-
-
-option:
-  # localtime zone info from host path.
-  localtime: /etc/localtime
-
-  # database type, supported: [mysql]
-  database: mysql

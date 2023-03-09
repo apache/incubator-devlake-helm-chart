@@ -36,7 +36,7 @@ spec:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
       containers:
         - name: grafana
-          image: "{{ .Values.grafana.image.repository }}:{{ .Values.imageTag }}"
+          image: "{{ .Values.grafana.image.repository }}:{{ .Values.global.imageTag }}"
           imagePullPolicy: {{ .Values.grafana.image.pullPolicy }}
           ports:
             - containerPort: 3000
@@ -47,11 +47,9 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 30
           volumeMounts:
-            {{- if ne .Values.option.localtime "" }}
             - name: {{ include "devlake.fullname" . }}-grafana-localtime
               mountPath: /etc/localtime
               readOnly: true
-            {{- end }}
             - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
               mountPath: /etc/grafana/provisioning/datasources/datasource.yml
               subPath: grafana-datasource.yml
@@ -62,7 +60,7 @@ spec:
             - name: GF_SERVER_ROOT_URL
               value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
             - name: MYSQL_URL
-              value: {{ include "mysql.server" . }}:{{ include "mysql.port" . }}
+              value: {{ include "mysql.url" . }}
           {{- with .Values.grafana.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -80,12 +78,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
         - name: {{ include "devlake.fullname" . }}-grafana-localtime
           hostPath:
-            path: {{ .Values.option.localtime }}
+            path: /etc/localtime
             type: File
-        {{- end }}
         - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
           configMap:
             name: {{ include "devlake.fullname" . }}-grafana-datasource

@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: config-ui
-          image: "{{ .Values.ui.image.repository }}:{{ .Values.imageTag }}"
+          image: "{{ .Values.ui.image.repository }}:{{ .Values.global.imageTag }}"
           imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
           ports:
             - containerPort: 4000
@@ -48,11 +48,9 @@ spec:
             - name: GRAFANA_ENDPOINT
               value: {{ include "devlake.fullname" . }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:3000
           volumeMounts:
-            {{- if ne .Values.option.localtime "" }}
             - name: {{ include "devlake.fullname" . }}-ui-localtime
               mountPath: /etc/localtime
               readOnly: true
-            {{- end }}
           {{- with .Values.ui.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -70,9 +68,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
         - name: {{ include "devlake.fullname" . }}-ui-localtime
           hostPath:
-            path: {{ .Values.option.localtime }}
+            path: /etc/localtime
             type: File
-        {{- end }}

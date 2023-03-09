@@ -23,9 +23,9 @@ data:
   MYSQL_USER: "{{ .Values.mysql.username }}"
   MYSQL_PASSWORD: "{{ .Values.mysql.password }}"
   MYSQL_DATABASE: "{{ .Values.mysql.database }}"
-  MYSQL_ROOT_PASSWORD: "{{ .Values.mysql.rootPassword }}"
-  LOGGING_DIR: "{{ .Values.lake.loggingDir }}"
-  LOGGING_LEVEL: "{{ .Values.lake.loggingLevel }}"
+  MYSQL_ROOT_PASSWORD: "{{ .Values.mysql.external.rootPassword }}"
+  LOGGING_DIR: "{{ .Values.lake.logging.directory }}"
+  LOGGING_LEVEL: "{{ .Values.lake.logging.level }}"
 {{- if .Values.ui.basicAuth.enabled }}
   ADMIN_USER: "{{ .Values.ui.basicAuth.user }}"
   ADMIN_PASS: "{{ .Values.ui.basicAuth.password }}"

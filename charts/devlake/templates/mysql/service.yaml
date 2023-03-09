@@ -15,8 +15,7 @@
 # limitations under the License.
 #
 
-{{- if eq .Values.option.database "mysql" }}
-{{- if not .Values.mysql.useExternal }}
+{{- if not .Values.mysql.external.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -32,23 +31,4 @@ spec:
       name: mysql
       port: 3306
       targetPort: 3306
-{{- end }}
-#{{- else if eq .Values.option.database "pgsql" }}
-#{{- if not .Values.pgsql.useExternal }}
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: {{ include "devlake.fullname" . }}-pgsql
-#  labels:
-#    {{- include "devlake.labels" . | nindent 4 }}
-#spec:
-#  selector:
-#    {{- include "devlake.selectorLabels" . | nindent 4 }}
-#    devlakeComponent: pgsql
-#  ports:
-#    - protocol: TCP
-#      name: pgsql
-#      port: 5432
-#      targetPort: 5432
-#{{- end }}
 {{- end }}

@@ -61,7 +61,6 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-
 {{/*
 The ui endpoint prefix
 */}}
@@ -107,7 +106,6 @@ The mysql server
 {{- end }}
 {{- end }}
 
-
 {{/*
 The mysql port
 */}}
@@ -119,50 +117,25 @@ The mysql port
 {{- end }}
 {{- end }}
 
-
-
 {{/*
-The database server
+The mysql url
 */}}
-{{- define "database.server" -}}
-{{- if eq .Values.option.database "mysql" }}
-{{- include "mysql.server" . }}
-{{- end }}
-{{- end }}
-
-
-{{/*
-The database port
-*/}}
-{{- define "database.port" -}}
-{{- if eq .Values.option.database "mysql" }}
-{{- include "mysql.port" . }}
-{{- end }}
-{{- end }}
-
-
-{{/*
-The database url
-*/}}
-{{- define "database.url" -}}
-{{- if eq .Values.option.database "mysql" -}}
+{{- define "mysql.url" -}}
 mysql://{{ .Values.mysql.username }}:{{ .Values.mysql.password }}@{{ include "mysql.server" . }}:{{ include "mysql.port" . }}/{{ .Values.mysql.database }}?charset=utf8mb4&parseTime=True
 {{- end }}
-{{- end }}
-
 
 {{/*
 The probe for check database connection
 */}}
 {{- define "common.initContainerWaitDatabase" -}}
 - name: waiting-database-ready
-  image: "{{ .Values.alpine.image.repository }}:{{ .Values.alpine.image.tag }}"
-  imagePullPolicy: {{ .Values.alpine.image.pullPolicy }}
+  image: alpine:3.16
+  imagePullPolicy: IfNotPresent
   command:
     - 'sh'
     - '-c'
     - |
-      until nc -z -w 2 {{ include "database.server" . }} {{ include "database.port" . }} ; do
+      until nc -z -w 2 {{ include "mysql.server" . }} {{ include "mysql.port" . }} ; do
         echo wait for database ready ...
         sleep 2
       done

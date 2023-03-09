@@ -15,9 +15,7 @@
 # limitations under the License.
 #
 
-# database statefulset
-{{- if eq .Values.option.database "mysql" }}
-{{- if not .Values.mysql.useExternal }}
+{{- if not .Values.mysql.external.enabled }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -49,7 +47,7 @@ spec:
               command:
                 - "sh"
                 - "-c"
-                - "mysqladmin ping -u root -p{{ .Values.mysql.rootPassword }}"
+                - "mysqladmin ping -u root -p{{ .Values.mysql.external.rootPassword }}"
             initialDelaySeconds: 60
             timeoutSeconds: 30
           readinessProbe:
@@ -57,7 +55,7 @@ spec:
               command:
                 - "sh"
                 - "-c"
-                - "mysqladmin ping -u root -p{{ .Values.mysql.rootPassword }}"
+                - "mysqladmin ping -u root -p{{ .Values.mysql.external.rootPassword }}"
             initialDelaySeconds: 5
             timeoutSeconds: 10
           {{- with .Values.mysql.resources }}
@@ -68,13 +66,11 @@ spec:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
           volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: {{ include "devlake.fullname" . }}-mysql-data
-            {{- if ne .Values.option.localtime "" }}
+            - name: {{ include "devlake.fullname" . }}-mysql-data
+              mountPath: /var/lib/mysql
             - name: {{ include "devlake.fullname" . }}-mysql-localtime
               mountPath: /etc/localtime
               readOnly: true
-            {{- end }}
       {{- with .Values.mysql.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -88,25 +84,19 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
         - name: {{ include "devlake.fullname" . }}-mysql-localtime
           hostPath:
-            path: {{ .Values.option.localtime }}
+            path: /etc/localtime
             type: File
-        {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "devlake.fullname" . }}-mysql-data
       spec:
         accessModes: ["ReadWriteOnce"]
-        {{- with .Values.mysql.storage.class }}
+        {{- with .Values.global.storageClass }}
         storageClassName: "{{ . }}"
         {{- end }}
         resources:
           requests:
-            storage: "{{ .Values.mysql.storage.size }}"
-#{{- end }}
-#{{- else if eq .Values.option.database "pgsql" }}
-#{{- if not .Values.pgsql.useExternal }}
-{{- end }}
+            storage: "{{ .Values.mysql.persistence.size }}"
 {{- end }}

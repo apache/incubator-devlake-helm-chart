@@ -39,8 +39,8 @@ spec:
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
         - name: patch-env
-          image: "{{ .Values.alpine.image.repository }}:{{ .Values.alpine.image.tag }}"
-          imagePullPolicy: {{ .Values.alpine.image.pullPolicy }}
+          image: alpine:3.16
+          imagePullPolicy: IfNotPresent
           command:
             - 'sh'
             - '-c'
@@ -65,7 +65,7 @@ spec:
               name: {{ include "devlake.fullname" . }}-lake-config
       containers:
         - name: lake
-          image: "{{ .Values.lake.image.repository }}:{{ .Values.imageTag }}"
+          image: "{{ .Values.lake.image.repository }}:{{ .Values.global.imageTag }}"
           imagePullPolicy: {{ .Values.lake.image.pullPolicy }}
           ports:
             - containerPort: 8080
@@ -81,17 +81,15 @@ spec:
                 name: {{ include "devlake.fullname" . }}-config
           env:
             - name: DB_URL
-              value: "{{ include "database.url" . }}"
+              value: "{{ include "mysql.url" . }}"
             - name: ENV_PATH
               value: /app/config/.env
           volumeMounts:
-            - mountPath: /app/config
-              name: {{ include "devlake.fullname" . }}-lake-config
-            {{- if ne .Values.option.localtime "" }}
+            - name: {{ include "devlake.fullname" . }}-lake-config
+              mountPath: /app/config
             - name: {{ include "devlake.fullname" . }}-lake-localtime
               mountPath: /etc/localtime
               readOnly: true
-            {{- end }}
           {{- with .Values.lake.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -113,20 +111,18 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
         - name: {{ include "devlake.fullname" . }}-lake-localtime
           hostPath:
-            path: {{ .Values.option.localtime }}
+            path: /etc/localtime
             type: File
-        {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "devlake.fullname" . }}-lake-config
       spec:
         accessModes: ["ReadWriteOnce"]
-        {{- with .Values.lake.storage.class }}
+        {{- with .Values.global.storageClass }}
         storageClassName: "{{ . }}"
         {{- end }}
         resources:
           requests:
-            storage: "{{ .Values.lake.storage.size }}"
+            storage: "{{ .Values.lake.persistence.size }}"
