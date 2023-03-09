@@ -1,0 +1,132 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "devlake.fullname" . }}-lake
+  labels:
+    {{- include "devlake.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  serviceName: {{ include "devlake.fullname" . }}-lake
+  selector:
+    matchLabels:
+      {{- include "devlake.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "devlake.selectorLabels" . | nindent 8 }}
+        devlakeComponent: lake
+      annotations:
+        # Force reload on config changes
+        checksum/devlake-config: {{ include (print $.Template.BasePath "/lake/configmap.yaml") . | sha256sum }}
+    spec:
+      initContainers:
+        {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
+        - name: patch-env
+          image: "{{ .Values.alpine.image.repository }}:{{ .Values.alpine.image.tag }}"
+          imagePullPolicy: {{ .Values.alpine.image.pullPolicy }}
+          command:
+            - 'sh'
+            - '-c'
+            - |
+              touch /app/config/.env
+              function patch_env() {
+                if grep -w ${key}= /app/config/.env ; then
+                  echo ${key} already set
+                else
+                  echo >> /app/config/.env
+                  echo ${key}=${val} >> /app/config/.env
+                  echo ${key}=${val} patched
+                  grep -w ${key}= /app/config/.env
+                fi
+              }
+              {{- range $k, $v := .Values.lake.dotenv }}
+                key={{ $k }} val={{ $v }} patch_env
+              {{- end }}
+              exit 0
+          volumeMounts:
+            - mountPath: /app/config
+              name: {{ include "devlake.fullname" . }}-lake-config
+      containers:
+        - name: lake
+          image: "{{ .Values.lake.image.repository }}:{{ .Values.imageTag }}"
+          imagePullPolicy: {{ .Values.lake.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /blueprints
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            timeoutSeconds: 30
+          envFrom:
+            - configMapRef:
+                name: {{ include "devlake.fullname" . }}-config
+          env:
+            - name: DB_URL
+              value: "{{ include "database.url" . }}"
+            - name: ENV_PATH
+              value: /app/config/.env
+          volumeMounts:
+            - mountPath: /app/config
+              name: {{ include "devlake.fullname" . }}-lake-config
+            {{- if ne .Values.option.localtime "" }}
+            - name: {{ include "devlake.fullname" . }}-lake-localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            {{- end }}
+          {{- with .Values.lake.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- if .Values.lake.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      {{- with .Values.lake.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.lake.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.lake.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- if ne .Values.option.localtime "" }}
+        - name: {{ include "devlake.fullname" . }}-lake-localtime
+          hostPath:
+            path: {{ .Values.option.localtime }}
+            type: File
+        {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ include "devlake.fullname" . }}-lake-config
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        {{- with .Values.lake.storage.class }}
+        storageClassName: "{{ . }}"
+        {{- end }}
+        resources:
+          requests:
+            storage: "{{ .Values.lake.storage.size }}"

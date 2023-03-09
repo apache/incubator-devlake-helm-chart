@@ -1,0 +1,91 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "devlake.fullname" . }}-grafana
+  labels:
+    {{- include "devlake.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "devlake.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "devlake.selectorLabels" . | nindent 8 }}
+        devlakeComponent: grafana
+    spec:
+      initContainers:
+        {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
+      containers:
+        - name: grafana
+          image: "{{ .Values.grafana.image.repository }}:{{ .Values.imageTag }}"
+          imagePullPolicy: {{ .Values.grafana.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          volumeMounts:
+            {{- if ne .Values.option.localtime "" }}
+            - name: {{ include "devlake.fullname" . }}-grafana-localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            {{- end }}
+            - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
+              mountPath: /etc/grafana/provisioning/datasources/datasource.yml
+              subPath: grafana-datasource.yml
+          envFrom:
+            - configMapRef:
+                name: {{ include "devlake.fullname" . }}-config
+          env:
+            - name: GF_SERVER_ROOT_URL
+              value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+            - name: MYSQL_URL
+              value: {{ include "mysql.server" . }}:{{ include "mysql.port" . }}
+          {{- with .Values.grafana.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.grafana.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.grafana.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.grafana.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- if ne .Values.option.localtime "" }}
+        - name: {{ include "devlake.fullname" . }}-grafana-localtime
+          hostPath:
+            path: {{ .Values.option.localtime }}
+            type: File
+        {{- end }}
+        - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
+          configMap:
+            name: {{ include "devlake.fullname" . }}-grafana-datasource
