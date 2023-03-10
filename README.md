@@ -72,6 +72,5 @@ https://github.com/apache/incubator-devlake/pulls?q=is%3Apr+helm+is%3Aclosed
 ## Original pr in apache/incubator-devlake
 https://github.com/apache/incubator-devlake/pulls?q=is%3Apr+helm+is%3Aclosed
 
-
 ## More
 You could find more examples and details in [HelmSetup.md](HelmSetup.md)
