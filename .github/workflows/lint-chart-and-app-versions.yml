@@ -70,7 +70,7 @@ jobs:
         run: |
           set -e
           app_version_text=$(yq .appVersion ${GITHUB_WORKSPACE}/charts/devlake/Chart.yaml)
-          image_version_text=$(yq .imageTag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
+          image_version_text=$(yq .global.imageTag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
           if [[ $app_version_text != $image_version_text ]] ; then
             echo chart version $app_version_text is not equal to image tag $image_version_text :broken_heart: >> $GITHUB_STEP_SUMMARY
             exit 1

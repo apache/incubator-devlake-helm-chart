@@ -38,9 +38,7 @@ jobs:
       fail-fast: false
       matrix:
         database_type: ["mysql-builtin",
-#          "pgsql-builtin",
-                        "mysql-external"
-          ]
+                        "mysql-external"]
     steps:
       - name: Creating kind cluster
         uses: container-tools/kind-action@v1
@@ -65,8 +63,8 @@ jobs:
           # external mysql at service: mysql
           helm install --wait --timeout 300s deploy-test charts/devlake \
             --set service.uiPort=30000 \
-            --set mysql.useExternal=true \
-            --set mysql.externalServer=mysql \
+            --set mysql.external.enabled=true \
+            --set mysql.external.server=mysql \
             --set option.localtime=""
           kubectl get pods -o wide
           kubectl get services -o wide
@@ -78,22 +76,9 @@ jobs:
           echo Node IP: ${NODE_IP}
           helm install --wait --timeout 300s deploy-test charts/devlake \
             --set service.uiPort=30000 \
-            --set mysql.image.tag=8-debian \
-            --set option.localtime=""
+            --set mysql.image.tag=8-debian
           kubectl get pods -o wide
           kubectl get services -o wide
-      
-#      - name: Helm install devlake
-#        if: matrix.database_type == 'pgsql-builtin'
-#        run: |
-#          export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-#          echo Node IP: ${NODE_IP}
-#          helm install --wait --timeout 300s deploy-test charts/devlake \
-#            --set service.uiPort=30000 \
-#            --set option.database=pgsql \
-#            --set option.localtime=""
-#          kubectl get pods -o wide
-#          kubectl get services -o wide
 
       # TODO: using some e2e test code to replace it
       - name: Curl with endpoints
@@ -128,4 +113,3 @@ jobs:
             echo logs for $pod
             kubectl logs $pod || echo ""
           done
-
