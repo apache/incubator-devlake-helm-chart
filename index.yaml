@@ -2,6 +2,25 @@ apiVersion: v1
 entries:
   devlake:
   - apiVersion: v2
+    appVersion: v0.16.0-beta1
+    created: "2023-03-11T00:47:13.875336511Z"
+    description: Apache DevLake is an open-source dev data platform that ingests,
+      analyzes, and visualizes the fragmented data from DevOps tools to distill insights
+      for engineering productivity.
+    digest: 14083705cfd7789249592998a4f44570dd32478d270d62ed871fc64eb45a5a00
+    home: https://devlake.apache.org/
+    icon: https://devlake.apache.org/img/logo.svg
+    keywords:
+    - devlake
+    name: devlake
+    sources:
+    - https://github.com/apache/incubator-devlake
+    - https://github.com/apache/incubator-devlake-website
+    type: application
+    urls:
+    - https://github.com/apache/incubator-devlake-helm-chart/releases/download/devlake-0.16.0-beta1/devlake-0.16.0-beta1.tgz
+    version: 0.16.0-beta1
+  - apiVersion: v2
     appVersion: v0.15.1-beta6
     created: "2023-03-09T07:41:12.576020235Z"
     description: Apache DevLake is an open-source dev data platform that ingests,
@@ -381,4 +400,4 @@ entries:
     urls:
     - https://github.com/apache/incubator-devlake-helm-chart/releases/download/devlake-v0.14.2-1/devlake-v0.14.2-1.tgz
     version: v0.14.2-1
-generated: "2023-03-09T07:41:12.576285945Z"
+generated: "2023-03-11T00:47:13.875538611Z"
