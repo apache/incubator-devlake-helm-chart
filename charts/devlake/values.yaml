@@ -17,7 +17,7 @@
 
 # replica count for dev
 replicaCount: 1
-imageTag: v0.16.0-beta4
+imageTag: v0.16.0-beta5
 
 mysql:
   # if use external mysql server, please set true
@@ -115,6 +115,10 @@ grafana:
   image:
     repository: apache/devlake-dashboard
     pullPolicy: Always
+
+  useExternal: false
+
+  externalUrl: ''
 
   resources: {}
 

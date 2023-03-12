@@ -130,6 +130,8 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | mysql.image.pullPolicy        | pullPolicy for mysql's image                             | IfNotPresent               |
 | grafana.image.repository      | repository for grafana's image                           | apache/devlake-dashboard   |
 | grafana.image.pullPolicy      | pullPolicy for grafana's image                           | Always                     |
+| grafana.useExternal           | If use external grafana server                           | false                      |
+| grafana.externalUrl           | external grafana server if use external                  | ""                         |
 | lake.storage.class            | storage class for lake's volume                          | ""                         |
 | lake.storage.size             | volume size for lake's data                              | 100Mi                      |
 | lake.image.repository         | repository for lake's image                              | apache/devlake             |
@@ -146,7 +148,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | service.uiPort                | Node port for config ui                                  | 32001                      |
 | service.ingress.enabled       | If enable ingress                                        | false                      |
 | service.ingress.enableHttps   | If enable https                                          | false                      |
-| service.ingress.className     | Class name for ingressClass. leave empty for using default | ""                         |
+| service.ingress.className     | Name for ingressClass. leave empty for using default     | ""                         |
 | service.ingress.hostname      | The hostname/domainname for ingress                      | localhost                  |
 | service.ingress.prefix        | The prefix for endpoints, currently not used             | /                          |
 | service.ingress.tlsSecretName | The secret name for tls's certificate for https          | ""                         |
