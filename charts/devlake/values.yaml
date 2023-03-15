@@ -17,7 +17,7 @@
 
 # replica count for dev
 replicaCount: 1
-imageTag: v0.16.0-beta5
+imageTag: v0.16.0-beta6
 
 mysql:
   # if use external mysql server, please set true
