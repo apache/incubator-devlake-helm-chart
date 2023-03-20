@@ -16,6 +16,7 @@
 #
 
 ---
+{{- if not .Values.grafana.useExternal }}
 # grafana
 apiVersion: apps/v1
 kind: Deployment
@@ -91,7 +92,7 @@ spec:
         - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
           configMap:
             name: {{ include "devlake.fullname" . }}-grafana-datasource
-
+{{ end }}
 ---
 # devlake-ui
 apiVersion: apps/v1
@@ -124,14 +125,22 @@ spec:
             - name: DEVLAKE_ENDPOINT
               # TODO: remove hardcoded `cluster.local`
               value: {{ include "devlake.fullname" . }}-lake.{{ .Release.Namespace }}.svc.cluster.local:8080
+{{- if .Values.grafana.useExternal }}
+            - name: GRAFANA_ENDPOINT
+              value: {{ .Values.grafana.externalUrl }}
+{{- else }}
             - name: GRAFANA_ENDPOINT
               value: {{ include "devlake.fullname" . }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:3000
+{{- end }}
           volumeMounts:
             {{- if ne .Values.option.localtime "" }}
             - name: {{ include "devlake.fullname" . }}-ui-localtime
               mountPath: /etc/localtime
               readOnly: true
             {{- end }}
+            - name: {{ include "devlake.fullname" . }}-nginx-conf-config
+              mountPath: /etc/nginx/conf.d/default.conf.tpl
+              subPath: default.conf.tpl
           {{- with .Values.ui.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -155,3 +164,6 @@ spec:
             path: {{ .Values.option.localtime }}
             type: File
         {{- end }}
+        - name: {{ include "devlake.fullname" . }}-nginx-conf-config
+          configMap:
+            name: {{ include "devlake.fullname" . }}-nginx-conf
