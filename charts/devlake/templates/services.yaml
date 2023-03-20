@@ -55,6 +55,7 @@ spec:
 #{{- end }}
 {{- end }}
 
+{{- if not .Values.grafana.useExternal }}
 # grafana services
 ---
 apiVersion: v1
@@ -76,6 +77,7 @@ spec:
       {{- if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.service.grafanaPort }}
       {{- end }}
+{{ end }}
 
 # devlake services
 ---
