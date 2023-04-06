@@ -58,6 +58,9 @@ spec:
             - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
               mountPath: /etc/grafana/provisioning/datasources/datasource.yml
               subPath: grafana-datasource.yml
+            - name: config
+              mountPath: "/etc/grafana/grafana.ini"
+              subPath: grafana.ini
           envFrom:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
@@ -92,6 +95,9 @@ spec:
         - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
           configMap:
             name: {{ include "devlake.fullname" . }}-grafana-datasource
+        - name: config
+          configMap:
+            name: {{ include "devlake.fullname" . }}-grafana
 {{ end }}
 ---
 # devlake-ui

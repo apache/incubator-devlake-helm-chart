@@ -83,13 +83,11 @@ data:
     }
 
 ---
-{{- if not .Values.grafana.useExternal }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "devlake.fullname" . }}-grafana-datasource
 data:
-{{- if eq .Values.option.database "mysql" }}
   grafana-datasource.yml: |
     apiVersion: 1
     datasources:
@@ -101,20 +99,36 @@ data:
         secureJsonData:
           password: $MYSQL_PASSWORD
         editable: false
-#{{- else if eq .Values.option.database "pgsql" }}
-#  grafana-datasource.yml: |
-#    apiVersion: 1
-#    datasources:
-#      - name: postgres
-#        type: postgres
-#        url: $POSTGRES_URL
-#        database: $POSTGRES_DB
-#        user: $POSTGRES_USER
-#        secureJsonData:
-#          password: $POSTGRES_PASSWORD
-#        jsonData:
-#          sslmode: 'disable'
-#          postgresVersion: 1000 # support pgsql 10.0 and above
-#          timescaledb: false
-{{- end }}
-{{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.fullname" . }}-grafana
+data:
+  grafana.ini: |
+  {{- range $elem, $elemVal := index .Values "grafana.ini" }}
+    {{- if not (kindIs "map" $elemVal) }}
+    {{- if kindIs "invalid" $elemVal }}
+    {{ $elem }} =
+    {{- else if kindIs "string" $elemVal }}
+    {{ $elem }} = {{ tpl $elemVal $ }}
+    {{- else }}
+    {{ $elem }} = {{ $elemVal }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- range $key, $value := index .Values "grafana.ini" }}
+    {{- if kindIs "map" $value }}
+    [{{ $key }}]
+    {{- range $elem, $elemVal := $value }}
+    {{- if kindIs "invalid" $elemVal }}
+    {{ $elem }} =
+    {{- else if kindIs "string" $elemVal }}
+    {{ $elem }} = {{ tpl $elemVal $ }}
+    {{- else }}
+    {{ $elem }} = {{ $elemVal }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
