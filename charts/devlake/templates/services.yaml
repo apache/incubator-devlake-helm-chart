@@ -85,9 +85,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "devlake.fullname" . }}-lake
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: external
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
 spec:
+  type: LoadBalancer
   selector:
     {{- include "devlake.selectorLabels" . | nindent 4 }}
     devlakeComponent: lake
