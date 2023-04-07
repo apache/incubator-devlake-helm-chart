@@ -126,7 +126,7 @@ spec:
             - containerPort: 4000
           envFrom:
             - configMapRef:
-                name: {{ include "devlake.fullname" . }}-config
+                name: {{ include "devlake.fullname" . }}-ui-config
           env:
             - name: DEVLAKE_ENDPOINT
               # TODO: remove hardcoded `cluster.local`

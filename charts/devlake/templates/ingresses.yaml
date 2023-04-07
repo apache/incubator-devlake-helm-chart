@@ -36,8 +36,9 @@ metadata:
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
   annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
+  {{- if .Values.ingress.useDefaultNginx }}
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  {{- end}}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -56,7 +57,11 @@ spec:
       http:
         paths:
           {{- if not .Values.grafana.useExternal }}
+          {{- if .Values.ingress.useDefaultNginx }}
+          - path: /{{ include "devlake.grafanaEndpointPrefix" . }}(/|$)(.*)
+          {{- else }}
           - path: /{{ include "devlake.grafanaEndpointPrefix" . }}
+          {{- end }}
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
             {{- end }}
@@ -70,8 +75,12 @@ spec:
               serviceName: {{ include "devlake.fullname" . }}-grafana
               servicePort: 3000
               {{- end }}
-            {{- end }}
+          {{- end }}
+          {{- if .Values.ingress.useDefaultNginx }}
+          - path: /{{ include "devlake.uiEndpointPrefix" . }}(/?|$)(.*)
+          {{- else }}
           - path: /{{ include "devlake.uiEndpointPrefix" . }}
+          {{- end}}
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
             {{- end }}
@@ -86,7 +95,7 @@ spec:
               servicePort: 4000
               {{- end }}
 
-{{- if .Values.grafana.useExternal }}
+{{- if and .Values.ingress.useDefaultNginx .Values.grafana.useExternal }}
 ---
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
