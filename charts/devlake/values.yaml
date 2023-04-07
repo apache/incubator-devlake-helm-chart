@@ -66,6 +66,14 @@ mysql:
   # affinity config for mysql if have
   affinity: {}
 
+  # command flags for mysql
+  command:
+    - "--character-set-server=utf8mb4"
+    - "--collation-server=utf8mb4_bin"
+    - "--skip-log-bin"
+
+
+
 #pgsql:
 #  # if use external pgsql server, please set true
 #  #   by default using false, chart will create a single pgsql instance
@@ -131,7 +139,6 @@ grafana:
 
   affinity: {}
 
-
 lake:
   image:
     repository: apache/devlake
@@ -180,6 +187,13 @@ ui:
     enabled: false
     user: admin
     password: admin
+
+  env:
+    VITE_AUTH_REGION: "placeholder"
+    VITE_AUTH_USER_POOL_ID: "placeholder"
+    VITE_AUTH_USER_POOL_WEB_CLIENT_ID: "placeholder"
+    VITE_AUTH_COOKIE_STORAGE_DOMAIN: "placeholder"
+
 
 # alpine image for some init containers
 alpine:
