@@ -32,10 +32,6 @@ data:
 {{- end }}
   LOGGING_DIR: "{{ .Values.lake.loggingDir }}"
   LOGGING_LEVEL: "{{ .Values.lake.loggingLevel }}"
-{{- if .Values.ui.basicAuth.enabled }}
-  ADMIN_USER: "{{ .Values.ui.basicAuth.user }}"
-  ADMIN_PASS: "{{ .Values.ui.basicAuth.password }}"
-{{- end }}
 
 ---
 apiVersion: v1
@@ -118,3 +114,19 @@ data:
 #          timescaledb: false
 {{- end }}
 {{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.fullname" . }}-ui-config
+data:
+  VITE_AUTH_REGION: "{{ .Values.ui.env.VITE_AUTH_REGION }}"
+  VITE_AUTH_USER_POOL_ID: "{{ .Values.ui.env.VITE_AUTH_USER_POOL_ID }}"
+  VITE_AUTH_USER_POOL_WEB_CLIENT_ID: "{{ .Values.ui.env.VITE_AUTH_USER_POOL_WEB_CLIENT_ID }}"
+  VITE_AUTH_COOKIE_STORAGE_DOMAIN: "{{ .Values.ui.env.VITE_AUTH_COOKIE_STORAGE_DOMAIN }}"
+  { { - if .Values.ui.basicAuth.enabled } }
+  ADMIN_USER: "{{ .Values.ui.basicAuth.user }}"
+  ADMIN_PASS: "{{ .Values.ui.basicAuth.password }}"
+  { { - end } }
+
