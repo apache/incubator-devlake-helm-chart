@@ -172,7 +172,8 @@ lake:
 
 ui:
   image:
-    repository: apache/devlake-config-ui
+    repository: mericodev/lake-ui
+    imageTagUI: cloud-alpha1
     pullPolicy: Always
 
   resources: {}
