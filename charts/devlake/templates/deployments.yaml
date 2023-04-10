@@ -120,7 +120,7 @@ spec:
     spec:
       containers:
         - name: config-ui
-          image: "{{ .Values.ui.image.repository }}:{{ .Values.imageTag }}"
+          image: "{{ .Values.ui.image.repository }}:{{ .Values.ui.image.imageTagUI }}"
           imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
           ports:
             - containerPort: 4000
