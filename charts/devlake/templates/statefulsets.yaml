@@ -40,6 +40,11 @@ spec:
         - name: mysql
           image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
           imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+          args:
+            - "mysqld"
+            - "--character-set-server=utf8mb4"
+            - "--collation-server=utf8mb4_bin"
+            - "--skip-log-bin"
           ports:
             - name: mysql
               containerPort: 3306
