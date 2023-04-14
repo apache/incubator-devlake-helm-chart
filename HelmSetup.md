@@ -112,50 +112,52 @@ After deployed, visit devlake: https://devlake-0.example.com:8443, and grafana a
 
 Some useful parameters for the chart, you could also check them in values.yaml
 
-| Parameter                     | Description                                              | Default                    |
-| ----------------------------- | -------------------------------------------------------- | -------------------------- |
-| replicaCount                  | Replica Count for devlake, currently not used            | 1                          |
-| imageTag                      | The version tag for all images                           | see Values.yaml            |
-| mysql.useExternal             | If use external mysql server, set true                   | false                      |
-| mysql.externalServer          | External mysql server address                            | 127.0.0.1                  |
-| mysql.externalPort            | External mysql server port                               | 3306                       |
-| mysql.username                | username for mysql                                       | merico                     |
-| mysql.password                | password for mysql                                       | merico                     |
-| mysql.database                | database for mysql                                       | lake                       |
-| mysql.rootPassword            | root password for mysql                                  | admin                      |
-| mysql.storage.class           | storage class for mysql's volume                         | ""                         |
-| mysql.storage.size            | volume size for mysql's data                             | 5Gi                        |
-| mysql.image.repository        | repository for mysql's image                             | mysql                      |
-| mysql.image.tag               | image tag for mysql's image                              | 8                          |
-| mysql.image.pullPolicy        | pullPolicy for mysql's image                             | IfNotPresent               |
-| grafana.image.repository      | repository for grafana's image                           | apache/devlake-dashboard   |
-| grafana.image.pullPolicy      | pullPolicy for grafana's image                           | Always                     |
-| grafana.useExternal           | If use external grafana server                           | false                      |
-| grafana.externalUrl           | external grafana server if use external                  | ""                         |
-| lake.storage.class            | storage class for lake's volume                          | ""                         |
-| lake.storage.size             | volume size for lake's data                              | 100Mi                      |
-| lake.image.repository         | repository for lake's image                              | apache/devlake             |
-| lake.image.pullPolicy         | pullPolicy for lake's image                              | Always                     |
-| lake.loggingDir               | log dir for the lake server                              | /app/logs                  |
-| lake.loggingLevel             | log level for the lake server                            | info                       |
-| lake.dotenv                   | initial configurations for injecting to lake's .env      | see Values.yaml            |
-| ui.image.repository           | repository for ui's image                                | apache/devlake-config-ui   |
-| ui.image.pullPolicy           | pullPolicy for ui's image                                | Always                     |
-| ui.basicAuth.enabled          | If the basic auth in ui is enabled                       | false                      |
-| ui.basicAuth.user             | The user name for the basic auth                         | "admin"                    |
-| ui.basicAuth.password         | The password for the basic auth                          | "admin"                    |
-| service.type                  | Service type for exposed service                         | NodePort                   |
-| service.uiPort                | Node port for config ui                                  | 32001                      |
-| service.ingress.enabled       | If enable ingress                                        | false                      |
-| service.ingress.enableHttps   | If enable https                                          | false                      |
-| service.ingress.className     | Name for ingressClass. leave empty for using default     | ""                         |
-| service.ingress.hostname      | The hostname/domainname for ingress                      | localhost                  |
-| service.ingress.prefix        | The prefix for endpoints, currently not used             | /                          |
-| service.ingress.tlsSecretName | The secret name for tls's certificate for https          | ""                         |
-| service.ingress.httpPort      | The http port for ingress                                | 80                         |
-| service.ingress.httpsPort     | The https port for ingress                               | 443                        |
-| option.localtime              | The hostpath for mount as /etc/localtime                 | /etc/localtime             |
-| option.database               | The database type, valids: mysql                    | mysql                      |
+| Parameter                         | Description                                              | Default                    |
+| --------------------------------- | -------------------------------------------------------- | -------------------------- |
+| replicaCount                      | Replica Count for devlake, currently not used            | 1                          |
+| imageTag                          | The version tag for all images                           | see Values.yaml            |
+| mysql.useExternal                 | If use external mysql server, set true                   | false                      |
+| mysql.externalServer              | External mysql server address                            | 127.0.0.1                  |
+| mysql.externalPort                | External mysql server port                               | 3306                       |
+| mysql.username                    | username for mysql                                       | merico                     |
+| mysql.password                    | password for mysql                                       | merico                     |
+| mysql.database                    | database for mysql                                       | lake                       |
+| mysql.rootPassword                | root password for mysql                                  | admin                      |
+| mysql.storage.class               | storage class for mysql's volume                         | ""                         |
+| mysql.storage.size                | volume size for mysql's data                             | 5Gi                        |
+| mysql.image.repository            | repository for mysql's image                             | mysql                      |
+| mysql.image.tag                   | image tag for mysql's image                              | 8                          |
+| mysql.image.pullPolicy            | pullPolicy for mysql's image                             | IfNotPresent               |
+| grafana.image.repository          | repository for grafana's image                           | apache/devlake-dashboard   |
+| grafana.image.pullPolicy          | pullPolicy for grafana's image                           | Always                     |
+| grafana.useExternal               | If use external grafana server                           | false                      |
+| grafana.externalUrl               | external grafana server if use external                  | ""                         |
+| lake.storage.class                | storage class for lake's volume                          | ""                         |
+| lake.storage.size                 | volume size for lake's data                              | 100Mi                      |
+| lake.image.repository             | repository for lake's image                              | apache/devlake             |
+| lake.image.pullPolicy             | pullPolicy for lake's image                              | Always                     |
+| lake.loggingDir                   | log dir for the lake server                              | /app/logs                  |
+| lake.loggingLevel                 | log level for the lake server                            | info                       |
+| lake.dotenv                       | initial configurations for injecting to lake's .env      | see Values.yaml            |
+| ui.image.repository               | repository for ui's image                                | apache/devlake-config-ui   |
+| ui.image.pullPolicy               | pullPolicy for ui's image                                | Always                     |
+| ui.basicAuth.enabled              | If the basic auth in ui is enabled                       | false                      |
+| ui.basicAuth.user                 | The user name for the basic auth                         | "admin"                    |
+| ui.basicAuth.password             | The password for the basic auth                          | "admin"                    |
+| service.type                      | Service type for exposed service                         | NodePort                   |
+| service.uiPort                    | Node port for config ui                                  | 32001                      |
+| service.ingress.enabled           | If enable ingress                                        | false                      |
+| service.ingress.enableHttps       | If enable https                                          | false                      |
+| service.ingress.className         | Name for ingressClass. leave empty for using default     | ""                         |
+| service.ingress.hostname          | The hostname/domainname for ingress                      | localhost                  |
+| service.ingress.prefix            | The prefix for endpoints, currently not used             | /                          |
+| service.ingress.tlsSecretName     | The secret name for tls's certificate for https          | ""                         |
+| service.ingress.httpPort          | The http port for ingress                                | 80                         |
+| service.ingress.httpsPort         | The https port for ingress                               | 443                        |
+| option.localtime                  | The hostpath for mount as /etc/localtime                 | /etc/localtime             |
+| option.database                   | The database type, valids: mysql                         | mysql                      |
+| option.useConnectionDetailsSecret | If use secret instead of configmap for db connection     | false                      |
+| option.connectionSecretName       | The database connection details secret name              | devlake-db-connection      |
 
 ## FAQ
 1. Can I use a managed Cloud database service instead of running database in docker?
@@ -169,7 +171,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
     * `mysql.username`: use your `username` for access RDS instance's DB
     * `mysql.password`: use your `password` for access RDS instance's DB
     * `mysql.database`: use your RDS instance's DB name, you may need to create a database first with `CREATE DATABASE <DB name>;`
-  
+
   Here is the example:
   ```
   helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
@@ -182,7 +184,17 @@ Some useful parameters for the chart, you could also check them in values.yaml
     --set mysql.password=password_4_admin \
     --set mysql.database=devlake
   ```
-  
+
+2. Can I use a secret to store the database connection details?
+
+  Yes, to do so, you need to have a secret in your Kubernetes Cluster that contains the following values:
+  * `MYSQL_USER`: The user to connect to your DB.
+  * `MYSQL_PASSWORD`: The password to connect to your DB.
+  * `MYSQL_DATABASE`: The database to connect to your DB.
+  * `MYSQL_ROOT_PASSWORD`: The root password to connect to your DB.
+  * `DB_URL`: mysql://`username`:`password`@`dbserver`:`port`/`database`?charset=utf8mb4&parseTime=True
+
+  The secret name needs to be the same as the value `option.connectionSecretName`
 
 ## Troubleshooting
 
