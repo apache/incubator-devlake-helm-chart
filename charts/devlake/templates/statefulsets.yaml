@@ -168,7 +168,7 @@ spec:
 #                name: {{ include "devlake.fullname" . }}-config
 #            {{- if .Values.option.useConnectionDetailsSecret }}
 #            - secretRef:
-#                name: {{ .Values.pgsql.connectionDetails.secretName }}
+#                name: {{ .Values.pgsql.secretName }}
 #            {{- end }}
 #          volumeMounts:
 #            - mountPath: /var/lib/postgresql

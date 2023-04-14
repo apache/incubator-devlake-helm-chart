@@ -21,15 +21,15 @@ metadata:
   name: {{ include "devlake.fullname" . }}-config
 data:
 {{- if and  (eq .Values.option.database "mysql") (not .Values.option.useConnectionDetailsSecret) }}
-  MYSQL_USER: "{{ .Values.mysql.connectionDetails.username }}"
-  MYSQL_PASSWORD: "{{ .Values.mysql.connectionDetails.password }}"
-  MYSQL_DATABASE: "{{ .Values.mysql.connectionDetails.database }}"
-  MYSQL_ROOT_PASSWORD: "{{ .Values.mysql.connectionDetails.rootPassword }}"
+  MYSQL_USER: "{{ .Values.mysql.username }}"
+  MYSQL_PASSWORD: "{{ .Values.mysql.password }}"
+  MYSQL_DATABASE: "{{ .Values.mysql.database }}"
+  MYSQL_ROOT_PASSWORD: "{{ .Values.mysql.rootPassword }}"
   DB_URL: "{{ include "database.url" . }}"
 #{{- else if and (eq .Values.option.database "pgsql") (not .Values.option.useConnectionDetailsSecret) }}
-#  POSTGRES_USER: "{{ .Values.pgsql.connectionDetails.username }}"
-#  POSTGRES_PASSWORD: "{{ .Values.connectionDetails.pgsql.password }}"
-#  POSTGRES_DB: "{{ .Values.pgsql.connectionDetails.database }}"
+#  POSTGRES_USER: "{{ .Values.pgsql.username }}"
+#  POSTGRES_PASSWORD: "{{ .Values.pgsql.password }}"
+#  POSTGRES_DB: "{{ .Values.pgsql.database }}"
 #  DB_URL: "{{ include "database.url" . }}"
 {{- end }}
   LOGGING_DIR: "{{ .Values.lake.loggingDir }}"

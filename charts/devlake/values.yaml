@@ -30,18 +30,17 @@ mysql:
   # external mysql port
   externalPort: 3306
 
-  connectionDetails:
-    # the username for devlake database
-    username: merico
+  # the username for devlake database
+  username: merico
 
-    # the password for devlake database
-    password: merico
+  # the password for devlake database
+  password: merico
 
-    # the database for devlake
-    database: lake
+  # the database for devlake
+  database: lake
 
-    # root password for mysql, only used when use_external=true
-    rootPassword: admin
+  # root password for mysql, only used when use_external=true
+  rootPassword: admin
 
   # storage for mysql
   storage:
@@ -77,15 +76,14 @@ mysql:
 #
 #  # external pgsql port
 #  externalPort: 5432
-#  connectionDetails:#
-#    # the username for devlake database
-#    username: merico
+#  # the username for devlake database
+#  username: merico
 #
-#    # the password for devlake database
-#    password: merico
+#  # the password for devlake database
+#  password: merico
 #
-#    # the database for devlake
-#    database: lake
+#  # the database for devlake
+#  database: lake
 #
 #  # storage for pgsql
 #  storage:

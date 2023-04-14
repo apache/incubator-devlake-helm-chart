@@ -146,7 +146,7 @@ The database url
 */}}
 {{- define "database.url" -}}
 {{- if eq .Values.option.database "mysql" -}}
-mysql://{{ .Values.mysql.connectionDetails.username }}:{{ .Values.mysql.connectionDetails.password }}@{{ include "mysql.server" . }}:{{ include "mysql.port" . }}/{{ .Values.mysql.connectionDetails.database }}?charset=utf8mb4&parseTime=True
+mysql://{{ .Values.mysql.username }}:{{ .Values.mysql.password }}@{{ include "mysql.server" . }}:{{ include "mysql.port" . }}/{{ .Values.mysql.database }}?charset=utf8mb4&parseTime=True
 {{- end }}
 {{- end }}
 
