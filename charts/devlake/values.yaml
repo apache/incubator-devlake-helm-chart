@@ -121,7 +121,7 @@ grafana:
   # to add the ingress with the permanent redirect.
   useExternal: false
 
-  externalUrl: ""
+  externalUrl: ''
 
   resources: {}
 
@@ -130,6 +130,7 @@ grafana:
   tolerations: []
 
   affinity: {}
+
 
 lake:
   image:
@@ -192,7 +193,7 @@ service:
   type: NodePort
   # node port for devlake-ui if NodePort is enabled
   uiPort: 32001
-  grafanaPort: 32002
+  grafanaPort : 32002
 
 ingress:
   enabled: false
@@ -201,8 +202,7 @@ ingress:
   # Set to false if you want to use a different ingress controller
   useDefaultNginx: true
   # Add annotations required for your ingress controller. Uncomment for Nginx.
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # domain name for hosting devlake
@@ -215,6 +215,7 @@ ingress:
   httpPort: 80
   # ingress https port
   httpsPort: 443
+
 
 option:
   # localtime zone info from host path.
