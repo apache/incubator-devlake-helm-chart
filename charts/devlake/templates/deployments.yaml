@@ -61,6 +61,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
+            {{- if .Values.option.useConnectionDetailsSecret }}
+            - secretRef:
+                name: {{ .Values.option.connectionSecretName }}
+            {{- end }}
           env:
             - name: GF_SERVER_ROOT_URL
               value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
