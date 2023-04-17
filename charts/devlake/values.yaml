@@ -218,8 +218,8 @@ ingress:
 
 
 option:
-  # localtime zone info from host path.
-  localtime: /etc/localtime
+  # timezone
+  TZ: Asia/Shanghai
 
   # database type, supported: [mysql]
   database: mysql

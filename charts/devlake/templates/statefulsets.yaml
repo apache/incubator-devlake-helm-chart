@@ -75,11 +75,6 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: {{ include "devlake.fullname" . }}-mysql-data
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-mysql-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
       {{- with .Values.mysql.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -92,13 +87,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-mysql-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "devlake.fullname" . }}-mysql-data
@@ -165,11 +153,6 @@ spec:
 #          volumeMounts:
 #            - mountPath: /var/lib/postgresql
 #              name: {{ include "devlake.fullname" . }}-pgsql-data
-#            {{- if ne .Values.option.localtime "" }}
-#            - name: {{ include "devlake.fullname" . }}-pgsql-localtime
-#              mountPath: /etc/localtime
-#              readOnly: true
-#            {{- end }}
 #      {{- with .Values.pgsql.nodeSelector }}
 #      nodeSelector:
 #        {{- toYaml . | nindent 8 }}
@@ -182,13 +165,6 @@ spec:
 #      tolerations:
 #        {{- toYaml . | nindent 8 }}
 #      {{- end }}
-#      volumes:
-#        {{- if ne .Values.option.localtime "" }}
-#        - name: {{ include "devlake.fullname" . }}-pgsql-localtime
-#          hostPath:
-#            path: {{ .Values.option.localtime }}
-#            type: File
-#        {{- end }}
 #  volumeClaimTemplates:
 #    - metadata:
 #        name: {{ include "devlake.fullname" . }}-pgsql-data
@@ -277,11 +253,6 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: {{ include "devlake.fullname" . }}-lake-config
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-lake-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
           {{- with .Values.lake.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -302,13 +273,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-lake-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "devlake.fullname" . }}-lake-config

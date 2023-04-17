@@ -50,11 +50,6 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 30
           volumeMounts:
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-grafana-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
             - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
               mountPath: /etc/grafana/provisioning/datasources/datasource.yml
               subPath: grafana-datasource.yml
@@ -83,12 +78,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-grafana-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
         - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
           configMap:
             name: {{ include "devlake.fullname" . }}-grafana-datasource
@@ -133,11 +122,6 @@ spec:
               value: {{ include "devlake.fullname" . }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:3000
 {{- end }}
           volumeMounts:
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-ui-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
             - name: {{ include "devlake.fullname" . }}-nginx-conf-config
               mountPath: /etc/nginx/conf.d/default.conf.tpl
               subPath: default.conf.tpl
@@ -158,12 +142,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-ui-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
         - name: {{ include "devlake.fullname" . }}-nginx-conf-config
           configMap:
             name: {{ include "devlake.fullname" . }}-nginx-conf

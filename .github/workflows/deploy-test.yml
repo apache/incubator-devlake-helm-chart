@@ -66,8 +66,7 @@ jobs:
           helm install --wait --timeout 300s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.useExternal=true \
-            --set mysql.externalServer=mysql \
-            --set option.localtime=""
+            --set mysql.externalServer=mysql
           kubectl get pods -o wide
           kubectl get services -o wide
 
@@ -78,8 +77,7 @@ jobs:
           echo Node IP: ${NODE_IP}
           helm install --wait --timeout 300s deploy-test charts/devlake \
             --set service.uiPort=30000 \
-            --set mysql.image.tag=8-debian \
-            --set option.localtime=""
+            --set mysql.image.tag=8-debian
           kubectl get pods -o wide
           kubectl get services -o wide
       
@@ -90,8 +88,7 @@ jobs:
 #          echo Node IP: ${NODE_IP}
 #          helm install --wait --timeout 300s deploy-test charts/devlake \
 #            --set service.uiPort=30000 \
-#            --set option.database=pgsql \
-#            --set option.localtime=""
+#            --set option.database=pgsql
 #          kubectl get pods -o wide
 #          kubectl get services -o wide
 

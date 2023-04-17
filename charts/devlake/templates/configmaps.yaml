@@ -35,6 +35,7 @@ data:
 {{- if .Values.ui.basicAuth.enabled }}
   ADMIN_USER: "{{ .Values.ui.basicAuth.user }}"
   ADMIN_PASS: "{{ .Values.ui.basicAuth.password }}"
+  TZ: "{{ .Values.option.TZ }}"
 {{- end }}
 
 ---
