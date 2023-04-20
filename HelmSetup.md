@@ -144,6 +144,9 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ui.basicAuth.enabled              | If the basic auth in ui is enabled                       | false                      |
 | ui.basicAuth.user                 | The user name for the basic auth                         | "admin"                    |
 | ui.basicAuth.password             | The password for the basic auth                          | "admin"                    |
+| ui.basicAuth.useSecret            | If use secret instead of configmap for basic auth        | false                      |
+| ui.basicAuth.autoCreateSecret     | If let the helm chart create the secret                  | true                       |
+| ui.basicAuth.secretName           | The basic auth secret name                               | devlake-auth               |
 | service.type                      | Service type for exposed service                         | NodePort                   |
 | service.uiPort                    | Node port for config ui                                  | 32001                      |
 | service.ingress.enabled           | If enable ingress                                        | false                      |
@@ -158,6 +161,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | option.database                   | The database type, valids: mysql                         | mysql                      |
 | option.useConnectionDetailsSecret | If use secret instead of configmap for db connection     | false                      |
 | option.connectionSecretName       | The database connection details secret name              | devlake-db-connection      |
+| option.autoCreateSecret           | If let the helm chart create the secret                  | true                       |
 
 ## FAQ
 1. Can I use a managed Cloud database service instead of running database in docker?

@@ -179,6 +179,10 @@ ui:
     enabled: false
     user: admin
     password: admin
+    useSecret: false
+    autoCreateSecret: true
+    secretName: devlake-auth
+
 
 # alpine image for some init containers
 alpine:
@@ -230,3 +234,6 @@ option:
   # the secret name if useConnectionDetailsSecret is true.
   connectionSecretName: devlake-db-connection
 
+  # if true, will create the secret as part of the chart
+  # when useConnectionDetailSecret is also true.
+  autoCreateSecret: true

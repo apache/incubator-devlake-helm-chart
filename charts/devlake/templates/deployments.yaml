@@ -125,6 +125,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
+            {{- if .Values.ui.basicAuth.useSecret }}
+            - secretRef:
+                name: {{ .Values.ui.basicAuth.secretName }}
+            {{- end }}
           env:
             - name: DEVLAKE_ENDPOINT
               # TODO: remove hardcoded `cluster.local`
