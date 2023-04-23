@@ -128,6 +128,8 @@ spec:
 {{- if .Values.grafana.useExternal }}
             - name: GRAFANA_ENDPOINT
               value: {{ .Values.grafana.externalUrl }}
+            - name: USE_EXTERNAL_GRAFANA
+              value: "true"
 {{- else }}
             - name: GRAFANA_ENDPOINT
               value: {{ include "devlake.fullname" . }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:3000
