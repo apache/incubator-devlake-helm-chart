@@ -66,49 +66,49 @@ mysql:
   # affinity config for mysql if have
   affinity: {}
 
-#pgsql:
-#  # if use external pgsql server, please set true
-#  #   by default using false, chart will create a single pgsql instance
-#  useExternal: false
-#
-#  # the external pgsql server address
-#  externalServer: 127.0.0.1
-#
-#  # external pgsql port
-#  externalPort: 5432
-#
-#  # the username for devlake database
-#  username: merico
-#
-#  # the password for devlake database
-#  password: merico
-#
-#  # the database for devlake
-#  database: lake
-#
-#  # storage for pgsql
-#  storage:
-#    # the storage class for pv, leave empty will using default
-#    class: ""
-#    size: 5Gi
-#
-#  # image for pgsql
-#  image:
-#    repository: postgres
-#    tag: 14.5
-#    pullPolicy: IfNotPresent
-#
-#  # resources config for pgsql if have
-#  resources: {}
-#
-#  # nodeSelector config for pgsql if have
-#  nodeSelector: {}
-#
-#  # tolerations config for pgsql if have
-#  tolerations: []
-#
-#  # affinity config for pgsql if have
-#  affinity: {}
+# pgsql:
+#   # if use external pgsql server, please set true
+#   #   by default using false, chart will create a single pgsql instance
+#   useExternal: false
+
+#   # the external pgsql server address
+#   externalServer: 127.0.0.1
+
+#   # external pgsql port
+#   externalPort: 5432
+
+#   # the username for devlake database
+#   username: merico
+
+#   # the password for devlake database
+#   password: merico
+
+#   # the database for devlake
+#   database: lake
+
+#   # storage for pgsql
+#   storage:
+#     # the storage class for pv, leave empty will using default
+#     class: ""
+#     size: 5Gi
+
+#   # image for pgsql
+#   image:
+#     repository: postgres
+#     tag: 14.5
+#     pullPolicy: IfNotPresent
+
+#   # resources config for pgsql if have
+#   resources: {}
+
+#   # nodeSelector config for pgsql if have
+#   nodeSelector: {}
+
+#   # tolerations config for pgsql if have
+#   tolerations: []
+
+#   # affinity config for pgsql if have
+#   affinity: {}
 
 grafana:
   # image for grafana
@@ -121,7 +121,7 @@ grafana:
   # to add the ingress with the permanent redirect.
   useExternal: false
 
-  externalUrl: ''
+  externalUrl: ""
 
   resources: {}
 
@@ -130,7 +130,6 @@ grafana:
   tolerations: []
 
   affinity: {}
-
 
 lake:
   image:
@@ -193,7 +192,7 @@ service:
   type: NodePort
   # node port for devlake-ui if NodePort is enabled
   uiPort: 32001
-  grafanaPort : 32002
+  grafanaPort: 32002
 
 ingress:
   enabled: false
@@ -202,7 +201,8 @@ ingress:
   # Set to false if you want to use a different ingress controller
   useDefaultNginx: true
   # Add annotations required for your ingress controller. Uncomment for Nginx.
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # domain name for hosting devlake
@@ -215,7 +215,6 @@ ingress:
   httpPort: 80
   # ingress https port
   httpsPort: 443
-
 
 option:
   # localtime zone info from host path.
