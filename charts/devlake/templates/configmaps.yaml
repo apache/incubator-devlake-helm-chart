@@ -38,51 +38,6 @@ data:
 {{- end }}
 
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "devlake.fullname" . }}-nginx-conf
-data:
-  default.conf.tpl: |
-    server {
-      listen 4000;
-      server_name localhost;
-    ${SERVER_CONF}
-
-      location / {
-        root /usr/share/nginx/html;
-        index index.html;
-        try_files $uri /index.html;
-      }
-
-      location /api/ {
-        resolver ${DNS} valid=${DNS_VALID};
-        resolver_timeout 3s;
-        set $target "${DEVLAKE_ENDPOINT}";
-        rewrite /api/(.*) /$1  break;
-        proxy_send_timeout 10s;
-        proxy_read_timeout 10s;
-        proxy_pass http://$target;
-      }
-{{- if .Values.grafana.useExternal }}
-      location /grafana/ {
-        return 302 ${GRAFANA_ENDPOINT};
-      }
-{{- else }}
-      location /grafana/ {
-        resolver ${DNS} valid=${DNS_VALID};
-        resolver_timeout 3s;
-        set $target "${GRAFANA_ENDPOINT}";
-        rewrite /grafana/(.*) /$1  break;
-        proxy_set_header Authorization "";
-        proxy_send_timeout 10s;
-        proxy_read_timeout 10s;
-        proxy_pass http://$target;
-      }
-{{- end }}
-    }
-
----
 {{- if not .Values.grafana.useExternal }}
 apiVersion: v1
 kind: ConfigMap
