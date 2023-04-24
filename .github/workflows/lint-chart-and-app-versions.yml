@@ -1,0 +1,79 @@
+name: Lint for chart versions
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - charts/**
+      - '!**.md'
+jobs:
+  check_chart_version_matches_app_version:
+    name: chart version matches app version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: install yq
+        run: echo yq should already in github ubuntu-latest
+      - name: chart version align with app version
+        run: |
+          set -e
+          chart_version_text=$(yq .version ${GITHUB_WORKSPACE}/charts/devlake/Chart.yaml)
+          app_version_text=$(yq .appVersion ${GITHUB_WORKSPACE}/charts/devlake/Chart.yaml)
+          if [[ "v$chart_version_text" == "$app_version_text" ]] ; then
+            echo version check for app and chart pass, chart:$chart_version_text and app:$app_version_text
+            echo version check for app and chart pass, chart:$chart_version_text and app:$app_version_text :green_heart: >> $GITHUB_STEP_SUMMARY
+          else
+            echo chart version: $chart_version_text not align with app version: $app_version_text
+            echo chart version: $chart_version_text not align with app version: $app_version_text :broken_heart: >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+  check_chart_version_should_be_increased:
+    name: char version should be increased
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.base_ref }}
+      - name: get base chart version
+        id: get-base-chart-version
+        run:
+          echo "CHART_VERSION=$(yq .version ${GITHUB_WORKSPACE}/charts/devlake/Chart.yaml)" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+      - name: chart version should be promoted
+        run: |
+          set -e
+          base_chart_version_text="${{ steps.get-base-chart-version.outputs.CHART_VERSION }}"
+          chart_version_text=$(yq .version ${GITHUB_WORKSPACE}/charts/devlake/Chart.yaml)
+          pip3 install semver
+          if python3 -c "from semver import VersionInfo as vi ; vi.parse('${chart_version_text}')" ; then
+            echo "version ${chart_version_text} is a valid version string" :green_heart: >> $GITHUB_STEP_SUMMARY
+          else
+            echo "version ${chart_version_text} is not a valid version string" :broken_heart: >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          if python3 -c "from semver import VersionInfo as vi ; assert vi.parse('${chart_version_text}') > vi.parse('${base_chart_version_text}')" ; then
+            echo "version ${chart_version_text} > ${base_chart_version_text}" :green_heart: >> $GITHUB_STEP_SUMMARY
+          else
+            echo "version ${chart_version_text} <= ${base_chart_version_text}" :broken_heart: >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+  check_image_version_matches_app_version:
+    name: image vesion matches app version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: install yq
+        run: echo yq should already in github ubuntu-latest
+      - name: chart version align with image version
+        run: |
+          set -e
+          app_version_text=$(yq .appVersion ${GITHUB_WORKSPACE}/charts/devlake/Chart.yaml)
+          image_version_text=$(yq .imageTag ${GITHUB_WORKSPACE}/charts/devlake/values.yaml)
+          if [[ $app_version_text != $image_version_text ]] ; then
+            echo chart version $app_version_text is not equal to image tag $image_version_text :broken_heart: >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo all images version are equal to app version :green_heart: >> $GITHUB_STEP_SUMMARY
+          fi

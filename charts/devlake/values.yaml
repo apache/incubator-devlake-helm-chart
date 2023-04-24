@@ -17,6 +17,7 @@
 
 # replica count for dev
 replicaCount: 1
+imageTag: v0.16.0-beta17
 
 mysql:
   # if use external mysql server, please set true
@@ -45,7 +46,7 @@ mysql:
   storage:
     # the storage class for pv, leave empty will using default
     class: ""
-    size: 5Gi
+    size: 50Gi
 
   # image for mysql
   image:
@@ -65,56 +66,62 @@ mysql:
   # affinity config for mysql if have
   affinity: {}
 
-pgsql:
-  # if use external pgsql server, please set true
-  #   by default using false, chart will create a single pgsql instance
-  useExternal: false
-
-  # the external pgsql server address
-  externalServer: 127.0.0.1
-
-  # external pgsql port
-  externalPort: 5432
-
-  # the username for devlake database
-  username: merico
-
-  # the password for devlake database
-  password: merico
-
-  # the database for devlake
-  database: lake
-
-  # storage for pgsql
-  storage:
-    # the storage class for pv, leave empty will using default
-    class: ""
-    size: 5Gi
-
-  # image for pgsql
-  image:
-    repository: postgres
-    tag: 14.5
-    pullPolicy: IfNotPresent
-
-  # resources config for pgsql if have
-  resources: {}
-
-  # nodeSelector config for pgsql if have
-  nodeSelector: {}
-
-  # tolerations config for pgsql if have
-  tolerations: []
-
-  # affinity config for pgsql if have
-  affinity: {}
+#pgsql:
+#  # if use external pgsql server, please set true
+#  #   by default using false, chart will create a single pgsql instance
+#  useExternal: false
+#
+#  # the external pgsql server address
+#  externalServer: 127.0.0.1
+#
+#  # external pgsql port
+#  externalPort: 5432
+#
+#  # the username for devlake database
+#  username: merico
+#
+#  # the password for devlake database
+#  password: merico
+#
+#  # the database for devlake
+#  database: lake
+#
+#  # storage for pgsql
+#  storage:
+#    # the storage class for pv, leave empty will using default
+#    class: ""
+#    size: 5Gi
+#
+#  # image for pgsql
+#  image:
+#    repository: postgres
+#    tag: 14.5
+#    pullPolicy: IfNotPresent
+#
+#  # resources config for pgsql if have
+#  resources: {}
+#
+#  # nodeSelector config for pgsql if have
+#  nodeSelector: {}
+#
+#  # tolerations config for pgsql if have
+#  tolerations: []
+#
+#  # affinity config for pgsql if have
+#  affinity: {}
 
 grafana:
   # image for grafana
   image:
     repository: apache/devlake-dashboard
-    tag: v0.15.0-rc2
     pullPolicy: Always
+
+  # If true, the default Nginx configuration will support a permanent redirect
+  # in the tool's menu. Should you use a different ingress controller, you'll need
+  # to add the ingress with the permanent redirect.
+  useExternal: false
+
+  externalUrl: ''
 
   resources: {}
 
@@ -128,7 +135,6 @@ grafana:
 lake:
   image:
     repository: apache/devlake
-    tag: v0.15.0-rc2
     pullPolicy: Always
   # storage for config
   storage:
@@ -160,7 +166,6 @@ lake:
 ui:
   image:
     repository: apache/devlake-config-ui
-    tag: v0.15.0-rc2
     pullPolicy: Always
 
   resources: {}
@@ -194,6 +199,9 @@ ingress:
   enabled: false
   enableHttps: false
   className: ""
+  # Set to false if you want to use a different ingress controller
+  useDefaultNginx: true
+  # Add annotations required for your ingress controller. Uncomment for Nginx.
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -213,5 +221,5 @@ option:
   # localtime zone info from host path.
   localtime: /etc/localtime
 
-  # database type, supported: [mysql, pgsql]
+  # database type, supported: [mysql]
   database: mysql

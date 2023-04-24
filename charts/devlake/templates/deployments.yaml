@@ -16,6 +16,7 @@
 #
 
 ---
+{{- if not .Values.grafana.useExternal }}
 # grafana
 apiVersion: apps/v1
 kind: Deployment
@@ -38,7 +39,7 @@ spec:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
       containers:
         - name: grafana
-          image: "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag }}"
+          image: "{{ .Values.grafana.image.repository }}:{{ .Values.imageTag }}"
           imagePullPolicy: {{ .Values.grafana.image.pullPolicy }}
           ports:
             - containerPort: 3000
@@ -65,8 +66,6 @@ spec:
               value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
             - name: MYSQL_URL
               value: {{ include "mysql.server" . }}:{{ include "mysql.port" . }}
-            - name: POSTGRES_URL
-              value: {{ include "pgsql.server" . }}:{{ include "pgsql.port" . }}
           {{- with .Values.grafana.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -93,7 +92,7 @@ spec:
         - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
           configMap:
             name: {{ include "devlake.fullname" . }}-grafana-datasource
-
+{{ end }}
 ---
 # devlake-ui
 apiVersion: apps/v1
@@ -115,7 +114,7 @@ spec:
     spec:
       containers:
         - name: config-ui
-          image: "{{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag }}"
+          image: "{{ .Values.ui.image.repository }}:{{ .Values.imageTag }}"
           imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
           ports:
             - containerPort: 4000
@@ -126,8 +125,15 @@ spec:
             - name: DEVLAKE_ENDPOINT
               # TODO: remove hardcoded `cluster.local`
               value: {{ include "devlake.fullname" . }}-lake.{{ .Release.Namespace }}.svc.cluster.local:8080
+{{- if .Values.grafana.useExternal }}
+            - name: GRAFANA_ENDPOINT
+              value: {{ .Values.grafana.externalUrl }}
+            - name: USE_EXTERNAL_GRAFANA
+              value: "true"
+{{- else }}
             - name: GRAFANA_ENDPOINT
               value: {{ include "devlake.fullname" . }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:3000
+{{- end }}
           volumeMounts:
             {{- if ne .Values.option.localtime "" }}
             - name: {{ include "devlake.fullname" . }}-ui-localtime

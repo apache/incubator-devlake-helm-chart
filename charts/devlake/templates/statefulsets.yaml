@@ -40,6 +40,11 @@ spec:
         - name: mysql
           image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
           imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+          args:
+            - "mysqld"
+            - "--character-set-server=utf8mb4"
+            - "--collation-server=utf8mb4_bin"
+            - "--skip-log-bin"
           ports:
             - name: mysql
               containerPort: 3306
@@ -105,96 +110,96 @@ spec:
         resources:
           requests:
             storage: "{{ .Values.mysql.storage.size }}"
-{{- end }}
-{{- else if eq .Values.option.database "pgsql" }}
-{{- if not .Values.pgsql.useExternal }}
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: {{ include "devlake.fullname" . }}-pgsql
-  labels:
-    {{- include "devlake.labels" . | nindent 4 }}
-spec:
-  replicas: 1
-  serviceName: {{ include "devlake.fullname" . }}-pgsql
-  selector:
-    matchLabels:
-      {{- include "devlake.selectorLabels" . | nindent 6 }}
-  template:
-    metadata:
-      labels:
-        {{- include "devlake.selectorLabels" . | nindent 8 }}
-        devlakeComponent: pgsql
-    spec:
-      containers:
-        - name: pgsql
-          image: "{{ .Values.pgsql.image.repository }}:{{ .Values.pgsql.image.tag }}"
-          imagePullPolicy: {{ .Values.pgsql.image.pullPolicy }}
-          ports:
-            - name: pgsql
-              containerPort: 5432
-              protocol: TCP
-          livenessProbe:
-            exec:
-              command:
-                - "sh"
-                - "-c"
-                - "pg_isready -U postgres -h 127.0.0.1 -p 5432"
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
-          readinessProbe:
-            exec:
-              command:
-                - "sh"
-                - "-c"
-                - "pg_isready -U postgres -h 127.0.0.1 -p 5432"
-            initialDelaySeconds: 5
-            timeoutSeconds: 10
-          {{- with .Values.pgsql.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          envFrom:
-            - configMapRef:
-                name: {{ include "devlake.fullname" . }}-config
-          volumeMounts:
-            - mountPath: /var/lib/postgresql
-              name: {{ include "devlake.fullname" . }}-pgsql-data
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-pgsql-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
-      {{- with .Values.pgsql.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.pgsql.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.pgsql.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-pgsql-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
-  volumeClaimTemplates:
-    - metadata:
-        name: {{ include "devlake.fullname" . }}-pgsql-data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        {{- with .Values.pgsql.storage.class }}
-        storageClassName: "{{ . }}"
-        {{- end }}
-        resources:
-          requests:
-            storage: "{{ .Values.pgsql.storage.size }}"
+#{{- end }}
+#{{- else if eq .Values.option.database "pgsql" }}
+#{{- if not .Values.pgsql.useExternal }}
+#apiVersion: apps/v1
+#kind: StatefulSet
+#metadata:
+#  name: {{ include "devlake.fullname" . }}-pgsql
+#  labels:
+#    {{- include "devlake.labels" . | nindent 4 }}
+#spec:
+#  replicas: 1
+#  serviceName: {{ include "devlake.fullname" . }}-pgsql
+#  selector:
+#    matchLabels:
+#      {{- include "devlake.selectorLabels" . | nindent 6 }}
+#  template:
+#    metadata:
+#      labels:
+#        {{- include "devlake.selectorLabels" . | nindent 8 }}
+#        devlakeComponent: pgsql
+#    spec:
+#      containers:
+#        - name: pgsql
+#          image: "{{ .Values.pgsql.image.repository }}:{{ .Values.pgsql.image.tag }}"
+#          imagePullPolicy: {{ .Values.pgsql.image.pullPolicy }}
+#          ports:
+#            - name: pgsql
+#              containerPort: 5432
+#              protocol: TCP
+#          livenessProbe:
+#            exec:
+#              command:
+#                - "sh"
+#                - "-c"
+#                - "pg_isready -U postgres -h 127.0.0.1 -p 5432"
+#            initialDelaySeconds: 60
+#            timeoutSeconds: 30
+#          readinessProbe:
+#            exec:
+#              command:
+#                - "sh"
+#                - "-c"
+#                - "pg_isready -U postgres -h 127.0.0.1 -p 5432"
+#            initialDelaySeconds: 5
+#            timeoutSeconds: 10
+#          {{- with .Values.pgsql.resources }}
+#          resources:
+#            {{- toYaml . | nindent 12 }}
+#          {{- end }}
+#          envFrom:
+#            - configMapRef:
+#                name: {{ include "devlake.fullname" . }}-config
+#          volumeMounts:
+#            - mountPath: /var/lib/postgresql
+#              name: {{ include "devlake.fullname" . }}-pgsql-data
+#            {{- if ne .Values.option.localtime "" }}
+#            - name: {{ include "devlake.fullname" . }}-pgsql-localtime
+#              mountPath: /etc/localtime
+#              readOnly: true
+#            {{- end }}
+#      {{- with .Values.pgsql.nodeSelector }}
+#      nodeSelector:
+#        {{- toYaml . | nindent 8 }}
+#      {{- end }}
+#      {{- with .Values.pgsql.affinity }}
+#      affinity:
+#        {{- toYaml . | nindent 8 }}
+#      {{- end }}
+#      {{- with .Values.pgsql.tolerations }}
+#      tolerations:
+#        {{- toYaml . | nindent 8 }}
+#      {{- end }}
+#      volumes:
+#        {{- if ne .Values.option.localtime "" }}
+#        - name: {{ include "devlake.fullname" . }}-pgsql-localtime
+#          hostPath:
+#            path: {{ .Values.option.localtime }}
+#            type: File
+#        {{- end }}
+#  volumeClaimTemplates:
+#    - metadata:
+#        name: {{ include "devlake.fullname" . }}-pgsql-data
+#      spec:
+#        accessModes: ["ReadWriteOnce"]
+#        {{- with .Values.pgsql.storage.class }}
+#        storageClassName: "{{ . }}"
+#        {{- end }}
+#        resources:
+#          requests:
+#            storage: "{{ .Values.pgsql.storage.size }}"
 {{- end }}
 {{- end }}
 
@@ -250,7 +255,7 @@ spec:
               name: {{ include "devlake.fullname" . }}-lake-config
       containers:
         - name: lake
-          image: "{{ .Values.lake.image.repository }}:{{ .Values.lake.image.tag }}"
+          image: "{{ .Values.lake.image.repository }}:{{ .Values.imageTag }}"
           imagePullPolicy: {{ .Values.lake.image.pullPolicy }}
           ports:
             - containerPort: 8080
