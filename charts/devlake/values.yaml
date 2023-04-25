@@ -131,36 +131,28 @@ grafana:
 
   affinity: {}
 
-  # Enable creating the grafana configmap, which contains grafana.ini config
-  createConfigmap: false
+  # Enable oauth, defaults to false
+  oauthEnabled: false
+  # grafana env vars, see examples below
+  oauthConfig:
+    {}
+    # GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+    # GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN: "true"
 
-grafana.ini:
-  # # grafana Authentication can be enabled with the following values on grafana.ini
-  # auth:
-  #   disable_login_form: false
-  # auth.basic:
-  #   enabled: true
-  # auth.generic_oauth:
-  #   allow_assign_grafana_admin: true
-  #   allow_sign_up: true
-  #   api_url: https://devlake-test.auth.us-east-2.amazoncognito.com/oauth2/userInfo
-  #   auth_url: https://devlake-test.auth.us-east-2.amazoncognito.com/oauth2/authorize
-  #   auto_login: true
-  #   client_id: 4h8b5ttj0ng50oueqbc5ndal5g
-  #   enabled: true
-  #   name: OAuth
-  #   role_attribute_path: ("cognito:groups" | contains([*], 'Admin') && 'GrafanaAdmin'
-  #     || 'Viewer')
-  #   scopes: email profile aws.cognito.signin.user.admin openid
-  #   signout_redirect_url: https://devlake-test.auth.us-east-2.amazoncognito.com/logout?client_id=4h8b5ttj0ng50oueqbc5ndal5g&logout_uri=http://localhost:4000/grafana/login
-  #   token_url: https://devlake-test.auth.us-east-2.amazoncognito.com/oauth2/token
-  # server:
-  #   root_url: http://localhost:4000
- 
+awsCognitoAuth:
+  # by default, AWS Cognito auth is disabled.
+  enabled: false
+  # if enabled, please set the following 3 commented variables.
+  # awsAuthRegion: us-east-2
+  # awsAuthUserPoolID: us-east-2_C0GL3MgBU
+  # awsAuthUserPoolWebClientID: 4h8b5ttj0ng50oueqbc5ndal5g
+
 lake:
   image:
     repository: apache/devlake
     pullPolicy: Always
+    # defaults to imageTag; if set, lake.image.tag will override imageTag
+    # tag:
   # storage for config
   storage:
     # the storage class for pv, leave empty will using default
@@ -192,7 +184,8 @@ ui:
   image:
     repository: apache/devlake-config-ui
     pullPolicy: Always
-
+    # defaults to imageTag; if set, lake.image.tag will override imageTag
+    # tag:
   resources: {}
 
   nodeSelector: {}
@@ -205,15 +198,6 @@ ui:
     enabled: false
     user: admin
     password: admin
-  
-  cognitoAuth:
-    # by default, AWS Cognito auth is disabled.
-    # if enabled, please set the following 4 commented variables.
-    enabled: false
-    # region: 
-    # user_pool_id:
-    # user_pool_web_client_id:
-    # cookie_storage_domain:
 
 # alpine image for some init containers
 alpine:
@@ -232,18 +216,18 @@ service:
 ingress:
   enabled: false
   enableHttps: false
-  className: ""
   # Set to false if you want to use a different ingress controller
   useDefaultNginx: true
-  # Add annotations required for your ingress controller. Uncomment for Nginx.
   # ingress class name, example: alb
   className:
+  # Add annotations required for your ingress controller.
+  # for Nginx, use the first two lines; for ALB, use the last 5 lines.
   annotations:
     {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-    # alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig":
-    #   { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    #
+    # alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
     # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:xxx:certificate/xxx
     # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
     # alb.ingress.kubernetes.io/scheme: internet-facing

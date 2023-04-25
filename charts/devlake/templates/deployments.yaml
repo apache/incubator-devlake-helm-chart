@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 ---
 {{- if not .Values.grafana.useExternal }}
 # grafana
@@ -58,14 +57,13 @@ spec:
             - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
               mountPath: /etc/grafana/provisioning/datasources/datasource.yml
               subPath: grafana-datasource.yml
-            {{- if .Values.grafana.createConfigmap }}
-            - name: grafana-ini
-              mountPath: "/etc/grafana/grafana.ini"
-              subPath: grafana.ini
-            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
+            {{- if .Values.grafana.oauthEnabled }}
+            - configMapRef:
+                name: {{ include "devlake.fullname" . }}-grafana-oauth-config
+            {{- end }}
           env:
             - name: GF_SERVER_ROOT_URL
               value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
@@ -97,11 +95,6 @@ spec:
         - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
           configMap:
             name: {{ include "devlake.fullname" . }}-grafana-datasource
-        {{- if .Values.grafana.createConfigmap }}
-        - name: grafana-ini
-          configMap:
-            name: {{ include "devlake.fullname" . }}-grafana-ini
-        {{- end }}
 {{ end }}
 ---
 # devlake-ui
@@ -124,7 +117,11 @@ spec:
     spec:
       containers:
         - name: config-ui
+{{- if .Values.ui.image.tag }}
+          image: "{{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag }}"
+{{- else }}
           image: "{{ .Values.ui.image.repository }}:{{ .Values.imageTag }}"
+{{- end }}
           imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
           ports:
             - containerPort: 4000

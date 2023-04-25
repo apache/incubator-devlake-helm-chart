@@ -32,12 +32,6 @@ data:
   ADMIN_USER: "{{ .Values.ui.basicAuth.user }}"
   ADMIN_PASS: "{{ .Values.ui.basicAuth.password }}"
 {{- end }}
-{{- if .Values.ui.cognitoAuth.enabled }}
-  VITE_AUTH_REGION: "{{ .Values.ui.cognitoAuth.region }}"
-  VITE_AUTH_USER_POOL_ID: "{{ .Values.ui.cognitoAuth.user_pool_id }}"
-  VITE_AUTH_USER_POOL_WEB_CLIENT_ID: "{{ .Values.ui.cognitoAuth.user_pool_web_client_id }}"
-  VITE_AUTH_COOKIE_STORAGE_DOMAIN: "{{ .Values.ui.cognitoAuth.cookie_storage_domain }}"
-{{- end }}
 ---
 {{- if not .Values.grafana.useExternal }}
 apiVersion: v1
@@ -60,36 +54,25 @@ data:
 {{- end }}
 {{- end }}
 ---
-{{- if .Values.grafana.createConfigmap }}
+{{- if .Values.grafana.oauthEnabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "devlake.fullname" . }}-grafana-ini
+  name: {{ include "devlake.fullname" . }}-grafana-oauth-config
 data:
-  grafana.ini: |
-  {{- range $elem, $elemVal := index .Values "grafana.ini" }}
-    {{- if not (kindIs "map" $elemVal) }}
-    {{- if kindIs "invalid" $elemVal }}
-    {{ $elem }} =
-    {{- else if kindIs "string" $elemVal }}
-    {{ $elem }} = {{ tpl $elemVal $ }}
-    {{- else }}
-    {{ $elem }} = {{ $elemVal }}
-    {{- end }}
-    {{- end }}
+  {{- with .Values.grafana.oauthConfig }}
+    {{- toYaml . | nindent 2 }}
   {{- end }}
-  {{- range $key, $value := index .Values "grafana.ini" }}
-    {{- if kindIs "map" $value }}
-    [{{ $key }}]
-    {{- range $elem, $elemVal := $value }}
-    {{- if kindIs "invalid" $elemVal }}
-    {{ $elem }} =
-    {{- else if kindIs "string" $elemVal }}
-    {{ $elem }} = {{ tpl $elemVal $ }}
-    {{- else }}
-    {{ $elem }} = {{ $elemVal }}
-    {{- end }}
-    {{- end }}
-    {{- end }}
-  {{- end }}
+{{- end }}
+---
+{{- if .Values.awsCognitoAuth.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.fullname" . }}-cognito-config
+data:
+  AWS_ENABLE_COGNITO: "true"
+  AWS_AUTH_REGION: "{{ .Values.awsCognitoAuth.awsAuthRegion }}"
+  AWS_AUTH_USER_POOL_ID: "{{ .Values.awsCognitoAuth.awsAuthUserPoolID }}"
+  AWS_AUTH_USER_POOL_WEB_CLIENT_ID: "{{ .Values.awsCognitoAuth.awsAuthUserPoolWebClientID }}"
 {{- end }}
