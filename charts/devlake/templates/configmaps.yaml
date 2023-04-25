@@ -32,6 +32,12 @@ data:
   ADMIN_USER: "{{ .Values.ui.basicAuth.user }}"
   ADMIN_PASS: "{{ .Values.ui.basicAuth.password }}"
 {{- end }}
+{{- if .Values.ui.cognitoAuth.enabled }}
+  VITE_AUTH_REGION: "{{ .Values.ui.cognitoAuth.region }}"
+  VITE_AUTH_USER_POOL_ID: "{{ .Values.ui.cognitoAuth.user_pool_id }}"
+  VITE_AUTH_USER_POOL_WEB_CLIENT_ID: "{{ .Values.ui.cognitoAuth.user_pool_web_client_id }}"
+  VITE_AUTH_COOKIE_STORAGE_DOMAIN: "{{ .Values.ui.cognitoAuth.cookie_storage_domain }}"
+{{- end }}
 ---
 {{- if not .Values.grafana.useExternal }}
 apiVersion: v1
@@ -52,4 +58,38 @@ data:
           password: $MYSQL_PASSWORD
         editable: false
 {{- end }}
+{{- end }}
+---
+{{- if .Values.grafana.createConfigmap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.fullname" . }}-grafana-ini
+data:
+  grafana.ini: |
+  {{- range $elem, $elemVal := index .Values "grafana.ini" }}
+    {{- if not (kindIs "map" $elemVal) }}
+    {{- if kindIs "invalid" $elemVal }}
+    {{ $elem }} =
+    {{- else if kindIs "string" $elemVal }}
+    {{ $elem }} = {{ tpl $elemVal $ }}
+    {{- else }}
+    {{ $elem }} = {{ $elemVal }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- range $key, $value := index .Values "grafana.ini" }}
+    {{- if kindIs "map" $value }}
+    [{{ $key }}]
+    {{- range $elem, $elemVal := $value }}
+    {{- if kindIs "invalid" $elemVal }}
+    {{ $elem }} =
+    {{- else if kindIs "string" $elemVal }}
+    {{ $elem }} = {{ tpl $elemVal $ }}
+    {{- else }}
+    {{ $elem }} = {{ $elemVal }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
 {{- end }}

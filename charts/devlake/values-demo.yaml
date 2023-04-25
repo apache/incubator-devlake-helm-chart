@@ -1,0 +1,47 @@
+grafana:
+  createConfigmap: true
+
+grafana.ini:
+  auth:
+    disable_login_form: false
+  auth.basic:
+    enabled: true
+  auth.generic_oauth:
+    allow_assign_grafana_admin: true
+    allow_sign_up: true
+    api_url: https://devlake-test.auth.us-east-2.amazoncognito.com/oauth2/userInfo
+    auth_url: https://devlake-test.auth.us-east-2.amazoncognito.com/oauth2/authorize
+    auto_login: true
+    client_id: 4h8b5ttj0ng50oueqbc5ndal5g
+    enabled: true
+    name: Amazon
+    role_attribute_path: ("cognito:groups" | contains([*], 'Admin') && 'GrafanaAdmin' || 'Viewer')
+    scopes: email profile aws.cognito.signin.user.admin openid
+    signout_redirect_url: https://devlake-test.auth.us-east-2.amazoncognito.com/logout?client_id=4h8b5ttj0ng50oueqbc5ndal5g&logout_uri=https://demo.devlake.pro/grafana/login
+    token_url: https://devlake-test.auth.us-east-2.amazoncognito.com/oauth2/token
+  server:
+    root_url: https://demo.devlake.pro/grafana
+ 
+ui:
+  cognitoAuth:
+    enabled: true
+    region: us-east-2
+    user_pool_id: us-east-2_C0GL3MgBU
+    user_pool_web_client_id: 4h8b5ttj0ng50oueqbc5ndal5g
+    cookie_storage_domain: ""
+
+service:
+  uiPort: 32003
+  grafanaPort: 32004
+
+ingress:
+  enabled: true
+  useDefaultNginx: false
+  hostname: demo.devlake.pro
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:535892486617:certificate/a226ac83-76fb-4da5-aa4e-4f2427d152f7
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
