@@ -40,6 +40,7 @@ grafana:
     GF_AUTH_GENERIC_OAUTH_SIGNOUT_REDIRECT_URL: https://devlake-test.auth.us-east-2.amazoncognito.com/logout?client_id=$GF_AUTH_GENERIC_OAUTH_CLIENT_ID&logout_uri=https://demo.devlake.pro/grafana/login
     GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: contains("cognito:groups"[*], 'Admin') && 'Admin'
     GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: "true"
+    GF_SERVER_ROOT_URL: "https://demo.devlake.pro/grafana"
 
 ingress:
   enabled: true
