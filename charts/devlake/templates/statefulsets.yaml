@@ -282,8 +282,6 @@ spec:
                 name: {{ .Values.option.connectionSecretName }}
             {{- end }}
           env:
-            # moved to configmap 
-            # - name: DB_URL
             - name: ENV_PATH
               value: /app/config/.env
           volumeMounts:
