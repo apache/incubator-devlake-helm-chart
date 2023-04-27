@@ -72,6 +72,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
+            {{- if .Values.option.useConnectionDetailsSecret }}
+            - secretRef:
+                name: {{ .Values.option.connectionSecretName }}
+            {{- end }}
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: {{ include "devlake.fullname" . }}-mysql-data
@@ -162,6 +166,10 @@ spec:
 #          envFrom:
 #            - configMapRef:
 #                name: {{ include "devlake.fullname" . }}-config
+#            {{- if .Values.option.useConnectionDetailsSecret }}
+#            - secretRef:
+#                name: {{ .Values.pgsql.secretName }}
+#            {{- end }}
 #          volumeMounts:
 #            - mountPath: /var/lib/postgresql
 #              name: {{ include "devlake.fullname" . }}-pgsql-data
@@ -269,9 +277,11 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
+            {{- if .Values.option.useConnectionDetailsSecret }}
+            - secretRef:
+                name: {{ .Values.option.connectionSecretName }}
+            {{- end }}
           env:
-            - name: DB_URL
-              value: "{{ include "database.url" . }}"
             - name: ENV_PATH
               value: /app/config/.env
           volumeMounts:

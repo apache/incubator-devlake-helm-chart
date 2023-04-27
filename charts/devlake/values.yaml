@@ -66,7 +66,7 @@ mysql:
   # affinity config for mysql if have
   affinity: {}
 
-#pgsql:
+# pgsql:
 #  # if use external pgsql server, please set true
 #  #   by default using false, chart will create a single pgsql instance
 #  useExternal: false
@@ -76,7 +76,6 @@ mysql:
 #
 #  # external pgsql port
 #  externalPort: 5432
-#
 #  # the username for devlake database
 #  username: merico
 #
@@ -180,6 +179,10 @@ ui:
     enabled: false
     user: admin
     password: admin
+    useSecret: false
+    autoCreateSecret: true
+    secretName: devlake-auth
+
 
 # alpine image for some init containers
 alpine:
@@ -223,3 +226,14 @@ option:
 
   # database type, supported: [mysql]
   database: mysql
+
+  # if true, will not add the database connection details 
+  # to the configmap and will let them be obtained from a secret.
+  useConnectionDetailsSecret: false
+
+  # the secret name if useConnectionDetailsSecret is true.
+  connectionSecretName: devlake-db-connection
+
+  # if true, will create the secret as part of the chart
+  # when useConnectionDetailSecret is also true.
+  autoCreateSecret: true
