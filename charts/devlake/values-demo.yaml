@@ -1,0 +1,56 @@
+lake:
+  image:
+    tag: v0.17.0-cloud-service-3
+
+ui:
+  image:
+    tag: v0.17.0-cloud-service-3
+
+service:
+  uiPort: 32003
+  grafanaPort: 32004
+
+awsCognitoAuth:
+  enabled: true
+  awsAuthRegion: us-east-2
+  awsAuthUserPoolID: us-east-2_C0GL3MgBU
+  awsAuthUserPoolWebClientID: 4h8b5ttj0ng50oueqbc5ndal5g
+
+grafana:
+  oauthEnabled: true
+  oauthConfig:
+    GF_SERVER_ROOT_URL: "https://demo.devlake.pro/grafana/"
+    GF_AUTH_JWT_ENABLED: "true"
+    GF_AUTH_JWT_HEADER_NAME: X-Forwarded-Access-Token
+    GF_AUTH_JWT_USERNAME_CLAIM: username
+    GF_AUTH_JWT_SKIP_ORG_ROLE_SYNC: "true"
+    GF_AUTH_JWT_ROLE_ATTRIBUTE_PATH: contains("cognito:groups"[*], 'Admin') && 'Admin'
+    GF_AUTH_JWT_CACHE_TTL: "60m"
+    GF_AUTH_EXPECTED_CLAIMS: '{"iss": "https://cognito-idp.us-east-2.amazonaws.com/us-east-2_C0GL3MgBU"}'
+    GF_AUTH_JWT_JWK_SET_URL: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_C0GL3MgBU/.well-known/jwks.json
+    GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+    GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN: "true"
+    GF_AUTH_GENERIC_OAUTH_NAME: Amazon
+    GF_AUTH_GENERIC_OAUTH_SCOPES: "email profile aws.cognito.signin.user.admin openid"
+    GF_AUTH_GENERIC_OAUTH_CLIENT_ID: 4h8b5ttj0ng50oueqbc5ndal5g
+    GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: ""
+    GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://devlake-test.auth.us-east-2.amazoncognito.com/oauth2/authorize
+    GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://devlake-test.auth.us-east-2.amazoncognito.com/oauth2/token
+    GF_AUTH_GENERIC_OAUTH_API_URL: https://devlake-test.auth.us-east-2.amazoncognito.com/oauth2/userInfo
+    GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
+    GF_AUTH_GENERIC_OAUTH_SIGNOUT_REDIRECT_URL: https://devlake-test.auth.us-east-2.amazoncognito.com/logout?client_id=$GF_AUTH_GENERIC_OAUTH_CLIENT_ID&logout_uri=https://demo.devlake.pro/grafana/login
+    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: contains("cognito:groups"[*], 'Admin') && 'Admin'
+    GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: "true"    
+
+ingress:
+  enabled: true
+  useDefaultNginx: false
+  className: alb
+  hostname: demo.devlake.pro
+  annotations:
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:535892486617:certificate/f160fcb8-506f-4550-9af2-2c46c9a7bf5d
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    external-dns.alpha.kubernetes.io/hostname: demo.devlake.pro
