@@ -128,10 +128,16 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | mysql.image.repository            | repository for mysql's image                             | mysql                      |
 | mysql.image.tag                   | image tag for mysql's image                              | 8                          |
 | mysql.image.pullPolicy            | pullPolicy for mysql's image                             | IfNotPresent               |
+| mysql.extraLabels                 | extra labels for mysql's statefulset                     | {}                         |
+| mysql.securityContext             | pod security context values                              | {}                         |
+| mysql.containerSecurityContext    | container security context values                        | {}                         |
 | grafana.image.repository          | repository for grafana's image                           | apache/devlake-dashboard   |
 | grafana.image.pullPolicy          | pullPolicy for grafana's image                           | Always                     |
 | grafana.useExternal               | If use external grafana server                           | false                      |
 | grafana.externalUrl               | external grafana server if use external                  | ""                         |
+| grafana.extraLabels               | extra labels for grafana's statefulset                   | {}                         |
+| grafana.securityContext           | pod security context values                              | {}                         |
+| grafana.containerSecurityContext  | container security context values                        | {}                         |
 | lake.storage.class                | storage class for lake's volume                          | ""                         |
 | lake.storage.size                 | volume size for lake's data                              | 100Mi                      |
 | lake.image.repository             | repository for lake's image                              | apache/devlake             |
@@ -139,6 +145,9 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | lake.loggingDir                   | log dir for the lake server                              | /app/logs                  |
 | lake.loggingLevel                 | log level for the lake server                            | info                       |
 | lake.dotenv                       | initial configurations for injecting to lake's .env      | see Values.yaml            |
+| lake.extraLabels                  | extra labels for lake's statefulset                      | {}                         |
+| lake.securityContext              | pod security context values                              | {}                         |
+| lake.containerSecurityContext     | container security context values                        | {}                         |
 | ui.image.repository               | repository for ui's image                                | apache/devlake-config-ui   |
 | ui.image.pullPolicy               | pullPolicy for ui's image                                | Always                     |
 | ui.basicAuth.enabled              | If the basic auth in ui is enabled                       | false                      |
@@ -147,6 +156,9 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ui.basicAuth.useSecret            | If use secret instead of configmap for basic auth        | false                      |
 | ui.basicAuth.autoCreateSecret     | If let the helm chart create the secret                  | true                       |
 | ui.basicAuth.secretName           | The basic auth secret name                               | devlake-auth               |
+| ui.extraLabels                    | extra labels for ui's statefulset                        | {}                         |
+| ui.securityContext                | pod security context values                              | {}                         |
+| ui.containerSecurityContext       | container security context values                        | {}                         |
 | service.type                      | Service type for exposed service                         | NodePort                   |
 | service.uiPort                    | Node port for config ui                                  | 32001                      |
 | service.ingress.enabled           | If enable ingress                                        | false                      |
