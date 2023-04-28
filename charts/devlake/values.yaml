@@ -65,6 +65,12 @@ mysql:
 
   # affinity config for mysql if have
   affinity: {}
+  
+  extraLabels: {}
+
+  securityContext: {}
+
+  containerSecurityContext: {}
 
 # pgsql:
 #  # if use external pgsql server, please set true
@@ -108,6 +114,12 @@ mysql:
 #
 #  # affinity config for pgsql if have
 #  affinity: {}
+#  
+#  extraLabels: {}
+#
+#  securityContext: {}
+#
+#  containerSecurityContext: {}
 
 grafana:
   # image for grafana
@@ -129,6 +141,13 @@ grafana:
   tolerations: []
 
   affinity: {}
+  
+  extraLabels: {}
+
+  securityContext: {}
+
+  containerSecurityContext: {}
+  
 
 
 lake:
@@ -162,6 +181,12 @@ lake:
   # debug, info, warn, error
   loggingLevel: "info"
 
+  extraLabels: {}
+
+  securityContext: {}
+
+  containerSecurityContext: {}
+
 ui:
   image:
     repository: apache/devlake-config-ui
@@ -182,6 +207,12 @@ ui:
     useSecret: false
     autoCreateSecret: true
     secretName: devlake-auth
+  
+  extraLabels: {}
+
+  securityContext: {}
+
+  containerSecurityContext: {}
 
 
 # alpine image for some init containers
