@@ -210,9 +210,22 @@ ui:
   
   extraLabels: {}
 
+  ## SecurityContext holds pod-level security attributes and common container settings.
+  ## This defaults to non root user with uid 101 and gid 1000. *v1.PodSecurityContext  false
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   securityContext: {}
+    # fsGroup: 101
+    # runAsGroup: 1000
+    # runAsNonRoot: true
+    # runAsUser: 101
 
+  ## K8s containers' Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   containerSecurityContext: {}
+    # allowPrivilegeEscalation: false
+    # capabilities:
+    #   drop: 
+    #       - all
 
 
 # alpine image for some init containers
