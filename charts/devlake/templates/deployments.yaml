@@ -34,9 +34,20 @@ spec:
       labels:
         {{- include "devlake.selectorLabels" . | nindent 8 }}
         devlakeComponent: grafana
+        {{- with .Values.grafana.extraLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- with .Values.grafana.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
+          {{- with .Values.grafana.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       containers:
         - name: grafana
           image: "{{ .Values.grafana.image.repository }}:{{ .Values.imageTag }}"
@@ -72,6 +83,10 @@ spec:
               value: {{ include "mysql.server" . }}:{{ include "mysql.port" . }}
           {{- with .Values.grafana.resources }}
           resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.grafana.containerSecurityContext }}
+          securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       {{- with .Values.grafana.nodeSelector }}
@@ -115,7 +130,14 @@ spec:
       labels:
         {{- include "devlake.selectorLabels" . | nindent 8 }}
         devlakeComponent: ui
+        {{- with .Values.ui.extraLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- with .Values.ui.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: config-ui
           image: "{{ .Values.ui.image.repository }}:{{ .Values.imageTag }}"
@@ -150,6 +172,10 @@ spec:
             {{- end }}
           {{- with .Values.ui.resources }}
           resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.ui.containerSecurityContext }}
+          securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       {{- with .Values.ui.nodeSelector }}
