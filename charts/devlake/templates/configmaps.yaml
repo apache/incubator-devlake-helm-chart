@@ -53,3 +53,26 @@ data:
         editable: false
 {{- end }}
 {{- end }}
+---
+{{- if .Values.grafana.oauthEnabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.fullname" . }}-grafana-oauth-config
+data:
+  {{- with .Values.grafana.oauthConfig }}
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}
+---
+{{- if .Values.awsCognitoAuth.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.fullname" . }}-cognito-config
+data:
+  AWS_ENABLE_COGNITO: "true"
+  AWS_AUTH_REGION: "{{ .Values.awsCognitoAuth.awsAuthRegion }}"
+  AWS_AUTH_USER_POOL_ID: "{{ .Values.awsCognitoAuth.awsAuthUserPoolID }}"
+  AWS_AUTH_USER_POOL_WEB_CLIENT_ID: "{{ .Values.awsCognitoAuth.awsAuthUserPoolWebClientID }}"
+{{- end }}

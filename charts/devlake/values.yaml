@@ -131,10 +131,28 @@ grafana:
 
   affinity: {}
 
+  # Enable oauth, defaults to false
+  oauthEnabled: false
+  # grafana env vars, see examples below
+  oauthConfig:
+    {}
+    # GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+    # GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN: "true"
+
+awsCognitoAuth:
+  # by default, AWS Cognito auth is disabled.
+  enabled: false
+  # if enabled, please set the following 3 commented variables.
+  # awsAuthRegion: us-east-2
+  # awsAuthUserPoolID: us-east-2_C0GL3MgBU
+  # awsAuthUserPoolWebClientID: 4h8b5ttj0ng50oueqbc5ndal5g
+
 lake:
   image:
     repository: apache/devlake
     pullPolicy: Always
+    # defaults to imageTag; if set, lake.image.tag will override imageTag
+    # tag:
   # storage for config
   storage:
     # the storage class for pv, leave empty will using default
@@ -166,7 +184,8 @@ ui:
   image:
     repository: apache/devlake-config-ui
     pullPolicy: Always
-
+    # defaults to imageTag; if set, lake.image.tag will override imageTag
+    # tag:
   resources: {}
 
   nodeSelector: {}
@@ -197,14 +216,22 @@ service:
 ingress:
   enabled: false
   enableHttps: false
-  className: ""
   # Set to false if you want to use a different ingress controller
   useDefaultNginx: true
-  # Add annotations required for your ingress controller. Uncomment for Nginx.
+  # ingress class name, example: alb
+  className:
+  # Add annotations required for your ingress controller.
+  # for Nginx, use the first two lines; for ALB, use the last 5 lines.
   annotations:
     {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+    #
+    # alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:xxx:certificate/xxx
+    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    # alb.ingress.kubernetes.io/scheme: internet-facing
+    # alb.ingress.kubernetes.io/target-type: ip
   # domain name for hosting devlake
   hostname: localhost
   # url prefix, not works right now, keep "/"
