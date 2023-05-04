@@ -35,7 +35,14 @@ spec:
       labels:
         {{- include "devlake.selectorLabels" . | nindent 8 }}
         devlakeComponent: mysql
+        {{- with .Values.mysql.extraLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- with .Values.mysql.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: mysql
           image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
@@ -84,6 +91,10 @@ spec:
               mountPath: /etc/localtime
               readOnly: true
             {{- end }}
+          {{- with .Values.mysql.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       {{- with .Values.mysql.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -134,7 +145,14 @@ spec:
 #      labels:
 #        {{- include "devlake.selectorLabels" . | nindent 8 }}
 #        devlakeComponent: pgsql
+#          {{- with .Values.pgsql.extraLabels }}
+#          {{- toYaml . | nindent 8 }}
+#          {{- end }}
 #    spec:
+#      {{- with .Values.pgsql.securityContext }}
+#      securityContext:
+#        {{- toYaml . | nindent 8 }}
+#      {{- end }}
 #      containers:
 #        - name: pgsql
 #          image: "{{ .Values.pgsql.image.repository }}:{{ .Values.pgsql.image.tag }}"
@@ -178,6 +196,10 @@ spec:
 #              mountPath: /etc/localtime
 #              readOnly: true
 #            {{- end }}
+#          {{- with .Values.pgsql.containerSecurityContext }}
+#          securityContext:
+#            {{- toYaml . | nindent 12 }}
+#          {{- end }}
 #      {{- with .Values.pgsql.nodeSelector }}
 #      nodeSelector:
 #        {{- toYaml . | nindent 8 }}
@@ -230,12 +252,23 @@ spec:
       labels:
         {{- include "devlake.selectorLabels" . | nindent 8 }}
         devlakeComponent: lake
+        {{- with .Values.lake.extraLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       annotations:
         # Force reload on config changes
         checksum/devlake-config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
+      {{- with .Values.lake.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
+          {{- with .Values.lake.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         - name: patch-env
           image: "{{ .Values.alpine.image.repository }}:{{ .Values.alpine.image.tag }}"
           imagePullPolicy: {{ .Values.alpine.image.pullPolicy }}
@@ -261,6 +294,10 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: {{ include "devlake.fullname" . }}-lake-config
+          {{- with .Values.lake.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       containers:
         - name: lake
           image: "{{ .Values.lake.image.repository }}:{{ .Values.imageTag }}"
@@ -294,6 +331,10 @@ spec:
             {{- end }}
           {{- with .Values.lake.resources }}
           resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.lake.containerSecurityContext }}
+          securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       {{- if .Values.lake.hostNetwork }}
