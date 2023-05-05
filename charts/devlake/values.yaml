@@ -17,7 +17,7 @@
 
 # replica count for dev
 replicaCount: 1
-imageTag: v0.16.0-beta17
+imageTag: v0.17.0-beta2
 
 mysql:
   # if use external mysql server, please set true
@@ -65,50 +65,61 @@ mysql:
 
   # affinity config for mysql if have
   affinity: {}
+  
+  extraLabels: {}
+
+  securityContext: {}
+
+  containerSecurityContext: {}
 
 # pgsql:
-#   # if use external pgsql server, please set true
-#   #   by default using false, chart will create a single pgsql instance
-#   useExternal: false
-
-#   # the external pgsql server address
-#   externalServer: 127.0.0.1
-
-#   # external pgsql port
-#   externalPort: 5432
-
-#   # the username for devlake database
-#   username: merico
-
-#   # the password for devlake database
-#   password: merico
-
-#   # the database for devlake
-#   database: lake
-
-#   # storage for pgsql
-#   storage:
-#     # the storage class for pv, leave empty will using default
-#     class: ""
-#     size: 5Gi
-
-#   # image for pgsql
-#   image:
-#     repository: postgres
-#     tag: 14.5
-#     pullPolicy: IfNotPresent
-
-#   # resources config for pgsql if have
-#   resources: {}
-
-#   # nodeSelector config for pgsql if have
-#   nodeSelector: {}
-
-#   # tolerations config for pgsql if have
-#   tolerations: []
-
-#   # affinity config for pgsql if have
-#   affinity: {}
+#  # if use external pgsql server, please set true
+#  #   by default using false, chart will create a single pgsql instance
+#  useExternal: false
+#
+#  # the external pgsql server address
+#  externalServer: 127.0.0.1
+#
+#  # external pgsql port
+#  externalPort: 5432
+#  # the username for devlake database
+#  username: merico
+#
+#  # the password for devlake database
+#  password: merico
+#
+#  # the database for devlake
+#  database: lake
+#
+#  # storage for pgsql
+#  storage:
+#    # the storage class for pv, leave empty will using default
+#    class: ""
+#    size: 5Gi
+#
+#  # image for pgsql
+#  image:
+#    repository: postgres
+#    tag: 14.5
+#    pullPolicy: IfNotPresent
+#
+#  # resources config for pgsql if have
+#  resources: {}
+#
+#  # nodeSelector config for pgsql if have
+#  nodeSelector: {}
+#
+#  # tolerations config for pgsql if have
+#  tolerations: []
+#
+#  # affinity config for pgsql if have
+#  affinity: {}
+#  
+#  extraLabels: {}
+#
+#  securityContext: {}
+#
+#  containerSecurityContext: {}
 
 grafana:
   # image for grafana
@@ -130,6 +141,13 @@ grafana:
   tolerations: []
 
   affinity: {}
+  
+  extraLabels: {}
+
+  securityContext: {}
+
+  containerSecurityContext: {}
+  
 
   # Enable oauth, defaults to false
   oauthEnabled: false
@@ -180,6 +198,12 @@ lake:
   # debug, info, warn, error
   loggingLevel: "info"
 
+  extraLabels: {}
+
+  securityContext: {}
+
+  containerSecurityContext: {}
+
 ui:
   image:
     repository: apache/devlake-config-ui
@@ -198,6 +222,29 @@ ui:
     enabled: false
     user: admin
     password: admin
+    useSecret: false
+    autoCreateSecret: true
+    secretName: devlake-auth
+  
+  extraLabels: {}
+
+  ## SecurityContext holds pod-level security attributes and common container settings.
+  ## This defaults to non root user with uid 101 and gid 1000. *v1.PodSecurityContext  false
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  securityContext: {}
+    # fsGroup: 101
+    # runAsGroup: 1000
+    # runAsNonRoot: true
+    # runAsUser: 101
+
+  ## K8s containers' Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  containerSecurityContext: {}
+    # allowPrivilegeEscalation: false
+    # capabilities:
+    #   drop: 
+    #       - all
+
 
 # alpine image for some init containers
 alpine:
@@ -249,3 +296,14 @@ option:
 
   # database type, supported: [mysql]
   database: mysql
+
+  # if true, will not add the database connection details 
+  # to the configmap and will let them be obtained from a secret.
+  useConnectionDetailsSecret: false
+
+  # the secret name if useConnectionDetailsSecret is true.
+  connectionSecretName: devlake-db-connection
+
+  # if true, will create the secret as part of the chart
+  # when useConnectionDetailSecret is also true.
+  autoCreateSecret: true

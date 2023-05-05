@@ -35,7 +35,14 @@ spec:
       labels:
         {{- include "devlake.selectorLabels" . | nindent 8 }}
         devlakeComponent: mysql
+        {{- with .Values.mysql.extraLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- with .Values.mysql.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: mysql
           image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
@@ -72,6 +79,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
+            {{- if .Values.option.useConnectionDetailsSecret }}
+            - secretRef:
+                name: {{ .Values.option.connectionSecretName }}
+            {{- end }}
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: {{ include "devlake.fullname" . }}-mysql-data
@@ -80,6 +91,10 @@ spec:
               mountPath: /etc/localtime
               readOnly: true
             {{- end }}
+          {{- with .Values.mysql.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       {{- with .Values.mysql.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -131,12 +146,23 @@ spec:
       labels:
         {{- include "devlake.selectorLabels" . | nindent 8 }}
         devlakeComponent: lake
+        {{- with .Values.lake.extraLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       annotations:
         # Force reload on config changes
         checksum/devlake-config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
+      {{- with .Values.lake.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
+          {{- with .Values.lake.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         - name: patch-env
           image: "{{ .Values.alpine.image.repository }}:{{ .Values.alpine.image.tag }}"
           imagePullPolicy: {{ .Values.alpine.image.pullPolicy }}
@@ -162,6 +188,10 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: {{ include "devlake.fullname" . }}-lake-config
+          {{- with .Values.lake.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       containers:
         - name: lake
 {{- if .Values.lake.image.tag }}
@@ -182,11 +212,15 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-config
+            {{- if .Values.option.useConnectionDetailsSecret }}
+            - secretRef:
+                name: {{ .Values.option.connectionSecretName }}
+            {{- end }}
+            {{- if .Values.awsCognitoAuth.enabled }}
             - configMapRef:
                 name: {{ include "devlake.fullname" . }}-cognito-config
+            {{- end }}
           env:
-            - name: DB_URL
-              value: "{{ include "database.url" . }}"
             - name: ENV_PATH
               value: /app/config/.env
           volumeMounts:
@@ -199,6 +233,10 @@ spec:
             {{- end }}
           {{- with .Values.lake.resources }}
           resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.lake.containerSecurityContext }}
+          securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       {{- if .Values.lake.hostNetwork }}
