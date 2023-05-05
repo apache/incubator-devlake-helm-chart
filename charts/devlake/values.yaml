@@ -150,19 +150,39 @@ grafana:
 
   # Enable oauth, defaults to false
   oauthEnabled: false
-  # grafana env vars, see examples below
+  # grafana oauth related env vars, see the example below for aws cognito oauth
   oauthConfig:
     {}
+    # GF_SERVER_ROOT_URL: "https://demo.devlake.pro/grafana/"
+    # GF_AUTH_JWT_ENABLED: "true"
+    # GF_AUTH_JWT_HEADER_NAME: X-Forwarded-Access-Token
+    # GF_AUTH_JWT_USERNAME_CLAIM: username
+    # GF_AUTH_JWT_SKIP_ORG_ROLE_SYNC: "true"
+    # GF_AUTH_JWT_ROLE_ATTRIBUTE_PATH: contains("cognito:groups"[*], 'Admin') && 'Admin'
+    # GF_AUTH_JWT_CACHE_TTL: "60m"
+    # GF_AUTH_EXPECTED_CLAIMS: '{"iss": "https://cognito-idp.us-east-2.amazonaws.com/us-east-2_xxx"}'
+    # GF_AUTH_JWT_JWK_SET_URL: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_xxx/.well-known/jwks.json
     # GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
     # GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN: "true"
+    # GF_AUTH_GENERIC_OAUTH_NAME: Amazon
+    # GF_AUTH_GENERIC_OAUTH_SCOPES: "email profile aws.cognito.signin.user.admin openid"
+    # GF_AUTH_GENERIC_OAUTH_CLIENT_ID: xxx
+    # GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: ""
+    # GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://xxx.auth.us-east-2.amazoncognito.com/oauth2/authorize
+    # GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://xxx.auth.us-east-2.amazoncognito.com/oauth2/token
+    # GF_AUTH_GENERIC_OAUTH_API_URL: https://xxx.auth.us-east-2.amazoncognito.com/oauth2/userInfo
+    # GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
+    # GF_AUTH_GENERIC_OAUTH_SIGNOUT_REDIRECT_URL: https://xxx.auth.us-east-2.amazoncognito.com/logout?client_id=$GF_AUTH_GENERIC_OAUTH_CLIENT_ID&logout_uri=https://demo.devlake.pro/grafana/login
+    # GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: contains("cognito:groups"[*], 'Admin') && 'Admin'
+    # GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: "true"
 
 awsCognitoAuth:
-  # by default, AWS Cognito auth is disabled.
+  # by default, AWS Cognito auth is disabled
+  # if enabled, please set the following 3 awsXXX variables
   enabled: false
-  # if enabled, please set the following 3 commented variables.
-  # awsAuthRegion: us-east-2
-  # awsAuthUserPoolID: us-east-2_C0GL3MgBU
-  # awsAuthUserPoolWebClientID: 4h8b5ttj0ng50oueqbc5ndal5g
+  awsAuthRegion: ""
+  awsAuthUserPoolID: ""
+  awsAuthUserPoolWebClientID: ""
 
 lake:
   image:
@@ -265,22 +285,25 @@ ingress:
   enableHttps: false
   # Set to false if you want to use a different ingress controller
   useDefaultNginx: true
-  # ingress class name, example: alb
+  # ingress class name, example: alb for AWS load balancer controller
   className:
-  # Add annotations required for your ingress controller.
-  # for Nginx, use the first two lines; for ALB, use the last 5 lines.
+  # domain name for hosting devlake, must be set if ingress is enabled
+  hostname: localhost
+  # annotations required for your ingress controller; see the examples below
+  # for nginx, use the first two lines of annotations
+  # for alb (w/ external-dns), use the last 5 (6) lines of annotations
   annotations:
     {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     #
     # alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
-    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:xxx:certificate/xxx
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:xxx:certificate/xxx-xxx-xxx
     # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
     # alb.ingress.kubernetes.io/scheme: internet-facing
     # alb.ingress.kubernetes.io/target-type: ip
-  # domain name for hosting devlake
-  hostname: localhost
+    # external-dns.alpha.kubernetes.io/hostname: www.example.com
+
   # url prefix, not works right now, keep "/"
   prefix: /
   # if using https provides the certificates secret name
