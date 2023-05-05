@@ -80,6 +80,10 @@ spec:
                 name: {{ .Values.option.connectionSecretName }}
             {{- end }}
           env:
+          {{ if not .Values.grafana.oauthEnabled }}
+            - name: GF_SERVER_ROOT_URL
+              value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+          {{ end }}
             - name: MYSQL_URL
               value: {{ include "mysql.server" . }}:{{ include "mysql.port" . }}
           {{- with .Values.grafana.resources }}
