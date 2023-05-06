@@ -65,7 +65,7 @@ mysql:
 
   # affinity config for mysql if have
   affinity: {}
-  
+
   extraLabels: {}
 
   securityContext: {}
@@ -73,53 +73,53 @@ mysql:
   containerSecurityContext: {}
 
 # pgsql:
-#  # if use external pgsql server, please set true
-#  #   by default using false, chart will create a single pgsql instance
-#  useExternal: false
-#
-#  # the external pgsql server address
-#  externalServer: 127.0.0.1
-#
-#  # external pgsql port
-#  externalPort: 5432
-#  # the username for devlake database
-#  username: merico
-#
-#  # the password for devlake database
-#  password: merico
-#
-#  # the database for devlake
-#  database: lake
-#
-#  # storage for pgsql
-#  storage:
-#    # the storage class for pv, leave empty will using default
-#    class: ""
-#    size: 5Gi
-#
-#  # image for pgsql
-#  image:
-#    repository: postgres
-#    tag: 14.5
-#    pullPolicy: IfNotPresent
-#
-#  # resources config for pgsql if have
-#  resources: {}
-#
-#  # nodeSelector config for pgsql if have
-#  nodeSelector: {}
-#
-#  # tolerations config for pgsql if have
-#  tolerations: []
-#
-#  # affinity config for pgsql if have
-#  affinity: {}
-#  
-#  extraLabels: {}
-#
-#  securityContext: {}
-#
-#  containerSecurityContext: {}
+#   # if use external pgsql server, please set true
+#   #   by default using false, chart will create a single pgsql instance
+#   useExternal: false
+
+#   # the external pgsql server address
+#   externalServer: 127.0.0.1
+
+#   # external pgsql port
+#   externalPort: 5432
+#   # the username for devlake database
+#   username: merico
+
+#   # the password for devlake database
+#   password: merico
+
+#   # the database for devlake
+#   database: lake
+
+#   # storage for pgsql
+#   storage:
+#     # the storage class for pv, leave empty will using default
+#     class: ""
+#     size: 5Gi
+
+#   # image for pgsql
+#   image:
+#     repository: postgres
+#     tag: 14.5
+#     pullPolicy: IfNotPresent
+
+#   # resources config for pgsql if have
+#   resources: {}
+
+#   # nodeSelector config for pgsql if have
+#   nodeSelector: {}
+
+#   # tolerations config for pgsql if have
+#   tolerations: []
+
+#   # affinity config for pgsql if have
+#   affinity: {}
+
+#   extraLabels: {}
+
+#   securityContext: {}
+
+#   containerSecurityContext: {}
 
 grafana:
   # image for grafana
@@ -132,7 +132,7 @@ grafana:
   # to add the ingress with the permanent redirect.
   useExternal: false
 
-  externalUrl: ''
+  externalUrl: ""
 
   resources: {}
 
@@ -141,19 +141,55 @@ grafana:
   tolerations: []
 
   affinity: {}
-  
+
   extraLabels: {}
 
   securityContext: {}
 
   containerSecurityContext: {}
-  
 
+  # Enable oauth, defaults to false
+  oauthEnabled: false
+  # grafana oauth related env vars, see the example below for aws cognito oauth
+  oauthConfig:
+    {}
+    # GF_SERVER_ROOT_URL: "https://demo.devlake.pro/grafana/"
+    # GF_AUTH_JWT_ENABLED: "true"
+    # GF_AUTH_JWT_HEADER_NAME: X-Forwarded-Access-Token
+    # GF_AUTH_JWT_USERNAME_CLAIM: username
+    # GF_AUTH_JWT_SKIP_ORG_ROLE_SYNC: "true"
+    # GF_AUTH_JWT_ROLE_ATTRIBUTE_PATH: contains("cognito:groups"[*], 'Admin') && 'Admin'
+    # GF_AUTH_JWT_CACHE_TTL: "60m"
+    # GF_AUTH_EXPECTED_CLAIMS: '{"iss": "https://cognito-idp.us-east-2.amazonaws.com/us-east-2_xxx"}'
+    # GF_AUTH_JWT_JWK_SET_URL: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_xxx/.well-known/jwks.json
+    # GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+    # GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN: "true"
+    # GF_AUTH_GENERIC_OAUTH_NAME: Amazon
+    # GF_AUTH_GENERIC_OAUTH_SCOPES: "email profile aws.cognito.signin.user.admin openid"
+    # GF_AUTH_GENERIC_OAUTH_CLIENT_ID: xxx
+    # GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: ""
+    # GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://xxx.auth.us-east-2.amazoncognito.com/oauth2/authorize
+    # GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://xxx.auth.us-east-2.amazoncognito.com/oauth2/token
+    # GF_AUTH_GENERIC_OAUTH_API_URL: https://xxx.auth.us-east-2.amazoncognito.com/oauth2/userInfo
+    # GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
+    # GF_AUTH_GENERIC_OAUTH_SIGNOUT_REDIRECT_URL: https://xxx.auth.us-east-2.amazoncognito.com/logout?client_id=$GF_AUTH_GENERIC_OAUTH_CLIENT_ID&logout_uri=https://demo.devlake.pro/grafana/login
+    # GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: contains("cognito:groups"[*], 'Admin') && 'Admin'
+    # GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: "true"
+
+awsCognitoAuth:
+  # by default, AWS Cognito auth is disabled
+  # if enabled, please set the following 3 awsXXX variables
+  enabled: false
+  awsAuthRegion: ""
+  awsAuthUserPoolID: ""
+  awsAuthUserPoolWebClientID: ""
 
 lake:
   image:
     repository: apache/devlake
     pullPolicy: Always
+    # defaults to imageTag; if set, lake.image.tag will override imageTag
+    # tag:
   # storage for config
   storage:
     # the storage class for pv, leave empty will using default
@@ -191,7 +227,8 @@ ui:
   image:
     repository: apache/devlake-config-ui
     pullPolicy: Always
-
+    # defaults to imageTag; if set, lake.image.tag will override imageTag
+    # tag:
   resources: {}
 
   nodeSelector: {}
@@ -207,13 +244,14 @@ ui:
     useSecret: false
     autoCreateSecret: true
     secretName: devlake-auth
-  
+
   extraLabels: {}
 
   ## SecurityContext holds pod-level security attributes and common container settings.
   ## This defaults to non root user with uid 101 and gid 1000. *v1.PodSecurityContext  false
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-  securityContext: {}
+  securityContext:
+    {}
     # fsGroup: 101
     # runAsGroup: 1000
     # runAsNonRoot: true
@@ -221,12 +259,12 @@ ui:
 
   ## K8s containers' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
-  containerSecurityContext: {}
+  containerSecurityContext:
+    {}
     # allowPrivilegeEscalation: false
     # capabilities:
-    #   drop: 
+    #   drop:
     #       - all
-
 
 # alpine image for some init containers
 alpine:
@@ -240,20 +278,32 @@ service:
   type: NodePort
   # node port for devlake-ui if NodePort is enabled
   uiPort: 32001
-  grafanaPort : 32002
+  grafanaPort: 32002
 
 ingress:
   enabled: false
   enableHttps: false
-  className: ""
   # Set to false if you want to use a different ingress controller
   useDefaultNginx: true
-  # Add annotations required for your ingress controller. Uncomment for Nginx.
-  annotations: {}
+  # ingress class name, example: alb for AWS load balancer controller
+  className:
+  # domain name for hosting devlake, must be set if ingress is enabled
+  hostname: localhost
+  # annotations required for your ingress controller; see the examples below
+  # for nginx, use the first two lines of annotations
+  # for alb (w/ external-dns), use the last 5 (6) lines of annotations
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  # domain name for hosting devlake
-  hostname: localhost
+    #
+    # alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:xxx:certificate/xxx-xxx-xxx
+    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+    # alb.ingress.kubernetes.io/scheme: internet-facing
+    # alb.ingress.kubernetes.io/target-type: ip
+    # external-dns.alpha.kubernetes.io/hostname: www.example.com
+
   # url prefix, not works right now, keep "/"
   prefix: /
   # if using https provides the certificates secret name
@@ -263,7 +313,6 @@ ingress:
   # ingress https port
   httpsPort: 443
 
-
 option:
   # localtime zone info from host path.
   localtime: /etc/localtime
@@ -271,7 +320,7 @@ option:
   # database type, supported: [mysql]
   database: mysql
 
-  # if true, will not add the database connection details 
+  # if true, will not add the database connection details
   # to the configmap and will let them be obtained from a secret.
   useConnectionDetailsSecret: false
 

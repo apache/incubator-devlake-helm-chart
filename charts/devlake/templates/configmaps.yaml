@@ -26,11 +26,6 @@ data:
   MYSQL_DATABASE: "{{ .Values.mysql.database }}"
   MYSQL_ROOT_PASSWORD: "{{ .Values.mysql.rootPassword }}"
   DB_URL: "{{ include "database.url" . }}"
-#{{- else if and (eq .Values.option.database "pgsql") (not .Values.option.useConnectionDetailsSecret) }}
-#  POSTGRES_USER: "{{ .Values.pgsql.username }}"
-#  POSTGRES_PASSWORD: "{{ .Values.pgsql.password }}"
-#  POSTGRES_DB: "{{ .Values.pgsql.database }}"
-#  DB_URL: "{{ include "database.url" . }}"
 {{- end }}
   LOGGING_DIR: "{{ .Values.lake.loggingDir }}"
   LOGGING_LEVEL: "{{ .Values.lake.loggingLevel }}"
@@ -38,7 +33,6 @@ data:
   ADMIN_USER: "{{ .Values.ui.basicAuth.user }}"
   ADMIN_PASS: "{{ .Values.ui.basicAuth.password }}"
 {{- end }}
-
 ---
 {{- if not .Values.grafana.useExternal }}
 apiVersion: v1
@@ -58,20 +52,28 @@ data:
         secureJsonData:
           password: $MYSQL_PASSWORD
         editable: false
-#{{- else if eq .Values.option.database "pgsql" }}
-#  grafana-datasource.yml: |
-#    apiVersion: 1
-#    datasources:
-#      - name: postgres
-#        type: postgres
-#        url: $POSTGRES_URL
-#        database: $POSTGRES_DB
-#        user: $POSTGRES_USER
-#        secureJsonData:
-#          password: $POSTGRES_PASSWORD
-#        jsonData:
-#          sslmode: 'disable'
-#          postgresVersion: 1000 # support pgsql 10.0 and above
-#          timescaledb: false
 {{- end }}
+{{- end }}
+---
+{{- if .Values.grafana.oauthEnabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.fullname" . }}-grafana-oauth-config
+data:
+  {{- with .Values.grafana.oauthConfig }}
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}
+---
+{{- if .Values.awsCognitoAuth.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.fullname" . }}-cognito-config
+data:
+  AWS_ENABLE_COGNITO: "true"
+  AWS_AUTH_REGION: "{{ .Values.awsCognitoAuth.awsAuthRegion }}"
+  AWS_AUTH_USER_POOL_ID: "{{ .Values.awsCognitoAuth.awsAuthUserPoolID }}"
+  AWS_AUTH_USER_POOL_WEB_CLIENT_ID: "{{ .Values.awsCognitoAuth.awsAuthUserPoolWebClientID }}"
 {{- end }}
