@@ -28,7 +28,7 @@ To install the chart with release name `devlake`:
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
-helm install devlake devlake/devlake --version=0.17.0-beta3.1
+helm install devlake devlake/devlake --version=0.17.0-beta4
 ```
 
 If you are using minikube inside your mac, please use the following command to forward the port:
@@ -51,7 +51,7 @@ grafana by url `http://YOUR-NODE-IP:30091`
 
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=0.17.0-beta3.1
+helm upgrade --install devlake devlake/devlake --version=0.17.0-beta4
 ```
 
 ## Uninstall
