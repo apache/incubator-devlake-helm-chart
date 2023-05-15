@@ -216,7 +216,6 @@ metadata:
     {{- include "devlake.labels" . | nindent 4 }}
 spec:
   replicas: 1
-  serviceName: {{ include "devlake.fullname" . }}-lake
   selector:
     matchLabels:
       {{- include "devlake.selectorLabels" . | nindent 6 }}
