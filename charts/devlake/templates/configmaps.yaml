@@ -77,3 +77,13 @@ data:
   AWS_AUTH_USER_POOL_ID: "{{ .Values.awsCognitoAuth.awsAuthUserPoolID }}"
   AWS_AUTH_USER_POOL_WEB_CLIENT_ID: "{{ .Values.awsCognitoAuth.awsAuthUserPoolWebClientID }}"
 {{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.fullname" . }}-lake-dotenv
+data:
+  .env: |
+    {{- range $k, $v := .Values.lake.dotenv }}
+      {{ $k }}={{ $v }}
+    {{- end }}
