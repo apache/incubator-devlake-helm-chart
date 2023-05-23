@@ -1,19 +1,19 @@
 #
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+  # Licensed to the Apache Software Foundation (ASF) under one or more
+  # contributor license agreements.  See the NOTICE file distributed with
+  # this work for additional information regarding copyright ownership.
+  # The ASF licenses this file to You under the Apache License, Version 2.0
+  # (the "License"); you may not use this file except in compliance with
+  # the License.  You may obtain a copy of the License at
+  #
+  #     http://www.apache.org/licenses/LICENSE-2.0
+  #
+  # Unless required by applicable law or agreed to in writing, software
+  # distributed under the License is distributed on an "AS IS" BASIS,
+  # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  # See the License for the specific language governing permissions and
+  # limitations under the License.
+  #
 ---
 {{- if not .Values.grafana.useExternal }}
 # grafana
@@ -44,7 +44,7 @@ spec:
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
           {{- with .Values.grafana.containerSecurityContext }}
-          securityContext:
+        securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       containers:
@@ -60,11 +60,11 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 30
           volumeMounts:
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-grafana-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
+            # {{- if ne .Values.option.localtime "" }}
+            # - name: {{ include "devlake.fullname" . }}-grafana-localtime
+            #   mountPath: /etc/localtime
+            #   readOnly: true
+            # {{- end }}
             - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
               mountPath: /etc/grafana/provisioning/datasources/datasource.yml
               subPath: grafana-datasource.yml
@@ -107,12 +107,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-grafana-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
+        # {{- if ne .Values.option.localtime "" }}
+        # - name: {{ include "devlake.fullname" . }}-grafana-localtime
+        #   hostPath:
+        #     path: {{ .Values.option.localtime }}
+        # {{- end }}
         - name: {{ include "devlake.fullname" . }}-grafana-datasource-config
           configMap:
             name: {{ include "devlake.fullname" . }}-grafana-datasource
@@ -174,11 +173,11 @@ spec:
               value: {{ include "devlake.fullname" . }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:3000
 {{- end }}
           volumeMounts:
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-ui-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
+          # {{- if ne .Values.option.localtime "" }}
+          # - name: {{ include "devlake.fullname" . }}-ui-localtime
+          #   mountPath: /etc/localtime
+          #   readOnly: true
+          # {{- end }}
           {{- with .Values.ui.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -200,9 +199,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-ui-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
+      # {{- if ne .Values.option.localtime "" }}
+      # - name: {{ include "devlake.fullname" . }}-ui-localtime
+      #   hostPath:
+      #     path: {{ .Values.option.localtime }}
+      # {{- end }}

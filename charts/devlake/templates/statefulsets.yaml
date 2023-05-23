@@ -1,19 +1,19 @@
 #
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+  # Licensed to the Apache Software Foundation (ASF) under one or more
+  # contributor license agreements.  See the NOTICE file distributed with
+  # this work for additional information regarding copyright ownership.
+  # The ASF licenses this file to You under the Apache License, Version 2.0
+  # (the "License"); you may not use this file except in compliance with
+  # the License.  You may obtain a copy of the License at
+  #
+  #     http://www.apache.org/licenses/LICENSE-2.0
+  #
+  # Unless required by applicable law or agreed to in writing, software
+  # distributed under the License is distributed on an "AS IS" BASIS,
+  # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  # See the License for the specific language governing permissions and
+  # limitations under the License.
+  #
 ---
 # database statefulset
 {{- if eq .Values.option.database "mysql" }}
@@ -86,11 +86,11 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: {{ include "devlake.fullname" . }}-mysql-data
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-mysql-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
+            # {{- if ne .Values.option.localtime "" }}
+            # - name: {{ include "devlake.fullname" . }}-mysql-localtime
+            #   mountPath: /etc/localtime
+            #   readOnly: true
+            # {{- end }}
           {{- with .Values.mysql.containerSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
@@ -108,12 +108,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-mysql-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
+      # {{- if ne .Values.option.localtime "" }}
+      # - name: {{ include "devlake.fullname" . }}-mysql-localtime
+      #   hostPath:
+      #     path: {{ .Values.option.localtime }}
+      # {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "devlake.fullname" . }}-mysql-data
@@ -160,7 +159,7 @@ spec:
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
           {{- with .Values.lake.containerSecurityContext }}
-          securityContext:
+        securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         - name: patch-env
@@ -226,11 +225,11 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: {{ include "devlake.fullname" . }}-lake-config
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-lake-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
+            # {{- if ne .Values.option.localtime "" }}
+            # - name: {{ include "devlake.fullname" . }}-lake-localtime
+            #   mountPath: /etc/localtime
+            #   readOnly: true
+            # {{- end }}
           {{- with .Values.lake.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -256,12 +255,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-lake-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
+      # {{- if ne .Values.option.localtime "" }}
+      # - name: {{ include "devlake.fullname" . }}-lake-localtime
+      #   hostPath:
+      #     path: {{ .Values.option.localtime }}
+      # {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "devlake.fullname" . }}-lake-config
