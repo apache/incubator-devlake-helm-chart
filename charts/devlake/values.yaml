@@ -315,6 +315,7 @@ ingress:
 
 option:
   # localtime zone info from host path.
+  # leave blank if deploying to AWS EKS
   localtime: ""
 
   # database type, supported: [mysql]
