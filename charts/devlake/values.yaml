@@ -315,7 +315,7 @@ ingress:
 
 option:
   # localtime zone info from host path.
-  localtime: /etc/localtime
+  localtime: ""
 
   # database type, supported: [mysql]
   database: mysql
