@@ -28,17 +28,11 @@ helm install devlake devlake/devlake --version=0.17.0-beta8
 
 Visit your devlake from the node port (32001 by default): http://YOUR-NODE-IP:32001.
 
-> Tips:
->
-> If you are using minikube inside your mac, please use the following command to forward the port:
->
-> ```shell
-> kubectl port-forward service/devlake-ui  4000:4000
-> ```
->
-> Then you can visit:
-> config-ui by url `http://YOUR-NODE-IP:4000/`
-> grafana by url `http://YOUR-NODE-IP:4000/grafana/`
+_Notes for mac users with minikube:_
+
+- forward the port: `kubectl port-forward svc/devlake-ui  4000:4000`
+- access config-ui: `http://YOUR-NODE-IP:4000/`
+- access Grafana dashboard: click the dashboard button in config-ui, or visit `http://YOUR-NODE-IP:4000/grafana/`
 
 ### 2.2 Update
 
