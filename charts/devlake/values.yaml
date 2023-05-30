@@ -121,6 +121,10 @@ mysql:
 
 #   containerSecurityContext: {}
 
+externalGrafana:
+  useExternal: false
+  grafanaUrl: ""
+
 # dependency chart values
 grafana:
   grafana.ini:

@@ -33,14 +33,3 @@ data:
   ADMIN_USER: "{{ .Values.ui.basicAuth.user }}"
   ADMIN_PASS: "{{ .Values.ui.basicAuth.password }}"
 {{- end }}
----
-{{- if .Values.grafana.oauthEnabled }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "devlake.fullname" . }}-grafana-oauth-config
-data:
-  {{- with .Values.grafana.oauthConfig }}
-    {{- toYaml . | nindent 2 }}
-  {{- end }}
-{{- end }}

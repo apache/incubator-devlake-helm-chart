@@ -60,8 +60,16 @@ spec:
           env:
             - name: DEVLAKE_ENDPOINT
               value: {{ include "devlake.fullname" . }}-lake.{{ .Release.Namespace }}.svc.cluster.local:8080
+{{- if .Values.externalGrafana.useExternal }}
+            - name: GRAFANA_ENDPOINT
+              value: {{ .Values.externalGrafana.grafanaUrl }}
+            - name: USE_EXTERNAL_GRAFANA
+              value: "true"
+{{- else }}
             - name: GRAFANA_ENDPOINT
               value: {{ .Release.Name }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:80
+{{- end }}
+            
           volumeMounts:
             {{- if ne .Values.option.localtime "" }}
             - name: {{ include "devlake.fullname" . }}-ui-localtime
