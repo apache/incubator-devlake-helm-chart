@@ -32,5 +32,6 @@ jobs:
       - name: Add repositories
         run: |
           helm repo add grafana https://grafana.github.io/helm-charts
+          helm dep build charts/devlake
       - name: lint helm chart
         run: helm lint charts/devlake --strict
