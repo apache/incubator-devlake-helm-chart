@@ -121,68 +121,39 @@ mysql:
 
 #   containerSecurityContext: {}
 
+# dependency chart values
 grafana:
-  # image for grafana
-  image:
-    repository: apache/devlake-dashboard
-    pullPolicy: Always
-
-  # If true, the default Nginx configuration will support a permanent redirect
-  # in the tool's menu. Should you use a different ingress controller, you'll need
-  # to add the ingress with the permanent redirect.
-  useExternal: false
-
-  externalUrl: ""
-
-  resources: {}
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
-  extraLabels: {}
-
-  securityContext: {}
-
-  containerSecurityContext: {}
-
-  # Enable oauth, defaults to false
-  oauthEnabled: false
-  # grafana oauth related env vars, see the example below for aws cognito oauth
-  oauthConfig:
-    {}
-    # GF_SERVER_ROOT_URL: "https://demo.devlake.pro/grafana/"
-    # GF_AUTH_JWT_ENABLED: "true"
-    # GF_AUTH_JWT_HEADER_NAME: X-Forwarded-Access-Token
-    # GF_AUTH_JWT_USERNAME_CLAIM: username
-    # GF_AUTH_JWT_SKIP_ORG_ROLE_SYNC: "true"
-    # GF_AUTH_JWT_ROLE_ATTRIBUTE_PATH: contains("cognito:groups"[*], 'Admin') && 'Admin'
-    # GF_AUTH_JWT_CACHE_TTL: "60m"
-    # GF_AUTH_EXPECTED_CLAIMS: '{"iss": "https://cognito-idp.us-east-2.amazonaws.com/us-east-2_xxx"}'
-    # GF_AUTH_JWT_JWK_SET_URL: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_xxx/.well-known/jwks.json
-    # GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
-    # GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN: "true"
-    # GF_AUTH_GENERIC_OAUTH_NAME: Amazon
-    # GF_AUTH_GENERIC_OAUTH_SCOPES: "email profile aws.cognito.signin.user.admin openid"
-    # GF_AUTH_GENERIC_OAUTH_CLIENT_ID: xxx
-    # GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: ""
-    # GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://xxx.auth.us-east-2.amazoncognito.com/oauth2/authorize
-    # GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://xxx.auth.us-east-2.amazoncognito.com/oauth2/token
-    # GF_AUTH_GENERIC_OAUTH_API_URL: https://xxx.auth.us-east-2.amazoncognito.com/oauth2/userInfo
-    # GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
-    # GF_AUTH_GENERIC_OAUTH_SIGNOUT_REDIRECT_URL: https://xxx.auth.us-east-2.amazoncognito.com/logout?client_id=$GF_AUTH_GENERIC_OAUTH_CLIENT_ID&logout_uri=https://demo.devlake.pro/grafana/login
-    # GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: contains("cognito:groups"[*], 'Admin') && 'Admin'
-    # GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: "true"
-
-awsCognitoAuth:
-  # by default, AWS Cognito auth is disabled
-  # if enabled, please set the following 3 awsXXX variables
-  enabled: false
-  awsAuthRegion: ""
-  awsAuthUserPoolID: ""
-  awsAuthUserPoolWebClientID: ""
+  grafana.ini:
+    server:
+      root_url: "%(protocol)s://%(domain)s/grafana"
+  dashboardProviders:
+    dashboard.yaml:
+      apiVersion: 1
+      providers:
+        - name: default
+          org_id: 1
+          folder: ""
+          type: "file"
+          disableDeletion: false
+          editable: true
+          updateIntervalSeconds: 5
+          allowUiUpdates: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+  dashboardsConfigMaps:
+    default: "grafana-dashboards"
+  datasources:
+    datasource.yaml:
+      apiVersion: 1
+      datasources:
+        - name: mysql
+          type: mysql
+          url: devlake-mysql:3306
+          database: lake
+          user: merico
+          secureJsonData:
+            password: merico
+          editable: false
 
 lake:
   image:
@@ -278,7 +249,6 @@ service:
   type: NodePort
   # node port for devlake-ui if NodePort is enabled
   uiPort: 32001
-  grafanaPort: 32002
 
 ingress:
   enabled: false

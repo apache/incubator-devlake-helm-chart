@@ -28,7 +28,12 @@ keywords:
 type: application
 
 # Chart version
-version: 0.17.0-beta8
+version: 0.17.0-grafana-dep-chart
 
 # devlake version
 appVersion: v0.17.0-beta8
+
+dependencies:
+- name: grafana
+  version: "6.56.6"
+  repository: "https://grafana.github.io/helm-charts"
