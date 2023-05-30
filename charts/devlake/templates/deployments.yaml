@@ -61,7 +61,7 @@ spec:
             - name: DEVLAKE_ENDPOINT
               value: {{ include "devlake.fullname" . }}-lake.{{ .Release.Namespace }}.svc.cluster.local:8080
             - name: GRAFANA_ENDPOINT
-              value: {{ include "devlake.fullname" . }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:80
+              value: {{ .Release.Name }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:80
           volumeMounts:
             {{- if ne .Values.option.localtime "" }}
             - name: {{ include "devlake.fullname" . }}-ui-localtime
