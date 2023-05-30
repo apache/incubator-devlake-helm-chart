@@ -73,9 +73,10 @@ jobs:
       - name: Helm install devlake
         if: matrix.database_type == 'mysql-builtin'
         run: |
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm dep build charts/devlake
           export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
           echo Node IP: ${NODE_IP}
-          helm dep build charts/devlake
           helm install --wait --timeout 300s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.image.tag=8-debian \
