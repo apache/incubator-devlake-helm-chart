@@ -28,7 +28,7 @@ keywords:
 type: application
 
 # Chart version
-version: 0.17.0-grafana-dep-chart
+version: 0.17.0-gf-dep
 
 # devlake version
 appVersion: v0.17.0-beta8
