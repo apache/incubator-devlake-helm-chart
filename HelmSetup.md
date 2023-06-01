@@ -21,7 +21,7 @@ To install the chart with release name `devlake`:
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
-helm install devlake devlake/devlake --version=0.17.0-beta8
+helm install devlake devlake/devlake --version=0.17.0-beta9
 ```
 
 And visit your devlake from the node port (32001 by default).
@@ -50,7 +50,7 @@ grafana by url `http://YOUR-NODE-IP:30091`
 
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=0.17.0-beta8
+helm upgrade --install devlake devlake/devlake --version=0.17.0-beta9
 ```
 
 ### Uninstall
@@ -191,10 +191,10 @@ Some useful parameters for the chart, you could also check them in values.yaml
 
 1. Can I use a managed Cloud database service instead of running database in docker?
 
-  Yes, it just set useExternal value to true while you deploy devlake with helm chart. Below we'll use MySQL on AWS RDS as an example.
+Yes, it just set useExternal value to true while you deploy devlake with helm chart. Below we'll use MySQL on AWS RDS as an example.
 
-  a. (Optional) Create a MySQL instance on AWS RDS following this [doc](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_GettingStarted.CreatingConnecting.MySQL.html), skip this step if you'd like to use an existing instance
-  b. Proviede below values while install from helm:
+a. (Optional) Create a MySQL instance on AWS RDS following this [doc](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_GettingStarted.CreatingConnecting.MySQL.html), skip this step if you'd like to use an existing instance
+b. Proviede below values while install from helm:
 
     - `mysql.useExternal`: this should be `true`
     - `mysql.externalServer`: use your RDS instance's IP address or domain name.
@@ -203,46 +203,48 @@ Some useful parameters for the chart, you could also check them in values.yaml
     - `mysql.password`: use your `password` for access RDS instance's DB
     - `mysql.database`: use your RDS instance's DB name, you may need to create a database first with `CREATE DATABASE <DB name>;`
 
-  Here is the example:
+Here is the example:
 
-  ```
-  helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
-  helm repo update
-  helm install devlake devlake/devlake \
-    --set mysql.useExternal=true \
-    --set mysql.externalServer=db.example.com \
-    --set mysql.externalPort=3306 \
-    --set mysql.username=admin \
-    --set mysql.password=password_4_admin \
-    --set mysql.database=devlake
-  ```
+```
+helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
+helm repo update
+helm install devlake devlake/devlake \
+  --set mysql.useExternal=true \
+  --set mysql.externalServer=db.example.com \
+  --set mysql.externalPort=3306 \
+  --set mysql.username=admin \
+  --set mysql.password=password_4_admin \
+  --set mysql.database=devlake
+```
 
 2. Can I use a secret to store the database connection details?
 
-  Yes, to do so, you need to have a secret in your Kubernetes Cluster that contains the following values:
+Yes, to do so, you need to have a secret in your Kubernetes Cluster that contains the following values:
 
-  - `MYSQL_USER`: The user to connect to your DB.
-  - `MYSQL_PASSWORD`: The password to connect to your DB.
-  - `MYSQL_DATABASE`: The database to connect to your DB.
-  - `MYSQL_ROOT_PASSWORD`: The root password to connect to your DB.
-  - `DB_URL`: mysql://`username`:`password`@`dbserver`:`port`/`database`?charset=utf8mb4&parseTime=True
+- `MYSQL_USER`: The user to connect to your DB.
+- `MYSQL_PASSWORD`: The password to connect to your DB.
+- `MYSQL_DATABASE`: The database to connect to your DB.
+- `MYSQL_ROOT_PASSWORD`: The root password to connect to your DB.
+- `DB_URL`: mysql://`username`:`password`@`dbserver`:`port`/`database`?charset=utf8mb4&parseTime=True
 
-  The secret name needs to be the same as the value `option.connectionSecretName`
+The secret name needs to be the same as the value `option.connectionSecretName`
 
 3. Can I use an external Grafana instead of running built-in Grafana?
 
-  Yes, the devlake helm chart supports using an external Grafana. You can set the following values while installing from helm:
-  - `grafana.useExternal`: this should be `true`
-  - `grafana.externalUrl`: use your Grafana's URL, e.g. `https://grafana.example.com`
+Yes, the devlake helm chart supports using an external Grafana. You can set the following values while installing from helm:
 
-  Here is the example:
-  ```
-  helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
-  helm repo update
-  helm install devlake devlake/devlake \
-    --set grafana.useExternal=true \
-    --set grafana.externalUrl=https://grafana.example.com
-  ```
+- `grafana.useExternal`: this should be `true`
+- `grafana.externalUrl`: use your Grafana's URL, e.g. `https://grafana.example.com`
+
+Here is the example:
+
+```
+helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
+helm repo update
+helm install devlake devlake/devlake \
+  --set grafana.useExternal=true \
+  --set grafana.externalUrl=https://grafana.example.com
+```
 
 ## Troubleshooting
 
