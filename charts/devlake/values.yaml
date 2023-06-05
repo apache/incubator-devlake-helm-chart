@@ -327,6 +327,9 @@ option:
   # the secret name if useConnectionDetailsSecret is true.
   connectionSecretName: devlake-db-connection
 
+  dotEnvSecretName: devlake-dotenv
+
+
   # if true, will create the secret as part of the chart
   # when useConnectionDetailSecret is also true.
   autoCreateSecret: true

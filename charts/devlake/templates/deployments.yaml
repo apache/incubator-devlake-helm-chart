@@ -275,7 +275,7 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               readOnly: true
-              name: {{ include "devlake.fullname" . }}-lake-dotenv
+              name: {{ .Values.option.dotEnvSecretName }}
             {{- if ne .Values.option.localtime "" }}
             - name: {{ include "devlake.fullname" . }}-lake-localtime
               mountPath: /etc/localtime
@@ -306,9 +306,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        - name: {{ include "devlake.fullname" . }}-lake-dotenv
-          configMap:
-            name: {{ include "devlake.fullname" . }}-lake-dotenv
+        - name: {{ .Values.option.dotEnvSecretName }}
+          secret:
+            secretName: {{ .Values.option.dotEnvSecretName }}
         {{- if ne .Values.option.localtime "" }}
         - name: {{ include "devlake.fullname" . }}-lake-localtime
           hostPath:
