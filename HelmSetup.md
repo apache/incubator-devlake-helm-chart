@@ -21,7 +21,8 @@ To install the chart with release name `devlake`:
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
-helm install devlake devlake/devlake --version=0.17.0-beta10
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+helm install devlake devlake/devlake --version=0.18.0-beta1 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
 And visit your devlake from the node port (32001 by default).
@@ -48,9 +49,10 @@ grafana by url `http://YOUR-NODE-IP:30091`
 
 ### Update
 
+if you upgrade from 0.17* to 0.18*, please copy the ENCODE_KEY value from /app/config/.env of the pod devlake-lake-0, and replace <ENCRYPTION_SECRET> of below upgrade cmd
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=0.17.0-beta10
+helm upgrade devlake devlake/devlake --version=0.18.0-beta1 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 ### Uninstall
@@ -71,7 +73,8 @@ Conditions:
 - Want to visit devlake with port 30000.
 
 ```
-helm install devlake devlake/devlake --set service.uiPort=30000
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+helm install devlake devlake/devlake --set service.uiPort=30000 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
 After deployed, visit devlake: http://192.168.0.6:30000
@@ -84,7 +87,8 @@ Conditions:
 - I want to use http://devlake.example.com for visiting devlake
 
 ```
-helm install devlake devlake/devlake --set "ingress.enabled=true,ingress.hostname=devlake.example.com"
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+helm install devlake devlake/devlake --set "ingress.enabled=true,ingress.hostname=devlake.example.com,lake.encryptionSecret.secret=$ENCRYPTION_SECRET"
 ```
 
 After deployed, visit devlake: http://devlake.example.com, and grafana at http://devlake.example.com/grafana
@@ -106,10 +110,12 @@ kubectl create secret tls ssl-certificate --cert cert.pem --key secret.pem
 Then, deploy the devlake:
 
 ```
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
 helm install devlake devlake/devlake \
     --set "ingress.enabled=true,ingress.enableHttps=true,ingress.hostname=devlake-0.example.com" \
     --set "ingress.className=nginx,ingress.httpsPort=8443" \
     --set "ingress.tlsSecretName=ssl-certificate"
+    --set "lake.encryptionSecret.secret=$ENCRYPTION_SECRET"
 ```
 
 After deployed, visit devlake: https://devlake-0.example.com:8443, and grafana at https://devlake-0.example.com:8443/grafana
@@ -122,6 +128,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ----------------------------------------- | ---------------------------------------------------- | ------------------------ |
 | replicaCount                              | Replica Count for devlake, currently not used        | 1                        |
 | imageTag                                  | The version tag for all images                       | see Values.yaml          |
+| envs                                      | The common envs for all pods                         | []                       |
 | mysql.useExternal                         | If use external mysql server, set true               | false                    |
 | mysql.externalServer                      | External mysql server address                        | 127.0.0.1                |
 | mysql.externalPort                        | External mysql server port                           | 3306                     |
@@ -146,13 +153,12 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | grafana.containerSecurityContext          | container security context values                    | {}                       |
 | grafana.oauthEnabled                      | enable oauth for grafana                             | false                    |
 | grafana.oauthConfig                       | a list of env vars used for oauth                    | {}                       |
-| lake.storage.class                        | storage class for lake's volume                      | ""                       |
-| lake.storage.size                         | volume size for lake's data                          | 100Mi                    |
 | lake.image.repository                     | repository for lake's image                          | apache/devlake           |
 | lake.image.pullPolicy                     | pullPolicy for lake's image                          | Always                   |
-| lake.loggingDir                           | log dir for the lake server                          | /app/logs                |
-| lake.loggingLevel                         | log level for the lake server                        | info                     |
-| lake.dotenv                               | initial configurations for injecting to lake's .env  | see Values.yaml          |
+| lake.port                                 | the port of devlake backend                          | 8080                     |
+| lake.envs                                 | initial envs for lake                                | see Values.yaml          |
+| lake.encryptionSecret.secretName          | the k8s secret name for ENCRYPTION_SECRET            | ""                       |
+| lake.encryptionSecret.secret              | the secret for ENCRYPTION_SECRET                     | ""                       |
 | lake.extraLabels                          | extra labels for lake's statefulset                  | {}                       |
 | lake.securityContext                      | pod security context values                          | {}                       |
 | lake.containerSecurityContext             | container security context values                    | {}                       |
@@ -161,9 +167,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ui.basicAuth.enabled                      | If the basic auth in ui is enabled                   | false                    |
 | ui.basicAuth.user                         | The user name for the basic auth                     | "admin"                  |
 | ui.basicAuth.password                     | The password for the basic auth                      | "admin"                  |
-| ui.basicAuth.useSecret                    | If use secret instead of configmap for basic auth    | false                    |
-| ui.basicAuth.autoCreateSecret             | If let the helm chart create the secret              | true                     |
-| ui.basicAuth.secretName                   | The basic auth secret name                           | devlake-auth             |
+| ui.basicAuth.secretName                   | The basic auth secret name                           | ""                       |
 | ui.extraLabels                            | extra labels for ui's statefulset                    | {}                       |
 | ui.securityContext                        | pod security context values                          | {}                       |
 | ui.containerSecurityContext               | container security context values                    | {}                       |
@@ -177,11 +181,8 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | service.ingress.tlsSecretName             | The secret name for tls's certificate for https      | ""                       |
 | service.ingress.httpPort                  | The http port for ingress                            | 80                       |
 | service.ingress.httpsPort                 | The https port for ingress                           | 443                      |
-| option.localtime                          | The hostpath for mount as /etc/localtime             | /etc/localtime           |
 | option.database                           | The database type, valids: mysql                     | mysql                    |
-| option.useConnectionDetailsSecret         | If use secret instead of configmap for db connection | false                    |
-| option.connectionSecretName               | The database connection details secret name          | devlake-db-connection    |
-| option.autoCreateSecret                   | If let the helm chart create the secret              | true                     |
+| option.connectionSecretName               | The database connection details secret name          | ""                       |
 | awsCognitoAuth.enabled                    | use AWS cognito for authentication                   | false                    |
 | awsCognitoAuth.awsAuthRegion              | aws Cognito auth region                              | ""                       |
 | awsCognitoAuth.awsAuthUserPoolID          | aws Cognito user pool ID                             | ""                       |
@@ -208,6 +209,7 @@ Here is the example:
 ```
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
 helm install devlake devlake/devlake \
   --set mysql.useExternal=true \
   --set mysql.externalServer=db.example.com \
@@ -215,6 +217,8 @@ helm install devlake devlake/devlake \
   --set mysql.username=admin \
   --set mysql.password=password_4_admin \
   --set mysql.database=devlake
+  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+
 ```
 
 2. Can I use a secret to store the database connection details?
@@ -241,9 +245,12 @@ Here is the example:
 ```
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
 helm install devlake devlake/devlake \
   --set grafana.useExternal=true \
   --set grafana.externalUrl=https://grafana.example.com
+  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+
 ```
 
 ## Troubleshooting

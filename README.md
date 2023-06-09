@@ -28,7 +28,8 @@ To install the chart with release name `devlake`:
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
-helm install devlake devlake/devlake --version=0.17.0-beta10
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+helm install devlake devlake/devlake --version=0.18.0-beta1 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
 If you are using minikube inside your mac, please use the following command to forward the port:
@@ -49,9 +50,10 @@ grafana by url `http://YOUR-NODE-IP:30091`
 
 ## Update
 
+if you upgrade from 0.17* to 0.18*, please copy the ENCODE_KEY value from /app/config/.env of the pod devlake-lake-0, and replace <ENCRYPTION_SECRET> of below upgrade cmd
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=0.17.0-beta10
+helm upgrade devlake devlake/devlake --version=0.18.0-beta1 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 ## Uninstall

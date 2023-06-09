@@ -1,0 +1,11 @@
+{{- if and (not .Values.lake.encryptionSecret.secretName) (not .Values.lake.encryptionSecret.secret) }}
+{{- fail "Helm test requires an existing k8s secret stored encryption secret or an encryption secret which can be acquired via `openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1` "}}
+{{- end }}
+
+{{- if and .Values.ui.basicAuth.enabled (not .Values.ui.basicAuth.secretName) (or (not .Values.ui.basicAuth.user) (not .Values.ui.basicAuth.password)) }}
+{{- fail "Helm test requires an existing k8s secret stored devlake ui's user/password or user and password need to be provided"}}
+{{- end }}
+
+{{- if and (eq .Values.option.database "mysql") (not .Values.option.connectionSecretName) (or (not .Values.mysql.username) (not .Values.mysql.password) (not .Values.mysql.database) (not .Values.mysql.rootPassword)) }}
+{{- fail "Helm test requires an existing k8s secret stored mysql's connection info or the username/password/database/rootPassword need to be provided"}}
+{{- end }}

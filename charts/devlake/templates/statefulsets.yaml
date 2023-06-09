@@ -77,20 +77,15 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           envFrom:
-            - configMapRef:
-                name: {{ include "devlake.fullname" . }}-config
-            {{- if .Values.option.useConnectionDetailsSecret }}
             - secretRef:
-                name: {{ .Values.option.connectionSecretName }}
-            {{- end }}
+                name: {{ include "devlake.mysql.secret" . }}
+          {{- with .Values.envs }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: {{ include "devlake.fullname" . }}-mysql-data
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-mysql-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
           {{- with .Values.mysql.containerSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
@@ -107,13 +102,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-mysql-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "devlake.fullname" . }}-mysql-data
@@ -127,149 +115,6 @@ spec:
             storage: "{{ .Values.mysql.storage.size }}"
 {{- end }}
 {{- end }}
----
-# devlake
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: {{ include "devlake.fullname" . }}-lake
-  labels:
-    {{- include "devlake.labels" . | nindent 4 }}
-spec:
-  replicas: 1
-  serviceName: {{ include "devlake.fullname" . }}-lake
-  selector:
-    matchLabels:
-      {{- include "devlake.selectorLabels" . | nindent 6 }}
-  template:
-    metadata:
-      labels:
-        {{- include "devlake.selectorLabels" . | nindent 8 }}
-        devlakeComponent: lake
-        {{- with .Values.lake.extraLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
-      annotations:
-        # Force reload on config changes
-        checksum/devlake-config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
-    spec:
-      {{- with .Values.lake.securityContext }}
-      securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      initContainers:
-        {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
-          {{- with .Values.lake.containerSecurityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-        - name: patch-env
-          image: "{{ .Values.alpine.image.repository }}:{{ .Values.alpine.image.tag }}"
-          imagePullPolicy: {{ .Values.alpine.image.pullPolicy }}
-          command:
-            - 'sh'
-            - '-c'
-            - |
-              touch /app/config/.env
-              function patch_env() {
-                if grep -w ${key}= /app/config/.env ; then
-                  echo ${key} already set
-                else
-                  echo >> /app/config/.env
-                  echo ${key}=${val} >> /app/config/.env
-                  echo ${key}=${val} patched
-                  grep -w ${key}= /app/config/.env
-                fi
-              }
-              {{- range $k, $v := .Values.lake.dotenv }}
-                key={{ $k }} val={{ $v }} patch_env
-              {{- end }}
-              exit 0
-          volumeMounts:
-            - mountPath: /app/config
-              name: {{ include "devlake.fullname" . }}-lake-config
-          {{- with .Values.lake.containerSecurityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      containers:
-        - name: lake
-{{- if .Values.lake.image.tag }}
-          image: "{{ .Values.lake.image.repository }}:{{ .Values.lake.image.tag }}"
-{{- else }}
-          image: "{{ .Values.lake.image.repository }}:{{ .Values.imageTag }}"
-{{- end }}
-          imagePullPolicy: {{ .Values.lake.image.pullPolicy }}
-          ports:
-            - containerPort: 8080
-          livenessProbe:
-            httpGet:
-              path: /ping
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
-          envFrom:
-            - configMapRef:
-                name: {{ include "devlake.fullname" . }}-config
-            {{- if .Values.option.useConnectionDetailsSecret }}
-            - secretRef:
-                name: {{ .Values.option.connectionSecretName }}
-            {{- end }}
-            {{- if .Values.awsCognitoAuth.enabled }}
-            - configMapRef:
-                name: {{ include "devlake.fullname" . }}-cognito-config
-            {{- end }}
-          env:
-            - name: ENV_PATH
-              value: /app/config/.env
-          volumeMounts:
-            - mountPath: /app/config
-              name: {{ include "devlake.fullname" . }}-lake-config
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-lake-localtime
-              mountPath: /etc/localtime
-              readOnly: true
-            {{- end }}
-          {{- with .Values.lake.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.lake.containerSecurityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      {{- if .Values.lake.hostNetwork }}
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
-      {{- end }}
-      {{- with .Values.lake.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.lake.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.lake.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-lake-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
-  volumeClaimTemplates:
-    - metadata:
-        name: {{ include "devlake.fullname" . }}-lake-config
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        {{- with .Values.lake.storage.class }}
-        storageClassName: "{{ . }}"
-        {{- end }}
-        resources:
-          requests:
-            storage: "{{ .Values.lake.storage.size }}"
+
+
+
