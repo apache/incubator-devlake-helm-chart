@@ -272,6 +272,10 @@ spec:
           env:
             - name: ENV_PATH
               value: /app/config/.env
+            {{- range $key, $val := .Values.lake.env }}
+            - name: {{ $key }}
+              value: {{ $val }}
+            {{- end }}
           volumeMounts:
             - mountPath: /app/config
               readOnly: true

@@ -195,6 +195,7 @@ lake:
     # the storage class for pv, leave empty will using default
     class: ""
     size: 100Mi
+  env: {}
   dotenv:
     API_TIMEOUT: "120s"
     API_RETRY: "3"
