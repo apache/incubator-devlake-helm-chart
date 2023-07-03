@@ -29,7 +29,7 @@ on:
     paths:
       - charts/devlake/**
       - .github/workflows/deploy-test.yml
-      - '!**.md'
+      - "!**.md"
 
 jobs:
   deploy-with-helm:
@@ -37,10 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        database_type: ["mysql-builtin",
-#          "pgsql-builtin",
-                        "mysql-external"
-          ]
+        database_type: ["mysql-builtin", "mysql-external"]
     steps:
       - name: Creating kind cluster
         uses: container-tools/kind-action@v1
@@ -61,8 +58,10 @@ jobs:
         if: matrix.database_type == 'mysql-external'
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add grafana https://grafana.github.io/helm-charts
           helm install mysql bitnami/mysql --set auth.rootPassword=admin --set auth.database=lake --set auth.username=merico --set auth.password=merico
           # external mysql at service: mysql
+          helm dep build charts/devlake
           helm install --wait --timeout 300s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.useExternal=true \
@@ -74,6 +73,8 @@ jobs:
       - name: Helm install devlake
         if: matrix.database_type == 'mysql-builtin'
         run: |
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm dep build charts/devlake
           export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
           echo Node IP: ${NODE_IP}
           helm install --wait --timeout 300s deploy-test charts/devlake \
@@ -82,18 +83,6 @@ jobs:
             --set option.localtime=""
           kubectl get pods -o wide
           kubectl get services -o wide
-      
-#      - name: Helm install devlake
-#        if: matrix.database_type == 'pgsql-builtin'
-#        run: |
-#          export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-#          echo Node IP: ${NODE_IP}
-#          helm install --wait --timeout 300s deploy-test charts/devlake \
-#            --set service.uiPort=30000 \
-#            --set option.database=pgsql \
-#            --set option.localtime=""
-#          kubectl get pods -o wide
-#          kubectl get services -o wide
 
       # TODO: using some e2e test code to replace it
       - name: Curl with endpoints
@@ -128,4 +117,3 @@ jobs:
             echo logs for $pod
             kubectl logs $pod || echo ""
           done
-
