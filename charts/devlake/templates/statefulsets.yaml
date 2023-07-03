@@ -216,10 +216,6 @@ spec:
             - secretRef:
                 name: {{ .Values.option.connectionSecretName }}
             {{- end }}
-            {{- if .Values.awsCognitoAuth.enabled }}
-            - configMapRef:
-                name: {{ include "devlake.fullname" . }}-cognito-config
-            {{- end }}
           env:
             - name: ENV_PATH
               value: /app/config/.env

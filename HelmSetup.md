@@ -5,16 +5,18 @@ description: >
 sidebar_position: 2
 ---
 
-## Prerequisites
+## 1 Prerequisites
 
 - Helm >= 3.6.0
 - Kubernetes >= 1.19.0
 
-## Quick Start
+---
 
-#### You can also check https://github.com/apache/incubator-devlake-helm-chart to make contribution
+## 2 Quick Start
 
-### Install
+**Check https://github.com/apache/incubator-devlake-helm-chart to contribute!**
+
+### 2.1 Install
 
 To install the chart with release name `devlake`:
 
@@ -24,36 +26,22 @@ helm repo update
 helm install devlake devlake/devlake --version=0.17.0-beta12
 ```
 
-And visit your devlake from the node port (32001 by default).
+Visit your devlake from the node port (32001 by default): http://YOUR-NODE-IP:32001.
 
-http://YOUR-NODE-IP:32001
+_Notes for mac users with minikube:_
 
-#### Tips:
+- forward the port: `kubectl port-forward svc/devlake-ui  4000:4000`
+- access config-ui: `http://YOUR-NODE-IP:4000/`
+- access Grafana dashboard: click the dashboard button in config-ui, or visit `http://YOUR-NODE-IP:4000/grafana/`
 
-If you are using minikube inside your mac, please use the following command to forward the port:
-
-```shell
-kubectl port-forward service/devlake-ui  30090:4000
-```
-
-and open another terminal:
-
-```shell
-kubectl port-forward service/devlake-grafana  30091:3000
-```
-
-Then you can visit:
-config-ui by url `http://YOUR-NODE-IP:30090`
-grafana by url `http://YOUR-NODE-IP:30091`
-
-### Update
+### 2.2 Update
 
 ```shell
 helm repo update
 helm upgrade --install devlake devlake/devlake --version=0.17.0-beta12
 ```
 
-### Uninstall
+### 2.3 Uninstall
 
 To uninstall/delete the `devlake` release:
 
@@ -61,9 +49,11 @@ To uninstall/delete the `devlake` release:
 helm uninstall devlake
 ```
 
-## Some example deployments
+---
 
-### Deploy with NodePort
+## 3 Example Deployments
+
+### 3.1 Deploy with NodePort
 
 Conditions:
 
@@ -76,7 +66,7 @@ helm install devlake devlake/devlake --set service.uiPort=30000
 
 After deployed, visit devlake: http://192.168.0.6:30000
 
-### Deploy with Ingress
+### 3.2 Deploy with Ingress
 
 Conditions:
 
@@ -89,7 +79,7 @@ helm install devlake devlake/devlake --set "ingress.enabled=true,ingress.hostnam
 
 After deployed, visit devlake: http://devlake.example.com, and grafana at http://devlake.example.com/grafana
 
-### Deploy with Ingress (Https)
+### 3.3 Deploy with Ingress (Https)
 
 Conditions:
 
@@ -114,80 +104,74 @@ helm install devlake devlake/devlake \
 
 After deployed, visit devlake: https://devlake-0.example.com:8443, and grafana at https://devlake-0.example.com:8443/grafana
 
-## Parameters
+---
+
+## 4 Parameters
 
 Some useful parameters for the chart, you could also check them in values.yaml
 
-| Parameter                                 | Description                                          | Default                  |
-| ----------------------------------------- | ---------------------------------------------------- | ------------------------ |
-| replicaCount                              | Replica Count for devlake, currently not used        | 1                        |
-| imageTag                                  | The version tag for all images                       | see Values.yaml          |
-| mysql.useExternal                         | If use external mysql server, set true               | false                    |
-| mysql.externalServer                      | External mysql server address                        | 127.0.0.1                |
-| mysql.externalPort                        | External mysql server port                           | 3306                     |
-| mysql.username                            | username for mysql                                   | merico                   |
-| mysql.password                            | password for mysql                                   | merico                   |
-| mysql.database                            | database for mysql                                   | lake                     |
-| mysql.rootPassword                        | root password for mysql                              | admin                    |
-| mysql.storage.class                       | storage class for mysql's volume                     | ""                       |
-| mysql.storage.size                        | volume size for mysql's data                         | 5Gi                      |
-| mysql.image.repository                    | repository for mysql's image                         | mysql                    |
-| mysql.image.tag                           | image tag for mysql's image                          | 8                        |
-| mysql.image.pullPolicy                    | pullPolicy for mysql's image                         | IfNotPresent             |
-| mysql.extraLabels                         | extra labels for mysql's statefulset                 | {}                       |
-| mysql.securityContext                     | pod security context values                          | {}                       |
-| mysql.containerSecurityContext            | container security context values                    | {}                       |
-| grafana.image.repository                  | repository for grafana's image                       | apache/devlake-dashboard |
-| grafana.image.pullPolicy                  | pullPolicy for grafana's image                       | Always                   |
-| grafana.useExternal                       | If use external grafana server                       | false                    |
-| grafana.externalUrl                       | external grafana server if use external              | ""                       |
-| grafana.extraLabels                       | extra labels for grafana's statefulset               | {}                       |
-| grafana.securityContext                   | pod security context values                          | {}                       |
-| grafana.containerSecurityContext          | container security context values                    | {}                       |
-| grafana.oauthEnabled                      | enable oauth for grafana                             | false                    |
-| grafana.oauthConfig                       | a list of env vars used for oauth                    | {}                       |
-| lake.storage.class                        | storage class for lake's volume                      | ""                       |
-| lake.storage.size                         | volume size for lake's data                          | 100Mi                    |
-| lake.image.repository                     | repository for lake's image                          | apache/devlake           |
-| lake.image.pullPolicy                     | pullPolicy for lake's image                          | Always                   |
-| lake.loggingDir                           | log dir for the lake server                          | /app/logs                |
-| lake.loggingLevel                         | log level for the lake server                        | info                     |
-| lake.dotenv                               | initial configurations for injecting to lake's .env  | see Values.yaml          |
-| lake.extraLabels                          | extra labels for lake's statefulset                  | {}                       |
-| lake.securityContext                      | pod security context values                          | {}                       |
-| lake.containerSecurityContext             | container security context values                    | {}                       |
-| ui.image.repository                       | repository for ui's image                            | apache/devlake-config-ui |
-| ui.image.pullPolicy                       | pullPolicy for ui's image                            | Always                   |
-| ui.basicAuth.enabled                      | If the basic auth in ui is enabled                   | false                    |
-| ui.basicAuth.user                         | The user name for the basic auth                     | "admin"                  |
-| ui.basicAuth.password                     | The password for the basic auth                      | "admin"                  |
-| ui.basicAuth.useSecret                    | If use secret instead of configmap for basic auth    | false                    |
-| ui.basicAuth.autoCreateSecret             | If let the helm chart create the secret              | true                     |
-| ui.basicAuth.secretName                   | The basic auth secret name                           | devlake-auth             |
-| ui.extraLabels                            | extra labels for ui's statefulset                    | {}                       |
-| ui.securityContext                        | pod security context values                          | {}                       |
-| ui.containerSecurityContext               | container security context values                    | {}                       |
-| service.type                              | Service type for exposed service                     | NodePort                 |
-| service.uiPort                            | Node port for config ui                              | 32001                    |
-| service.ingress.enabled                   | If enable ingress                                    | false                    |
-| service.ingress.enableHttps               | If enable https                                      | false                    |
-| service.ingress.className                 | Name for ingressClass. leave empty for using default | ""                       |
-| service.ingress.hostname                  | The hostname/domainname for ingress                  | localhost                |
-| service.ingress.prefix                    | The prefix for endpoints, currently not used         | /                        |
-| service.ingress.tlsSecretName             | The secret name for tls's certificate for https      | ""                       |
-| service.ingress.httpPort                  | The http port for ingress                            | 80                       |
-| service.ingress.httpsPort                 | The https port for ingress                           | 443                      |
-| option.localtime                          | The hostpath for mount as /etc/localtime             | /etc/localtime           |
-| option.database                           | The database type, valids: mysql                     | mysql                    |
-| option.useConnectionDetailsSecret         | If use secret instead of configmap for db connection | false                    |
-| option.connectionSecretName               | The database connection details secret name          | devlake-db-connection    |
-| option.autoCreateSecret                   | If let the helm chart create the secret              | true                     |
-| awsCognitoAuth.enabled                    | use AWS cognito for authentication                   | false                    |
-| awsCognitoAuth.awsAuthRegion              | aws Cognito auth region                              | ""                       |
-| awsCognitoAuth.awsAuthUserPoolID          | aws Cognito user pool ID                             | ""                       |
-| awsCognitoAuth.awsAuthUserPoolWebClientID | aws Cognito web client ID for the user pool          | ""                       |
+| Parameter                         | Description                                                                           | Default                  |
+| --------------------------------- | ------------------------------------------------------------------------------------- | ------------------------ |
+| replicaCount                      | Replica Count for devlake, currently not used                                         | 1                        |
+| imageTag                          | The version tag for all images                                                        | see Values.yaml          |
+| mysql.useExternal                 | If use external mysql server, set true                                                | false                    |
+| mysql.externalServer              | External mysql server address                                                         | 127.0.0.1                |
+| mysql.externalPort                | External mysql server port                                                            | 3306                     |
+| mysql.username                    | username for mysql                                                                    | merico                   |
+| mysql.password                    | password for mysql                                                                    | merico                   |
+| mysql.database                    | database for mysql                                                                    | lake                     |
+| mysql.rootPassword                | root password for mysql                                                               | admin                    |
+| mysql.storage.class               | storage class for mysql's volume                                                      | ""                       |
+| mysql.storage.size                | volume size for mysql's data                                                          | 5Gi                      |
+| mysql.image.repository            | repository for mysql's image                                                          | mysql                    |
+| mysql.image.tag                   | image tag for mysql's image                                                           | 8                        |
+| mysql.image.pullPolicy            | pullPolicy for mysql's image                                                          | IfNotPresent             |
+| mysql.extraLabels                 | extra labels for mysql's statefulset                                                  | {}                       |
+| mysql.securityContext             | pod security context values                                                           | {}                       |
+| mysql.containerSecurityContext    | container security context values                                                     | {}                       |
+| externalGrafana.useExternal       | If use external grafana server                                                        | false                    |
+| externalGrafana.grafanaUrl        | external grafana server if use external                                               | ""                       |
+| grafana                           | dashboard, datasource, etc. settings for grafana, installed by grafana official chart |                          |
+| lake.storage.class                | storage class for lake's volume                                                       | ""                       |
+| lake.storage.size                 | volume size for lake's data                                                           | 100Mi                    |
+| lake.image.repository             | repository for lake's image                                                           | apache/devlake           |
+| lake.image.pullPolicy             | pullPolicy for lake's image                                                           | Always                   |
+| lake.loggingDir                   | log dir for the lake server                                                           | /app/logs                |
+| lake.loggingLevel                 | log level for the lake server                                                         | info                     |
+| lake.dotenv                       | initial configurations for injecting to lake's .env                                   | see Values.yaml          |
+| lake.extraLabels                  | extra labels for lake's statefulset                                                   | {}                       |
+| lake.securityContext              | pod security context values                                                           | {}                       |
+| lake.containerSecurityContext     | container security context values                                                     | {}                       |
+| ui.image.repository               | repository for ui's image                                                             | apache/devlake-config-ui |
+| ui.image.pullPolicy               | pullPolicy for ui's image                                                             | Always                   |
+| ui.basicAuth.enabled              | If the basic auth in ui is enabled                                                    | false                    |
+| ui.basicAuth.user                 | The user name for the basic auth                                                      | "admin"                  |
+| ui.basicAuth.password             | The password for the basic auth                                                       | "admin"                  |
+| ui.basicAuth.useSecret            | If use secret instead of configmap for basic auth                                     | false                    |
+| ui.basicAuth.autoCreateSecret     | If let the helm chart create the secret                                               | true                     |
+| ui.basicAuth.secretName           | The basic auth secret name                                                            | devlake-auth             |
+| ui.extraLabels                    | extra labels for ui's statefulset                                                     | {}                       |
+| ui.securityContext                | pod security context values                                                           | {}                       |
+| ui.containerSecurityContext       | container security context values                                                     | {}                       |
+| service.type                      | Service type for exposed service                                                      | NodePort                 |
+| service.uiPort                    | Node port for config ui                                                               | 32001                    |
+| service.ingress.enabled           | If enable ingress                                                                     | false                    |
+| service.ingress.enableHttps       | If enable https                                                                       | false                    |
+| service.ingress.className         | Name for ingressClass. leave empty for using default                                  | ""                       |
+| service.ingress.hostname          | The hostname/domainname for ingress                                                   | localhost                |
+| service.ingress.prefix            | The prefix for endpoints, currently not used                                          | /                        |
+| service.ingress.tlsSecretName     | The secret name for tls's certificate for https                                       | ""                       |
+| service.ingress.httpPort          | The http port for ingress                                                             | 80                       |
+| service.ingress.httpsPort         | The https port for ingress                                                            | 443                      |
+| option.localtime                  | The hostpath for mount as /etc/localtime                                              | /etc/localtime           |
+| option.database                   | The database type, valids: mysql                                                      | mysql                    |
+| option.useConnectionDetailsSecret | If use secret instead of configmap for db connection                                  | false                    |
+| option.connectionSecretName       | The database connection details secret name                                           | devlake-db-connection    |
+| option.autoCreateSecret           | If let the helm chart create the secret                                               | true                     |
 
-## FAQ
+---
+
+## 5 FAQ
 
 1. Can I use a managed Cloud database service instead of running database in docker?
 
@@ -246,6 +230,8 @@ helm install devlake devlake/devlake \
   --set grafana.externalUrl=https://grafana.example.com
 ```
 
-## Troubleshooting
+---
+
+## 6 Troubleshooting
 
 If you run into any problem, please check the [Troubleshooting](/Troubleshooting/Installation.md) or [create an issue](https://github.com/apache/incubator-devlake/issues)
