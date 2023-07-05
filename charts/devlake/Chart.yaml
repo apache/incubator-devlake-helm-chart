@@ -28,10 +28,10 @@ keywords:
 type: application
 
 # Chart version
-version: 0.17.0-gf-dep
+version: 0.17.0-beta13
 
 # devlake version
-appVersion: v0.17.0-beta12
+appVersion: v0.17.0-beta13
 
 dependencies:
 - name: grafana
