@@ -23,7 +23,7 @@ To install the chart with release name `devlake`:
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
-helm install devlake devlake/devlake --version=0.17.0-beta12
+helm install devlake devlake/devlake --version=0.17.0-beta13
 ```
 
 Visit your devlake from the node port (32001 by default): http://YOUR-NODE-IP:32001.
@@ -38,7 +38,7 @@ _Notes for mac users with minikube:_
 
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=0.17.0-beta12
+helm upgrade --install devlake devlake/devlake --version=0.17.0-beta13
 ```
 
 ### 2.3 Uninstall
