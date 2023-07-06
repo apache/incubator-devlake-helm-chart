@@ -39,7 +39,7 @@ mysql:
   # the database for devlake
   database: lake
 
-  # root password for mysql, only used when use_external=true
+  # root password for mysql, only used when use_external=false
   rootPassword: admin
 
   # storage for mysql
