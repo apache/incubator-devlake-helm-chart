@@ -35,50 +35,7 @@ spec:
       port: 3306
       targetPort: 3306
 {{- end }}
-#{{- else if eq .Values.option.database "pgsql" }}
-#{{- if not .Values.pgsql.useExternal }}
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: {{ include "devlake.fullname" . }}-pgsql
-#  labels:
-#    {{- include "devlake.labels" . | nindent 4 }}
-#spec:
-#  selector:
-#    {{- include "devlake.selectorLabels" . | nindent 4 }}
-#    devlakeComponent: pgsql
-#  ports:
-#    - protocol: TCP
-#      name: pgsql
-#      port: 5432
-#      targetPort: 5432
-#{{- end }}
 {{- end }}
-
-{{- if not .Values.grafana.useExternal }}
-# grafana services
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "devlake.fullname" . }}-grafana
-  labels:
-    {{- include "devlake.labels" . | nindent 4 }}
-spec:
-  type: {{ .Values.service.type}}
-  selector:
-    {{- include "devlake.selectorLabels" . | nindent 4 }}
-    devlakeComponent: grafana
-  ports:
-    - protocol: TCP
-      name: grafana
-      port: 3000
-      targetPort: 3000
-      {{- if eq .Values.service.type "NodePort" }}
-      nodePort: {{ .Values.service.grafanaPort }}
-      {{- end }}
-{{ end }}
-
 # devlake services
 ---
 apiVersion: v1

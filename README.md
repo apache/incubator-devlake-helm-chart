@@ -53,7 +53,7 @@ grafana by url `http://YOUR-NODE-IP:30091`
 if you upgrade from 0.17* to 0.18*, please copy the ENCODE_KEY value from /app/config/.env of the pod devlake-lake-0, and replace <ENCRYPTION_SECRET> of below upgrade cmd
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.18.0-beta1 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+helm upgrade --install devlake devlake/devlake --version=0.18.0-beta1 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 ## Uninstall

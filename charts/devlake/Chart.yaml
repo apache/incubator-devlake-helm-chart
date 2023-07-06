@@ -32,3 +32,8 @@ version: 0.18.0-beta1
 
 # devlake version
 appVersion: v0.18.0-beta1
+
+dependencies:
+- name: grafana
+  version: "6.56.6"
+  repository: "https://grafana.github.io/helm-charts"
