@@ -26,7 +26,7 @@ envs:
 
 mysql:
   # if use external mysql server, please set true
-  #   by default using false, chart will create a single mysql instance
+  # by default using false, chart will create a single mysql instance
   useExternal: false
 
   # the external mysql server address
@@ -195,6 +195,7 @@ lake:
     # if secretName is empty, secret should be set
     # you can generate the encryption secret via cmd `openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1`
     secret: ""
+    autoCreateSecret: true
 
   # If hostNetwork is true, then dnsPolicy is set to ClusterFirstWithHostNet
   hostNetwork: false
@@ -231,6 +232,7 @@ ui:
     enabled: false
     user: admin
     password: admin
+    autoCreateSecret: true
     secretName: ""
 
   extraLabels: {}
@@ -307,4 +309,4 @@ option:
 
   # the existing k8s secret name of db connection auth
   connectionSecretName: ""
-
+  autoCreateSecret: true

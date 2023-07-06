@@ -97,27 +97,27 @@ The ui endpoint
 {{- end }}
 
 {{- define "devlake.mysql.secret" -}}
-  {{- if .Values.option.connectionSecretName -}}
-    {{- .Values.option.connectionSecretName -}}
-  {{- else -}}
-    {{ include "devlake.fullname" . }}-db-connection
-  {{- end -}}
+{{- if .Values.option.connectionSecretName -}}
+{{- .Values.option.connectionSecretName -}}
+{{- else -}}
+{{ include "devlake.fullname" . }}-db-connection
+{{- end -}}
 {{- end -}}
 
 {{- define "devlake.ui.auth.secret" -}}
-  {{- if .Values.ui.basicAuth.secretName -}}
-    {{- .Values.ui.basicAuth.secretName -}}
-  {{- else -}}
-    {{ include "devlake.fullname" . }}-ui-auth
-  {{- end -}}
+{{- if .Values.ui.basicAuth.secretName -}}
+{{- .Values.ui.basicAuth.secretName -}}
+{{- else -}}
+{{ include "devlake.fullname" . }}-ui-auth
+{{- end -}}
 {{- end -}}
 
 {{- define "devlake.lake.encryption.secret" -}}
-  {{- if .Values.lake.encryptionSecret.secretName -}}
-    {{- .Values.lake.encryptionSecret.secretName -}}
-  {{- else -}}
-    {{ include "devlake.fullname" . }}-encryption-secret
-  {{- end -}}
+{{- if .Values.lake.encryptionSecret.secretName -}}
+{{- .Values.lake.encryptionSecret.secretName -}}
+{{- else -}}
+{{ include "devlake.fullname" . }}-encryption-secret
+{{- end -}}
 {{- end -}}
 
 {{/*

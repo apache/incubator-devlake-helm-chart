@@ -145,6 +145,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | lake.envs                                 | initial envs for lake                                                                 | see Values.yaml          |
 | lake.encryptionSecret.secretName          | the k8s secret name for ENCRYPTION_SECRET                                             | ""                       |
 | lake.encryptionSecret.secret              | the secret for ENCRYPTION_SECRET                                                      | ""                       |
+| lake.encryptionSecret.autoCreateSecret    | whether let the helm chart create the secret                                          | true                     |
 | lake.extraLabels                          | extra labels for lake's statefulset                                                   | {}                       |
 | lake.securityContext                      | pod security context values                                                           | {}                       |
 | lake.containerSecurityContext             | container security context values                                                     | {}                       |
