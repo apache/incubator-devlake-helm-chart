@@ -126,12 +126,12 @@ mysql:
 
 #   containerSecurityContext: {}
 
-externalGrafana:
-  useExternal: false
-  grafanaUrl: ""
-
 # dependency chart values
 grafana:
+  enabled: true
+  #if grafana enabled is false, then external url should be provided
+  external:
+    url: ""
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s/grafana"

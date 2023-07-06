@@ -58,9 +58,9 @@ spec:
           env:
             - name: DEVLAKE_ENDPOINT
               value: {{ include "devlake.fullname" . }}-lake.{{ .Release.Namespace }}.svc.cluster.local:8080
-{{- if .Values.externalGrafana.useExternal }}
+{{- if not .Values.grafana.enabled }}
             - name: GRAFANA_ENDPOINT
-              value: {{ .Values.externalGrafana.grafanaUrl }}
+              value: {{ .Values.grafana.external.url }}
             - name: USE_EXTERNAL_GRAFANA
               value: "true"
 {{- else }}

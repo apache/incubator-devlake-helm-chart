@@ -9,3 +9,7 @@
 {{- if and (eq .Values.option.database "mysql") (not .Values.option.connectionSecretName) (or (not .Values.mysql.username) (not .Values.mysql.password) (not .Values.mysql.database) (not .Values.mysql.rootPassword)) }}
 {{- fail "Helm test requires an existing k8s secret stored mysql's connection info or the username/password/database/rootPassword need to be provided"}}
 {{- end }}
+
+{{- if and (not .Values.grafana.enabled) (not .Values.grafana.external.url) }}
+{{- fail "Helm test requires grafana to be enabled or external grafana url to be provided"}}
+{{- end }}
