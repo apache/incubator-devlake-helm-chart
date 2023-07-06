@@ -151,18 +151,12 @@ grafana:
             path: /var/lib/grafana/dashboards/default
   dashboardsConfigMaps:
     default: "grafana-dashboards"
-  datasources:
-    datasource.yaml:
-      apiVersion: 1
-      datasources:
-        - name: mysql
-          type: mysql
-          url: devlake-mysql:3306
-          database: lake
-          user: merico
-          secureJsonData:
-            password: merico
-          editable: false
+
+  sidecar:
+    datasources:
+      enabled: true
+      label: grafana_datasource
+      labelValue: "1"
 
 lake:
   image:
