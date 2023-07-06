@@ -21,8 +21,8 @@ imageTag: v0.18.0-beta1
 
 #the common environments for all pods
 envs:
-#  - name: TZ
-#    value: "UTC"
+  - name: TZ
+    value: "UTC"
 
 mysql:
   # if use external mysql server, please set true
