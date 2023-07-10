@@ -157,7 +157,7 @@ grafana:
       enabled: true
       label: grafana_datasource
       labelValue: "1"
-  #the secret name is the same as .Values.option.connectionSecretName
+  #the secret name should be as same as .Values.option.connectionSecretName
   envFromSecret: "devlake-mysql-auth"
 
 lake:
@@ -301,6 +301,6 @@ ingress:
 option:
   # database type, supported: [mysql]
   database: mysql
-  # the existing k8s secret name of db connection auth
+  # the existing k8s secret name of db connection auth. The secret name should be as same as .Values.grafana.envFromSecret
   connectionSecretName: "devlake-mysql-auth"
   autoCreateSecret: true

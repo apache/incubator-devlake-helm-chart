@@ -168,7 +168,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | service.ingress.httpPort                  | The http port for ingress                                                             | 80                       |
 | service.ingress.httpsPort                 | The https port for ingress                                                            | 443                      |
 | option.database                           | The database type, valids: mysql                                                      | mysql                    |
-| option.connectionSecretName               | The database connection details secret name                                           | ""                       |
+| option.connectionSecretName               | The database connection details secret name                                           | "devlake-mysql-auth"                       |
 | option.autoCreateSecret                   | If let the helm chart create the secret                                               | true                     |
 
 
