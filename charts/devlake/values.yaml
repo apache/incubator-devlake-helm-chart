@@ -135,6 +135,8 @@ grafana:
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s/grafana"
+  plugins:
+    - grafana-piechart-panel
   dashboardProviders:
     dashboard.yaml:
       apiVersion: 1
