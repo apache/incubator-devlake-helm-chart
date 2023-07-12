@@ -58,7 +58,7 @@ If you're upgrading from DevLake v0.17.x or earlier versions to v0.18.x or later
 2. You will encounter below error when upgrading, that's because the build-in grafana will be replaced by the official grafana dependency. 
 You may need to delete the grafana deployment firstly, please save your data before deleting if data isn't saved in a persistent volume or hostpath.
 
-    Error: UPGRADE FAILED: cannot patch "devlake-grafana" with kind Deployment: Deployment.apps "devlake-grafana" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/instance":"devlake", "app.kubernetes.io/name":"grafana"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
+    - Error: UPGRADE FAILED: cannot patch "devlake-grafana" with kind Deployment: Deployment.apps "devlake-grafana" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/instance":"devlake", "app.kubernetes.io/name":"grafana"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
 
 ```shell
 helm repo update
