@@ -61,7 +61,7 @@ spec:
               command:
                 - "sh"
                 - "-c"
-                - "mysqladmin ping -u root -p{{ .Values.mysql.rootPassword }}"
+                - "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"
             initialDelaySeconds: 60
             timeoutSeconds: 30
           readinessProbe:
@@ -69,7 +69,7 @@ spec:
               command:
                 - "sh"
                 - "-c"
-                - "mysqladmin ping -u root -p{{ .Values.mysql.rootPassword }}"
+                - "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"
             initialDelaySeconds: 5
             timeoutSeconds: 10
           {{- with .Values.mysql.resources }}

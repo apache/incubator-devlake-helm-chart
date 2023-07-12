@@ -1,15 +1,19 @@
 {{- if and .Values.lake.encryptionSecret.autoCreateSecret (not .Values.lake.encryptionSecret.secret) }}
-{{- fail "Helm test requires an encryption secret which can be acquired via cmd `openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1` "}}
+{{- fail "Helm test requires lake.encryptionSecret.secret. For upgrade from 0.17 to 0.18, please copy the ENCODE_KEY value from /app/config/.env of the pod devlake-lake-0 as secret; For new setup, get it via cmd `openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1`. For more information, please refer to https://github.com/apache/incubator-devlake-helm-chart" }}
 {{- end }}
 
 {{- if and .Values.ui.basicAuth.enabled .Values.ui.basicAuth.autoCreateSecret (or (not .Values.ui.basicAuth.user) (not .Values.ui.basicAuth.password)) }}
-{{- fail "Helm test requires ui user/password"}}
+{{- fail "Helm test requires ui.basicAuth.user and ui.basicAuth.password" }}
 {{- end }}
 
 {{- if and (eq .Values.option.database "mysql") .Values.option.autoCreateSecret (or (not .Values.mysql.username) (not .Values.mysql.password) (not .Values.mysql.database)) }}
-{{- fail "Helm test requires mysql username/password/database"}}
+{{- fail "Helm test requires mysql.username, mysql.password and mysql.database" }}
+{{- end }}
+
+{{- if and .Values.option.autoCreateSecret (eq .Values.option.database "mysql") (not .Values.mysql.useExternal) (not .Values.mysql.rootPassword) }}
+{{- fail "Helm test requires mysql.rootPassword" }}
 {{- end }}
 
 {{- if and (not .Values.grafana.enabled) (not .Values.grafana.external.url) }}
-{{- fail "Helm test requires grafana to be enabled or external grafana url to be provided"}}
+{{- fail "Helm test requires grafana.enabled to be true or grafana.external.url to be provided" }}
 {{- end }}
