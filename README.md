@@ -53,10 +53,9 @@ grafana by url `http://YOUR-NODE-IP:30091`
 Note:
 If you're upgrading from DevLake v0.17.x or earlier versions to v0.18.x or later versions:
 
-1. Please copy the ENCODE_KEY value from /app/config/.env of the lake pod (eg: devlake-lake-0), and replace <ENCRYPTION_SECRET> of below upgrade cmd.
+1. Copy the ENCODE_KEY value from /app/config/.env of the lake pod (e.g. devlake-lake-0), and replace the <ENCRYPTION_SECRET> in the upgrade command below.
 
-2. You will encounter below error when upgrading, that's because the build-in grafana will be replaced by the official grafana dependency. 
-You may need to delete the grafana deployment firstly, please save your data before deleting if data isn't saved in a persistent volume or hostpath.
+2. You may encounter the below error when upgrading because the built-in grafana has been replaced by the official grafana dependency. So you may need to delete the grafana deployment firstly.
 
     - Error: UPGRADE FAILED: cannot patch "devlake-grafana" with kind Deployment: Deployment.apps "devlake-grafana" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/instance":"devlake", "app.kubernetes.io/name":"grafana"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
 
