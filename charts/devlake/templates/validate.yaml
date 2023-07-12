@@ -1,5 +1,7 @@
 {{- if and .Values.lake.encryptionSecret.autoCreateSecret (not .Values.lake.encryptionSecret.secret) }}
-{{- fail "Helm test requires lake.encryptionSecret.secret. For upgrade from 0.17 to 0.18, please copy the ENCODE_KEY value from /app/config/.env of the pod devlake-lake-0 as secret; For new setup, get it via cmd `openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1`. For more information, please refer to https://github.com/apache/incubator-devlake-helm-chart" }}
+{{- fail
+"\n\nHelm test requires lake.encryptionSecret.secret.\n\n  - If you're upgrading from DevLake v0.17.x or earlier versions, please copy the ENCODE_KEY value from /app/config/.env of the lake pod (eg: devlake-lake-0) as encryption secret;\n  - If not, get encryption secret via cmd `openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1`.\n\nFor more information, please check https://github.com/apache/incubator-devlake-helm-chart"
+}}
 {{- end }}
 
 {{- if and .Values.ui.basicAuth.enabled .Values.ui.basicAuth.autoCreateSecret (or (not .Values.ui.basicAuth.user) (not .Values.ui.basicAuth.password)) }}
