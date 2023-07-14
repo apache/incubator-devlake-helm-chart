@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demoaveragerequirementleadtimebyassignee-dashboard-cm
+  labels:
+    {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
+data:
+  demoaveragerequirementleadtimebyassignee.json: |
+{{ .Files.Get "dashboards/DemoAverageRequirementLeadTimeByAssignee.json" | indent 4 }}
+

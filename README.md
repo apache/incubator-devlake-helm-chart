@@ -36,7 +36,8 @@ helm install devlake devlake/devlake
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
-helm install devlake devlake/devlake --version=0.17.0-beta13
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+helm install devlake devlake/devlake --version=0.18.0-beta1 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
 If you are using minikube inside your mac, please use the following command to forward the port:
@@ -55,11 +56,20 @@ Then you can visit:
 config-ui by url `http://YOUR-NODE-IP:30090`
 grafana by url `http://YOUR-NODE-IP:30091`
 
-## Update
+## Upgrade
+
+Note:
+If you're upgrading from DevLake v0.17.x or earlier versions to v0.18.x or later versions:
+
+1. Copy the ENCODE_KEY value from /app/config/.env of the lake pod (e.g. devlake-lake-0), and replace the <ENCRYPTION_SECRET> in the upgrade command below.
+
+2. You may encounter the below error when upgrading because the built-in grafana has been replaced by the official grafana dependency. So you may need to delete the grafana deployment first.
+
+> Error: UPGRADE FAILED: cannot patch "devlake-grafana" with kind Deployment: Deployment.apps "devlake-grafana" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/instance":"devlake", "app.kubernetes.io/name":"grafana"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
 
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=0.17.0-beta13
+helm upgrade --install devlake devlake/devlake --version=0.18.0-beta1 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 ## Uninstall

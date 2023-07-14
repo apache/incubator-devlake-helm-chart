@@ -15,21 +15,25 @@
 # limitations under the License.
 #
 ---
+{{- if .Values.grafana.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "devlake.fullname" . }}-config
+  name: {{ include "devlake.fullname" . }}-grafana-datasource
+  labels:
+    {{ $.Values.grafana.sidecar.datasources.label }}: {{ $.Values.grafana.sidecar.datasources.labelValue | quote }}
 data:
-{{- if and  (eq .Values.option.database "mysql") (not .Values.option.useConnectionDetailsSecret) }}
-  MYSQL_USER: "{{ .Values.mysql.username }}"
-  MYSQL_PASSWORD: "{{ .Values.mysql.password }}"
-  MYSQL_DATABASE: "{{ .Values.mysql.database }}"
-  MYSQL_ROOT_PASSWORD: "{{ .Values.mysql.rootPassword }}"
-  DB_URL: "{{ include "database.url" . }}"
+{{- if eq .Values.option.database "mysql" }}
+  grafana-datasource.yml: |
+    apiVersion: 1
+    datasources:
+      - name: mysql
+        type: mysql
+        url: $MYSQL_URL
+        database: $MYSQL_DATABASE
+        user: $MYSQL_USER
+        secureJsonData:
+          password: $MYSQL_PASSWORD
+        editable: false
 {{- end }}
-  LOGGING_DIR: "{{ .Values.lake.loggingDir }}"
-  LOGGING_LEVEL: "{{ .Values.lake.loggingLevel }}"
-{{- if and .Values.ui.basicAuth.enabled (not .Values.ui.basicAuth.useSecret) }}
-  ADMIN_USER: "{{ .Values.ui.basicAuth.user }}"
-  ADMIN_PASS: "{{ .Values.ui.basicAuth.password }}"
 {{- end }}

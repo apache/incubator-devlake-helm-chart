@@ -51,8 +51,9 @@ spec:
   ports:
     - protocol: TCP
       name: devlake
-      port: 8080
-      targetPort: 8080
+      port: {{ .Values.lake.port }}
+      targetPort: {{ .Values.lake.port }}
+
 ---
 # ui
 apiVersion: v1

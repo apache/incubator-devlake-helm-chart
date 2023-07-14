@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dorabyteam-dashboard-cm
+  labels:
+    {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
+data:
+  dorabyteam.json: |
+{{ .Files.Get "dashboards/DORAByTeam.json" | indent 4 }}
