@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dora-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  dora.json: |
+{{ .Files.Get "dashboards/DORA.json" | indent 4 }}

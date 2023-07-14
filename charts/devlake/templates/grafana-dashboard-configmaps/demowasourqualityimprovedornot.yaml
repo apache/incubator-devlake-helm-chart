@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demowasourqualityimprovedornot-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  demowasourqualityimprovedornot.json: |
+{{ .Files.Get "dashboards/DemoWasOurQualityImprovedOrNot.json" | indent 4 }}

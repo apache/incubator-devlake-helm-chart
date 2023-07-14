@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zentao-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  zentao.json: |
+{{ .Files.Get "dashboards/Zentao.json" | indent 4 }}

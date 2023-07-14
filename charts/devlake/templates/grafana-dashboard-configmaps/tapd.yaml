@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tapd-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  tapd.json: |
+{{ .Files.Get "dashboards/TAPD.json" | indent 4 }}

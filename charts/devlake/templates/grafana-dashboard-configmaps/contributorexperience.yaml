@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: contributorexperience-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  contributorexperience.json: |
+{{ .Files.Get "dashboards/ContributorExperience.json" | indent 4 }}
+

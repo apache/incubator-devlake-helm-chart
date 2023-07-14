@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  sonarqube.json: |
+{{ .Files.Get "dashboards/Sonarqube.json" | indent 4 }}

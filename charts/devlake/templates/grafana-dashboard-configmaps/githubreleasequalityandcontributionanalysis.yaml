@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: githubreleasequalityandcontributionanalysis-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  githubreleasequalityandcontributionanalysis.json: |
+{{ .Files.Get "dashboards/GithubReleaseQualityAndContributionAnalysis.json" | indent 4 }}

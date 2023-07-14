@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weeklybugretro-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  weeklybugretro.json: |
+{{ .Files.Get "dashboards/WeeklyBugRetro.json" | indent 4 }}

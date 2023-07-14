@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demohowfastdowerespondtocustomerrequirements-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  demohowfastdowerespondtocustomerrequirements.json: |
+{{ .Files.Get "dashboards/DemoHowFastDoWeRespondToCustomerRequirements.json" | indent 4 }}

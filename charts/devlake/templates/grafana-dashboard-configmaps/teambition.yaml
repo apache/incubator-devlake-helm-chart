@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: teambition-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  teambition.json: |
+{{ .Files.Get "dashboards/Teambition.json" | indent 4 }}

@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  jenkins.json: |
+{{ .Files.Get "dashboards/Jenkins.json" | indent 4 }}

@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: engineeringthroughputandcycletimeteamview-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  engineeringthroughputandcycletimeteamview.json: |
+{{ .Files.Get "dashboards/EngineeringThroughputAndCycleTimeTeamView.json" | indent 4 }}

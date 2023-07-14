@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demodetailedbuginfo-dashboard-cm
+  labels:
+    grafana_dashboard: "1"
+data:
+  demodetailedbuginfo.json: |
+{{ .Files.Get "dashboards/DemoDetailedBugInfo.json" | indent 4 }}
+
