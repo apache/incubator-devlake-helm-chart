@@ -12,12 +12,6 @@ data:
 {{ .Files.Get "dashboards/ComponentAndFileLevelMetrics.json" | indent 4 }}
   contributorexperience.json: |
 {{ .Files.Get "dashboards/ContributorExperience.json" | indent 4 }}
-  dora.json: |
-{{ .Files.Get "dashboards/DORA.json" | indent 4 }}
-  dorabyteam.json: |
-{{ .Files.Get "dashboards/DORAByTeam.json" | indent 4 }}
-  doradebug.json: |
-{{ .Files.Get "dashboards/DORADebug.json" | indent 4 }}
   demoaveragerequirementleadtimebyassignee.json: |
 {{ .Files.Get "dashboards/DemoAverageRequirementLeadTimeByAssignee.json" | indent 4 }}
   democommitcountbyauthor.json: |
@@ -32,6 +26,12 @@ data:
 {{ .Files.Get "dashboards/DemoIsThisMonthMoreProductiveThanLast.json" | indent 4 }}
   demowasourqualityimprovedornot.json: |
 {{ .Files.Get "dashboards/DemoWasOurQualityImprovedOrNot.json" | indent 4 }}
+  dora.json: |
+{{ .Files.Get "dashboards/DORA.json" | indent 4 }}
+  dorabyteam.json: |
+{{ .Files.Get "dashboards/DORAByTeam.json" | indent 4 }}
+  doradebug.json: |
+{{ .Files.Get "dashboards/DORADebug.json" | indent 4 }}
   engineeringoverview.json: |
 {{ .Files.Get "dashboards/EngineeringOverview.json" | indent 4 }}
   engineeringthroughputandcycletime.json: |
