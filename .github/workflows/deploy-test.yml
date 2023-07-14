@@ -30,6 +30,7 @@ on:
       - charts/devlake/**
       - .github/workflows/deploy-test.yml
       - "!**.md"
+  workflow_dispatch:
 
 jobs:
   deploy-with-helm:
