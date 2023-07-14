@@ -55,7 +55,7 @@ spec:
     - host: {{ .Values.ingress.hostname | quote }}
       http:
         paths:
-          {{- if not .Values.externalGrafana.useExternal }}
+          {{- if .Values.grafana.enabled }}
           {{- if .Values.ingress.useDefaultNginx }}
           - path: /{{ include "devlake.grafanaEndpointPrefix" . }}(/|$)(.*)
           {{- else }}
@@ -94,7 +94,7 @@ spec:
               servicePort: 4000
               {{- end }}
 
-{{- if and .Values.ingress.useDefaultNginx .Values.externalGrafana.useExternal }}
+{{- if and .Values.ingress.useDefaultNginx (not .Values.grafana.enabled) }}
 ---
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
@@ -110,7 +110,7 @@ metadata:
     {{- include "devlake.labels" . | nindent 4 }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/permanent-redirect: {{ .Values.externalGrafana.grafanaUrl }}
+    nginx.ingress.kubernetes.io/permanent-redirect: {{ .Values.grafana.external.url }}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}

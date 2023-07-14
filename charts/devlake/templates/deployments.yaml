@@ -50,31 +50,25 @@ spec:
           imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
           ports:
             - containerPort: 4000
+          {{- if .Values.ui.basicAuth.enabled }}
           envFrom:
-            - configMapRef:
-                name: {{ include "devlake.fullname" . }}-config
-            {{- if .Values.ui.basicAuth.useSecret }}
             - secretRef:
-                name: {{ .Values.ui.basicAuth.secretName }}
-            {{- end }}
+                name: {{ include "devlake.ui.auth.secret" . }}
+          {{- end }}
           env:
             - name: DEVLAKE_ENDPOINT
               value: {{ include "devlake.fullname" . }}-lake.{{ .Release.Namespace }}.svc.cluster.local:8080
-{{- if .Values.externalGrafana.useExternal }}
+{{- if not .Values.grafana.enabled }}
             - name: GRAFANA_ENDPOINT
-              value: {{ .Values.externalGrafana.grafanaUrl }}
+              value: {{ .Values.grafana.external.url }}
             - name: USE_EXTERNAL_GRAFANA
               value: "true"
 {{- else }}
             - name: GRAFANA_ENDPOINT
               value: {{ .Release.Name }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:80
 {{- end }}
-            
-          volumeMounts:
-            {{- if ne .Values.option.localtime "" }}
-            - name: {{ include "devlake.fullname" . }}-ui-localtime
-              mountPath: /etc/localtime
-              readOnly: true
+            {{- with .Values.envs }}
+            {{- toYaml . | nindent 12 }}
             {{- end }}
           {{- with .Values.ui.resources }}
           resources:
@@ -96,10 +90,96 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-        {{- if ne .Values.option.localtime "" }}
-        - name: {{ include "devlake.fullname" . }}-ui-localtime
-          hostPath:
-            path: {{ .Values.option.localtime }}
-            type: File
-        {{- end }}
+
+---
+# devlake
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "devlake.fullname" . }}-lake
+  labels:
+  {{- include "devlake.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+  {{- include "devlake.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "devlake.selectorLabels" . | nindent 8 }}
+        devlakeComponent: lake
+        {{- with .Values.lake.extraLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      annotations:
+        # Force reload on config changes
+        checksum/devlake-config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+    spec:
+      {{- with .Values.lake.securityContext }}
+      securityContext:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
+        {{- with .Values.lake.containerSecurityContext }}
+        securityContext:
+        {{- toYaml . | nindent 12 }}
+      {{- end }}
+      containers:
+        - name: lake
+          {{- if .Values.lake.image.tag }}
+          image: "{{ .Values.lake.image.repository }}:{{ .Values.lake.image.tag }}"
+          {{- else }}
+          image: "{{ .Values.lake.image.repository }}:{{ .Values.imageTag }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.lake.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.lake.port }}
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.lake.port }}
+              scheme: HTTP
+            initialDelaySeconds: 60
+            timeoutSeconds: 30
+          envFrom:
+            - secretRef:
+                name: {{ include "devlake.mysql.secret" . }}
+            - secretRef:
+                name: {{ include "devlake.lake.encryption.secret" . }}
+          env:
+            - name: PORT
+              value: "{{ .Values.lake.port }}"
+            {{- with .Values.lake.envs }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.envs }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.lake.resources }}
+          resources:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.lake.containerSecurityContext }}
+          securityContext:
+          {{- toYaml . | nindent 12 }}
+      {{- end }}
+      {{- if .Values.lake.hostNetwork }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+      {{- with .Values.lake.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.lake.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.lake.tolerations }}
+      tolerations:
+      {{- toYaml . | nindent 8 }}
+  {{- end }}
+
+

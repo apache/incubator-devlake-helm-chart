@@ -17,11 +17,16 @@
 
 # replica count for dev
 replicaCount: 1
-imageTag: v0.17.0-beta13
+imageTag: v0.18.0-beta1
+
+#the common environments for all pods
+envs:
+  - name: TZ
+    value: "UTC"
 
 mysql:
   # if use external mysql server, please set true
-  #   by default using false, chart will create a single mysql instance
+  # by default using false, chart will create a single mysql instance
   useExternal: false
 
   # the external mysql server address
@@ -121,43 +126,34 @@ mysql:
 
 #   containerSecurityContext: {}
 
-externalGrafana:
-  useExternal: false
-  grafanaUrl: ""
-
 # dependency chart values
 grafana:
+  enabled: true
+  #if grafana enabled is false, then external url should be provided
+  external:
+    url: ""
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s/grafana"
-  dashboardProviders:
-    dashboard.yaml:
-      apiVersion: 1
-      providers:
-        - name: default
-          org_id: 1
-          folder: ""
-          type: "file"
-          disableDeletion: false
-          editable: true
-          updateIntervalSeconds: 5
-          allowUiUpdates: true
-          options:
-            path: /var/lib/grafana/dashboards/default
-  dashboardsConfigMaps:
-    default: "grafana-dashboards"
-  datasources:
-    datasource.yaml:
-      apiVersion: 1
-      datasources:
-        - name: mysql
-          type: mysql
-          url: devlake-mysql:3306
-          database: lake
-          user: merico
-          secureJsonData:
-            password: merico
-          editable: false
+  plugins:
+    - grafana-piechart-panel
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+    datasources:
+      enabled: true
+      label: grafana_datasource
+      labelValue: "1"
+  #the secret name should be as same as .Values.option.connectionSecretName
+  envFromSecrets:
+    - name: "devlake-mysql-auth"
+  env:
+    GF_USERS_ALLOW_SIGN_UP: "false"
+    GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+    GF_DASHBOARDS_JSON_ENABLED: "true"
+    GF_LIVE_ALLOWED_ORIGINS: "*"
 
 lake:
   image:
@@ -166,16 +162,31 @@ lake:
     # defaults to imageTag; if set, lake.image.tag will override imageTag
     # tag:
   # storage for config
-  storage:
-    # the storage class for pv, leave empty will using default
-    class: ""
-    size: 100Mi
-  dotenv:
-    API_TIMEOUT: "120s"
-    API_RETRY: "3"
-    API_REQUESTS_PER_HOUR: "10000"
-    PIPELINE_MAX_PARALLEL: "1"
-    IN_SECURE_SKIP_VERIFY: "false"
+  port: 8080
+  envs:
+    - name: API_TIMEOUT
+      value: "120s"
+    - name: API_RETRY
+      value: "3"
+    - name: API_REQUESTS_PER_HOUR
+      value: "10000"
+    - name: PIPELINE_MAX_PARALLEL
+      value: "1"
+    - name: IN_SECURE_SKIP_VERIFY
+      value: "false"
+    - name: LOGGING_DIR
+      value: "/app/logs"
+    # debug, info, warn, error
+    - name: LOGGING_LEVEL
+      value: "info"
+
+  encryptionSecret:
+    # The name of secret which contains keys named ENCRYPTION_SECRET
+    secretName: ""
+    # if secretName is empty, secret should be set
+    # you can generate the encryption secret via cmd `openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1`
+    secret: ""
+    autoCreateSecret: true
 
   # If hostNetwork is true, then dnsPolicy is set to ClusterFirstWithHostNet
   hostNetwork: false
@@ -187,10 +198,6 @@ lake:
   tolerations: []
 
   affinity: {}
-
-  loggingDir: "/app/logs"
-  # debug, info, warn, error
-  loggingLevel: "info"
 
   extraLabels: {}
 
@@ -216,9 +223,8 @@ ui:
     enabled: false
     user: admin
     password: admin
-    useSecret: false
     autoCreateSecret: true
-    secretName: devlake-auth
+    secretName: ""
 
   extraLabels: {}
 
@@ -288,19 +294,8 @@ ingress:
   httpsPort: 443
 
 option:
-  # localtime zone info from host path.
-  localtime: /etc/localtime
-
   # database type, supported: [mysql]
   database: mysql
-
-  # if true, will not add the database connection details
-  # to the configmap and will let them be obtained from a secret.
-  useConnectionDetailsSecret: false
-
-  # the secret name if useConnectionDetailsSecret is true.
-  connectionSecretName: devlake-db-connection
-
-  # if true, will create the secret as part of the chart
-  # when useConnectionDetailSecret is also true.
+  # the existing k8s secret name of db connection auth. The secret name should be as same as .Values.grafana.envFromSecret
+  connectionSecretName: "devlake-mysql-auth"
   autoCreateSecret: true

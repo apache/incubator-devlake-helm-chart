@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: doradebug-dashboard-cm
+  labels:
+    {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
+data:
+  doradebug.json: |
+{{ .Files.Get "dashboards/DORADebug.json" | indent 4 }}
