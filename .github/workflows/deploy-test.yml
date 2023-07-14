@@ -78,7 +78,7 @@ jobs:
           helm dep build charts/devlake
           export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
           echo Node IP: ${NODE_IP}
-          helm install --debug --wait --timeout 300s deploy-test charts/devlake \
+          helm install --wait --timeout 300s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.image.tag=8-debian \
             --set lake.encryptionSecret.secret=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
