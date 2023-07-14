@@ -160,7 +160,8 @@ grafana:
       label: grafana_datasource
       labelValue: "1"
   #the secret name should be as same as .Values.option.connectionSecretName
-  envFromSecret: "devlake-mysql-auth"
+  envFromSecrets:
+    - name: "devlake-mysql-auth"
 
 lake:
   image:
