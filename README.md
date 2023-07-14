@@ -23,7 +23,15 @@ Thanks to @matrixji who initiated all content in `apache/incubator-devlake`, thi
 
 ## Install
 
-To install the chart with release name `devlake`:
+1. Install the latest stable version with release name `devlake`
+
+```shell
+helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
+helm repo update
+helm install devlake devlake/devlake
+```
+
+2. Install the latest development version with release name `devlake`:
 
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
