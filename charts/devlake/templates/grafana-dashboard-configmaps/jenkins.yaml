@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: jenkins-dashboard-cm
   labels:
-    grafana_dashboard: "1"
+    {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:
   jenkins.json: |
 {{ .Files.Get "dashboards/Jenkins.json" | indent 4 }}

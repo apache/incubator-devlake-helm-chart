@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: componentandfilelevelmetrics-dashboard-cm
   labels:
-    grafana_dashboard: "1"
+    {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:
   componentandfilelevelmetrics.json: |
 {{ .Files.Get "dashboards/ComponentAndFileLevelMetrics.json" | indent 4 }}

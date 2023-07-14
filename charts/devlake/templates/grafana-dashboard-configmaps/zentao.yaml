@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: zentao-dashboard-cm
   labels:
-    grafana_dashboard: "1"
+    {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:
   zentao.json: |
 {{ .Files.Get "dashboards/Zentao.json" | indent 4 }}

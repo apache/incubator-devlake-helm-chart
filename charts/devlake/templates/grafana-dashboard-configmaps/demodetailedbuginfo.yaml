@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: demodetailedbuginfo-dashboard-cm
   labels:
-    grafana_dashboard: "1"
+    {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:
   demodetailedbuginfo.json: |
 {{ .Files.Get "dashboards/DemoDetailedBugInfo.json" | indent 4 }}

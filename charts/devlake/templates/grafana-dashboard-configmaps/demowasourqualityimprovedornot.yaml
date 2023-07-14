@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: demowasourqualityimprovedornot-dashboard-cm
   labels:
-    grafana_dashboard: "1"
+    {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:
   demowasourqualityimprovedornot.json: |
 {{ .Files.Get "dashboards/DemoWasOurQualityImprovedOrNot.json" | indent 4 }}
