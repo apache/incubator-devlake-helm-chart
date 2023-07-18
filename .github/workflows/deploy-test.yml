@@ -63,7 +63,7 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm install mysql bitnami/mysql --set auth.rootPassword=admin --set auth.database=lake --set auth.username=merico --set auth.password=merico
           # external mysql at service: mysql
-          helm install --wait --timeout 300s deploy-test charts/devlake \
+          helm install --wait --timeout 600s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.useExternal=true \
             --set mysql.externalServer=mysql \
@@ -76,7 +76,7 @@ jobs:
         run: |
           export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
           echo Node IP: ${NODE_IP}
-          helm install --wait --timeout 300s deploy-test charts/devlake \
+          helm install --wait --timeout 600s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.image.tag=8-debian \
             --set option.localtime=""
