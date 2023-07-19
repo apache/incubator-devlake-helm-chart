@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: engineeringthroughputandcycletime-dashboard-cm
+  name: {{ include "devlake.fullname" . }}-engineeringthroughputandcycletime-dashboard-cm
   labels:
     {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:

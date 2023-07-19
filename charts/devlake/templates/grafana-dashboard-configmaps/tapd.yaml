@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tapd-dashboard-cm
+  name: {{ include "devlake.fullname" . }}-tapd-dashboard-cm
   labels:
     {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:
