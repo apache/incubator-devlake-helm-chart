@@ -70,14 +70,14 @@ grafana by url `http://YOUR-NODE-IP:30091`
 
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=0.18.0-beta2 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+helm upgrade devlake devlake/devlake --version=0.18.0-beta2 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 **If you're upgrading from DevLake v0.18.x or later versions:**
 
 ```shell
 helm repo update
-helm upgrade --install devlake devlake/devlake --version=0.18.0-beta2
+helm upgrade devlake devlake/devlake --version=0.18.0-beta2
 ```
 
 ## Uninstall
