@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: democommitcountbyauthor-dashboard-cm
+  name: {{ include "devlake.fullname" . }}-democommitcountbyauthor-dashboard-cm
   labels:
     {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:

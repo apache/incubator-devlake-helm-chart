@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: weeklycommunityretro-dashboard-cm
+  name: {{ include "devlake.fullname" . }}-weeklycommunityretro-dashboard-cm
   labels:
     {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:

@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: demoaveragerequirementleadtimebyassignee-dashboard-cm
+  name: {{ include "devlake.fullname" . }}-demoaveragerequirementleadtimebyassignee-dashboard-cm
   labels:
     {{ $.Values.grafana.sidecar.dashboards.label }}: {{ $.Values.grafana.sidecar.dashboards.labelValue | quote }}
 data:
