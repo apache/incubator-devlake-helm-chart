@@ -37,7 +37,8 @@ _Notes for mac users with minikube:_
 
 ### 2.2 Upgrade
 
-Note:
+**Note:**
+
 **If you're upgrading from DevLake v0.17.x or earlier versions to v0.18.x or later versions:**
 
 1. Copy the ENCODE_KEY value from /app/config/.env of the lake pod (e.g. devlake-lake-0), and replace the <ENCRYPTION_SECRET> in the upgrade command below.
