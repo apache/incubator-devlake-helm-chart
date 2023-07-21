@@ -132,16 +132,13 @@ grafana:
   #if grafana enabled is false, then external url should be provided
   external:
     url: ""
+  image:
+    repository: devlake.docker.scarf.sh/apache/devlake-dashboard
+    tag: v0.18.0-beta2
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s/grafana"
-  plugins:
-    - grafana-piechart-panel
   sidecar:
-    dashboards:
-      enabled: true
-      label: grafana_dashboard
-      labelValue: "1"
     datasources:
       enabled: true
       label: grafana_datasource
@@ -149,11 +146,6 @@ grafana:
   #the secret name should be as same as .Values.option.connectionSecretName
   envFromSecrets:
     - name: "devlake-mysql-auth"
-  env:
-    GF_USERS_ALLOW_SIGN_UP: "false"
-    GF_SERVER_SERVE_FROM_SUB_PATH: "true"
-    GF_DASHBOARDS_JSON_ENABLED: "true"
-    GF_LIVE_ALLOWED_ORIGINS: "*"
 
 lake:
   image:
