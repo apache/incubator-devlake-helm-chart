@@ -112,9 +112,6 @@ spec:
         {{- with .Values.lake.extraLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      annotations:
-        # Force reload on config changes
-        checksum/devlake-config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
       {{- with .Values.lake.securityContext }}
       securityContext:
