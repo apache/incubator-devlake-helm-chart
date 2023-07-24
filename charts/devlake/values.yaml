@@ -138,11 +138,6 @@ grafana:
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s/grafana"
-  sidecar:
-    datasources:
-      enabled: true
-      label: grafana_datasource
-      labelValue: "1"
   #the secret name should be as same as .Values.option.connectionSecretName
   envFromSecrets:
     - name: "devlake-mysql-auth"
