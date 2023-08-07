@@ -28,13 +28,13 @@ keywords:
 type: application
 
 # Chart version
-version: 0.18.0-beta3
+version: 0.18.0-beta4
 
 # devlake version
-appVersion: v0.18.0-beta3
+appVersion: v0.18.0-beta4
 
 dependencies:
-- condition: grafana.enabled
-  name: grafana
-  version: "6.56.6"
-  repository: "https://grafana.github.io/helm-charts"
+  - condition: grafana.enabled
+    name: grafana
+    version: "6.56.6"
+    repository: "https://grafana.github.io/helm-charts"
