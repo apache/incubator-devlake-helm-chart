@@ -170,7 +170,7 @@ The database url
 */}}
 {{- define "database.url" -}}
 {{- if eq .Values.option.database "mysql" -}}
-mysql://{{ .Values.mysql.username }}:{{ .Values.mysql.password }}@{{ include "mysql.server" . }}:{{ include "mysql.port" . }}/{{ .Values.mysql.database }}?charset=utf8mb4&parseTime=True
+mysql://{{ .Values.mysql.username }}:{{ .Values.mysql.password }}@{{ include "mysql.server" . }}:{{ include "mysql.port" . }}/{{ .Values.mysql.database }}?charset=utf8mb4&parseTime=True&loc={{ .Values.envs.TZ }}
 {{- end }}
 {{- end }}
 
