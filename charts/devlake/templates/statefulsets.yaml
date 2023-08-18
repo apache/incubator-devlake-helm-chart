@@ -79,10 +79,11 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ include "devlake.mysql.secret" . }}
-          {{- with .Values.envs }}
           env:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- range $key, $value := .Values.envs }}
+            - name: "{{ tpl $key $ }}"
+              value: "{{ tpl (print $value) $ }}"
+            {{- end }}
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: {{ include "devlake.fullname" . }}-mysql-data

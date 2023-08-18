@@ -17,12 +17,11 @@
 
 # replica count for dev
 replicaCount: 1
-imageTag: v0.18.0-beta5
+imageTag: v0.18.0-beta6
 
 #the common environments for all pods
 envs:
-  - name: TZ
-    value: "UTC"
+  TZ: "UTC"
 
 mysql:
   # if use external mysql server, please set true
@@ -134,13 +133,16 @@ grafana:
     url: ""
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
-    tag: v0.18.0-beta5
+    tag: v0.18.0-beta6
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s/grafana"
   #the secret name should be as same as .Values.option.connectionSecretName
   envFromSecrets:
     - name: "devlake-mysql-auth"
+  #keep grafana timezone same as other pods, which is set by .Values.envs.TZ
+  env:
+    TZ: "UTC"
 
 lake:
   image:
