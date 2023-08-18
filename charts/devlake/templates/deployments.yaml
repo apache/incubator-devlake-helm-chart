@@ -67,8 +67,9 @@ spec:
             - name: GRAFANA_ENDPOINT
               value: {{ .Release.Name }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:80
 {{- end }}
-            {{- with .Values.envs }}
-            {{- toYaml . | nindent 12 }}
+            {{- range $key, $value := .Values.envs }}
+            - name: "{{ tpl $key $ }}"
+              value: "{{ tpl (print $value) $ }}"
             {{- end }}
           {{- with .Values.ui.resources }}
           resources:
@@ -151,9 +152,10 @@ spec:
             {{- with .Values.lake.envs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
-            {{- with .Values.envs }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- range $key, $value := .Values.envs }}
+            - name: "{{ tpl $key $ }}"
+              value: "{{ tpl (print $value) $ }}"
+            {{- end }}
           {{- with .Values.lake.resources }}
           resources:
           {{- toYaml . | nindent 12 }}
