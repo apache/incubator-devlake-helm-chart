@@ -84,9 +84,11 @@ spec:
             - name: "{{ tpl $key $ }}"
               value: "{{ tpl (print $value) $ }}"
             {{- end }}
+          {{- if or (eq .Values.mysql.storage.type "pvc") (eq .Values.mysql.storage.type "hostpath") }}
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: {{ include "devlake.fullname" . }}-mysql-data
+          {{- end }}
           {{- with .Values.mysql.containerSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
@@ -103,6 +105,14 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if eq .Values.mysql.storage.type "hostpath" }}
+      volumes:
+        - name: {{ include "devlake.fullname" . }}-mysql-data
+          hostPath:
+            path: {{ .Values.mysql.storage.hostPath }}
+            type: DirectoryOrCreate
+      {{- end }}
+  {{- if eq .Values.mysql.storage.type "pvc" }}
   volumeClaimTemplates:
     - metadata:
         name: {{ include "devlake.fullname" . }}-mysql-data
@@ -114,6 +124,7 @@ spec:
         resources:
           requests:
             storage: "{{ .Values.mysql.storage.size }}"
+  {{- end }}
 {{- end }}
 {{- end }}
 
