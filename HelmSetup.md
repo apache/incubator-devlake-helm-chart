@@ -24,7 +24,7 @@ To install the chart with release name `devlake`:
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
-helm install devlake devlake/devlake --version=0.18.0-beta6 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+helm install devlake devlake/devlake --version=0.18.0-beta7 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
 Visit your devlake from the node port (32001 by default): http://YOUR-NODE-IP:32001.
@@ -49,14 +49,14 @@ _Notes for mac users with minikube:_
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.18.0-beta6 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+helm upgrade devlake devlake/devlake --version=0.18.0-beta7 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 **If you're upgrading from DevLake v0.18.x or later versions:**
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.18.0-beta6
+helm upgrade devlake devlake/devlake --version=0.18.0-beta7
 ```
 
 ### 2.3 Uninstall
@@ -136,7 +136,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ----------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------ |
 | replicaCount                              | Replica Count for devlake, currently not used                                         | 1                        |
 | imageTag                                  | The version tag for all images                                                        | see Values.yaml          |
-| envs                                      | The common envs for all pods                                                          | []                       |
+| envs                                      | The common envs for all pods                                                          | {TZ: "UTC"}              |
 | mysql.useExternal                         | If use external mysql server, set true                                                | false                    |
 | mysql.externalServer                      | External mysql server address                                                         | 127.0.0.1                |
 | mysql.externalPort                        | External mysql server port                                                            | 3306                     |
@@ -144,14 +144,18 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | mysql.password                            | password for mysql                                                                    | merico                   |
 | mysql.database                            | database for mysql                                                                    | lake                     |
 | mysql.rootPassword                        | root password for mysql                                                               | admin                    |
+| mysql.storage.type                        | storage type, pvc or hostpath                                                         | pvc                      |
 | mysql.storage.class                       | storage class for mysql's volume                                                      | ""                       |
 | mysql.storage.size                        | volume size for mysql's data                                                          | 5Gi                      |
+| mysql.storage.hostPath                    | the host path if mysql.storage.type is hostpath                                       | /devlake/mysql/data      |
 | mysql.image.repository                    | repository for mysql's image                                                          | mysql                    |
 | mysql.image.tag                           | image tag for mysql's image                                                           | 8                        |
 | mysql.image.pullPolicy                    | pullPolicy for mysql's image                                                          | IfNotPresent             |
 | mysql.extraLabels                         | extra labels for mysql's statefulset                                                  | {}                       |
 | mysql.securityContext                     | pod security context values                                                           | {}                       |
 | mysql.containerSecurityContext            | container security context values                                                     | {}                       |
+| mysql.service.type                        | mysql service type                                                                    | ClusterIP                |
+| mysql.service.nodePort                    | specify mysql nodeport                                                                | ""                       |
 | grafana                                   | dashboard, datasource, etc. settings for grafana, installed by grafana official chart |                          |
 | lake.image.repository                     | repository for lake's image                                                           | apache/devlake           |
 | lake.image.pullPolicy                     | pullPolicy for lake's image                                                           | Always                   |
@@ -184,7 +188,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | service.ingress.httpPort                  | The http port for ingress                                                             | 80                       |
 | service.ingress.httpsPort                 | The https port for ingress                                                            | 443                      |
 | option.database                           | The database type, valids: mysql                                                      | mysql                    |
-| option.connectionSecretName               | The database connection details secret name                                           | "devlake-mysql-auth"                       |
+| option.connectionSecretName               | The database connection details secret name                                           | devlake-mysql-auth       |
 | option.autoCreateSecret                   | If let the helm chart create the secret                                               | true                     |
 
 
