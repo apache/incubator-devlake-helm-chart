@@ -17,7 +17,7 @@
 
 # replica count for dev
 replicaCount: 1
-imageTag: v0.18.0-beta6
+imageTag: v0.18.0-beta7
 
 #the common environments for all pods
 envs:
@@ -48,9 +48,12 @@ mysql:
 
   # storage for mysql
   storage:
+    # pvc or hostpath
+    type: pvc
     # the storage class for pv, leave empty will using default
     class: ""
     size: 50Gi
+    hostPath: /devlake/mysql/data
 
   # image for mysql
   image:
@@ -75,6 +78,10 @@ mysql:
   securityContext: {}
 
   containerSecurityContext: {}
+
+  service:
+    type: "ClusterIP"
+    nodePort: ""
 
 # pgsql:
 #   # if use external pgsql server, please set true
@@ -133,7 +140,7 @@ grafana:
     url: ""
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
-    tag: v0.18.0-beta6
+    tag: v0.18.0-beta7
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s/grafana"
