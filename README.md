@@ -37,7 +37,7 @@ helm install devlake devlake/devlake
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
-helm install devlake devlake/devlake --version=0.18.1-beta1 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+helm install devlake devlake/devlake --version=0.19.0-beta2 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
 If you are using minikube inside your mac, please use the following command to forward the port:
@@ -70,14 +70,14 @@ grafana by url `http://YOUR-NODE-IP:30091`
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.18.1-beta1 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+helm upgrade devlake devlake/devlake --version=0.19.0-beta2 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 **If you're upgrading from DevLake v0.18.x or later versions:**
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.18.1-beta1
+helm upgrade devlake devlake/devlake --version=0.19.0-beta2
 ```
 
 ## Uninstall
