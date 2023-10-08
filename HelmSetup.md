@@ -243,8 +243,8 @@ The secret name needs to be the same as the value `option.connectionSecretName`
 
 Yes, the devlake helm chart supports using an external Grafana. You can set the following values while installing from helm:
 
-- `grafana.useExternal`: this should be `true`
-- `grafana.externalUrl`: use your Grafana's URL, e.g. `https://grafana.example.com`
+- `grafana.enabled`: this should be `false`
+- `grafana.external.url`: use your Grafana's URL, e.g. `https://grafana.example.com`
 
 Here is the example:
 
@@ -253,8 +253,8 @@ helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
 helm install devlake devlake/devlake \
-  --set grafana.useExternal=true \
-  --set grafana.externalUrl=https://grafana.example.com
+  --set grafana.enabled=false \
+  --set grafana.external.url=https://grafana.example.com
   --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 
 ```
