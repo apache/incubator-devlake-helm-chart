@@ -136,7 +136,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ----------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------ |
 | replicaCount                              | Replica Count for devlake, currently not used                                         | 1                        |
 | imageTag                                  | The version tag for all images                                                        | see Values.yaml          |
-| envs                                      | The common envs for all pods                                                          | {TZ: "UTC"}              |
+| commonEnvs                                | The common envs for all pods except grafana                                           | {TZ: "UTC"}              |
 | mysql.useExternal                         | If use external mysql server, set true                                                | false                    |
 | mysql.externalServer                      | External mysql server address                                                         | 127.0.0.1                |
 | mysql.externalPort                        | External mysql server port                                                            | 3306                     |
@@ -161,6 +161,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | lake.image.pullPolicy                     | pullPolicy for lake's image                                                           | Always                   |
 | lake.port                                 | the port of devlake backend                                                           | 8080                     |
 | lake.envs                                 | initial envs for lake                                                                 | see Values.yaml          |
+| lake.extraEnvsFromSecret                  | existing secret name of extra envs                                                    | ""                       |
 | lake.encryptionSecret.secretName          | the k8s secret name for ENCRYPTION_SECRET                                             | ""                       |
 | lake.encryptionSecret.secret              | the secret for ENCRYPTION_SECRET                                                      | ""                       |
 | lake.encryptionSecret.autoCreateSecret    | whether let the helm chart create the secret                                          | true                     |
