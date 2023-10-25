@@ -19,8 +19,8 @@
 replicaCount: 1
 imageTag: v0.19.0-beta6
 
-#the common environments for all pods
-envs:
+#the common environments for all pods except grafana, grafana needs to be set in grafana section seperately
+commonEnvs:
   TZ: "UTC"
 
 mysql:
@@ -141,6 +141,7 @@ grafana:
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
     tag: v0.19.0-beta6
+  adminPassword: ""
   grafana.ini:
     server:
       root_url: "%(protocol)s://%(domain)s/grafana"
@@ -151,6 +152,7 @@ grafana:
   env:
     TZ: "UTC"
 
+
 lake:
   image:
     repository: devlake.docker.scarf.sh/apache/devlake
@@ -160,22 +162,16 @@ lake:
   # storage for config
   port: 8080
   envs:
-    - name: API_TIMEOUT
-      value: "120s"
-    - name: API_RETRY
-      value: "3"
-    - name: API_REQUESTS_PER_HOUR
-      value: "10000"
-    - name: PIPELINE_MAX_PARALLEL
-      value: "1"
-    - name: IN_SECURE_SKIP_VERIFY
-      value: "false"
-    - name: LOGGING_DIR
-      value: "/app/logs"
+    API_TIMEOUT: "120s"
+    API_RETRY: "3"
+    API_REQUESTS_PER_HOUR: "10000"
+    PIPELINE_MAX_PARALLEL: "1"
+    IN_SECURE_SKIP_VERIFY: "false"
+    LOGGING_DIR: "/app/logs"
     # debug, info, warn, error
-    - name: LOGGING_LEVEL
-      value: "info"
-
+    LOGGING_LEVEL: "info"
+  #extra envs from an existing secret
+  extraEnvsFromSecret: ""
   encryptionSecret:
     # The name of secret which contains keys named ENCRYPTION_SECRET
     secretName: ""
