@@ -43,6 +43,17 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: take-data-dir-ownership
+          image: alpine:3
+          command:
+            - chown
+            - -R
+            - 999:999
+            - /var/lib/mysql
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
       containers:
         - name: mysql
           image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
