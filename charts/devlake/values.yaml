@@ -62,7 +62,7 @@ mysql:
     pullPolicy: IfNotPresent
 
   # init containers for mysql if have
-  initContainers: {}
+  initContainers: []
   
   # resources config for mysql if have
   resources: {}
