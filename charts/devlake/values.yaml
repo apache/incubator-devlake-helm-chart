@@ -148,7 +148,7 @@ grafana:
   #the secret name should be as same as .Values.option.connectionSecretName
   envFromSecrets:
     - name: "devlake-mysql-auth"
-  #keep grafana timezone same as other pods, which is set by .Values.envs.TZ
+  #keep grafana timezone same as other pods, which is set by .Values.commonEnvs.TZ
   env:
     TZ: "UTC"
 
