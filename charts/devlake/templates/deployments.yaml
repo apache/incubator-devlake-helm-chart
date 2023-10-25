@@ -67,7 +67,7 @@ spec:
             - name: GRAFANA_ENDPOINT
               value: {{ .Release.Name }}-grafana.{{ .Release.Namespace }}.svc.cluster.local:80
 {{- end }}
-            {{- range $key, $value := .Values.envs }}
+            {{- range $key, $value := .Values.commonEnvs }}
             - name: "{{ tpl $key $ }}"
               value: "{{ tpl (print $value) $ }}"
             {{- end }}
@@ -146,15 +146,20 @@ spec:
                 name: {{ include "devlake.mysql.secret" . }}
             - secretRef:
                 name: {{ include "devlake.lake.encryption.secret" . }}
+            {{- if .Values.lake.extraEnvsFromSecret }}
+            - secretRef:
+                name: {{ .Values.lake.extraEnvsFromSecret }}
+            {{- end }}
           env:
             - name: PORT
               value: "{{ .Values.lake.port }}"
-            {{- with .Values.lake.envs }}
-            {{- toYaml . | nindent 12 }}
+            {{- range $key1, $value1 := .Values.lake.envs }}
+            - name: "{{ tpl $key1 $ }}"
+              value: "{{ tpl (print $value1) $ }}"
             {{- end }}
-            {{- range $key, $value := .Values.envs }}
-            - name: "{{ tpl $key $ }}"
-              value: "{{ tpl (print $value) $ }}"
+            {{- range $key2, $value2 := .Values.commonEnvs }}
+            - name: "{{ tpl $key2 $ }}"
+              value: "{{ tpl (print $value2) $ }}"
             {{- end }}
           {{- with .Values.lake.resources }}
           resources:

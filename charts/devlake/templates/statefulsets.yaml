@@ -80,7 +80,7 @@ spec:
             - secretRef:
                 name: {{ include "devlake.mysql.secret" . }}
           env:
-            {{- range $key, $value := .Values.envs }}
+            {{- range $key, $value := .Values.commonEnvs }}
             - name: "{{ tpl $key $ }}"
               value: "{{ tpl (print $value) $ }}"
             {{- end }}
