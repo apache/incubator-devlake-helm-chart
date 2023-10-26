@@ -151,7 +151,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | mysql.image.repository                    | repository for mysql's image                                                          | mysql                    |
 | mysql.image.tag                           | image tag for mysql's image                                                           | 8                        |
 | mysql.image.pullPolicy                    | pullPolicy for mysql's image                                                          | IfNotPresent             |
-| mysql.initContainers                    | init containers to run to complete before mysql                                                         | []             |
+| mysql.initContainers                      | init containers to run to complete before mysql                                                         | []             |
 | mysql.extraLabels                         | extra labels for mysql's statefulset                                                  | {}                       |
 | mysql.securityContext                     | pod security context values                                                           | {}                       |
 | mysql.containerSecurityContext            | container security context values                                                     | {}                       |
