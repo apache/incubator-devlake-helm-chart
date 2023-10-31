@@ -61,6 +61,9 @@ mysql:
     tag: 8
     pullPolicy: IfNotPresent
 
+  # init containers for mysql if have
+  initContainers: []
+  
   # resources config for mysql if have
   resources: {}
 
