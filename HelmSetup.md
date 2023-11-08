@@ -126,6 +126,15 @@ helm install devlake devlake/devlake \
 
 After deployed, visit devlake: https://devlake-0.example.com:8443, and grafana at https://devlake-0.example.com:8443/grafana
 
+### 3.4 Specify grafana admin password
+
+```
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+helm install devlake devlake/devlake \
+  --set grafana.adminPassword=<your password> \
+  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+```
+
 ---
 
 ## 4 Parameters
@@ -257,6 +266,22 @@ ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | hea
 helm install devlake devlake/devlake \
   --set grafana.enabled=false \
   --set grafana.external.url=https://grafana.example.com
+  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+
+```
+
+4. How to set the Grafana admin password? If not explicitly set, a random password will be generated and saved in a Kubernetes Secret
+
+- `grafana.adminPassword`: your password
+
+Here is the example:
+
+```
+helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
+helm repo update
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+helm install devlake devlake/devlake \
+  --set grafana.adminPassword=<your password> \
   --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 
 ```
