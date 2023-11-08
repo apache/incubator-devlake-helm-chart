@@ -126,6 +126,15 @@ helm install devlake devlake/devlake \
 
 After deployed, visit devlake: https://devlake-0.example.com:8443, and grafana at https://devlake-0.example.com:8443/grafana
 
+### 3.4 Specify grafana admin password
+
+```
+ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+helm install devlake devlake/devlake \
+  --set grafana.adminPassword=<your password> \
+  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+```
+
 ---
 
 ## 4 Parameters
