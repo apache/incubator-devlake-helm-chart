@@ -69,10 +69,10 @@ spec:
               service:
                 name: {{ include "devlake.fullname" . }}-grafana
                 port:
-                  number: 3000
+                  number: {{ .Values.grafana.service.port }}
               {{- else }}
               serviceName: {{ include "devlake.fullname" . }}-grafana
-              servicePort: 3000
+              servicePort: {{ .Values.grafana.service.port }}
               {{- end }}
           {{- end }}
           {{- if .Values.ingress.useDefaultNginx }}
