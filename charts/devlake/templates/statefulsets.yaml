@@ -39,7 +39,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       annotations:
-        {{- toYaml .Values.mysql.annotations | nindent 8 }}
+        {{- toYaml .Values.mysql.podAnnotations | nindent 8 }}
     spec:
       {{- with .Values.mysql.securityContext }}
       securityContext:

@@ -82,7 +82,7 @@ mysql:
 
   containerSecurityContext: {}
 
-  annotations: {}
+  podAnnotations: {}
 
   service:
     type: "ClusterIP"
@@ -204,7 +204,7 @@ lake:
 
   containerSecurityContext: {}
 
-  annotations: {}
+  podAnnotations: {}
 
 ui:
   image:
@@ -229,7 +229,7 @@ ui:
 
   extraLabels: {}
 
-  annotations: {}
+  podAnnotations: {}
 
   ## SecurityContext holds pod-level security attributes and common container settings.
   ## This defaults to non root user with uid 101 and gid 1000. *v1.PodSecurityContext  false
