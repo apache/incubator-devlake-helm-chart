@@ -67,12 +67,12 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ include "devlake.fullname" . }}-grafana
+                name: {{ include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) }}
                 port:
-                  number: 3000
+                  number: {{ .Values.grafana.service.port }}
               {{- else }}
-              serviceName: {{ include "devlake.fullname" . }}-grafana
-              servicePort: 3000
+              serviceName: {{ include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) }}
+              servicePort: {{ .Values.grafana.service.port }}
               {{- end }}
           {{- end }}
           {{- if .Values.ingress.useDefaultNginx }}

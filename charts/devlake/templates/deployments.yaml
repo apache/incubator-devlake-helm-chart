@@ -125,8 +125,8 @@ spec:
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
         {{- with .Values.lake.containerSecurityContext }}
-        securityContext:
-        {{- toYaml . | nindent 12 }}
+          securityContext:
+          {{- toYaml . | nindent 12 }}
       {{- end }}
       containers:
         - name: lake
