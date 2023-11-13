@@ -35,6 +35,8 @@ spec:
         {{- with .Values.ui.extraLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+      annotations:
+        {{- toYaml .Values.ui.podAnnotations | nindent 8 }}
     spec:
       {{- with .Values.ui.securityContext }}
       securityContext:
@@ -113,6 +115,8 @@ spec:
         {{- with .Values.lake.extraLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      annotations:
+        {{- toYaml .Values.lake.podAnnotations | nindent 8 }}
     spec:
       {{- with .Values.lake.securityContext }}
       securityContext:

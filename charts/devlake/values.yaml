@@ -82,6 +82,8 @@ mysql:
 
   containerSecurityContext: {}
 
+  podAnnotations: {}
+
   service:
     type: "ClusterIP"
     nodePort: ""
@@ -134,6 +136,8 @@ mysql:
 #   securityContext: {}
 
 #   containerSecurityContext: {}
+
+#   annotations: {}
 
 # dependency chart values
 grafana:
@@ -200,6 +204,8 @@ lake:
 
   containerSecurityContext: {}
 
+  podAnnotations: {}
+
 ui:
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-config-ui
@@ -222,6 +228,8 @@ ui:
     secretName: ""
 
   extraLabels: {}
+
+  podAnnotations: {}
 
   ## SecurityContext holds pod-level security attributes and common container settings.
   ## This defaults to non root user with uid 101 and gid 1000. *v1.PodSecurityContext  false
