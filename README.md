@@ -38,7 +38,7 @@ helm install devlake devlake/devlake --set lake.encryptionSecret.secret=$ENCRYPT
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
-helm install devlake devlake/devlake --version=0.19.0-beta6 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+helm install devlake devlake/devlake --version=0.19.1-beta1 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
 If you are using minikube inside your mac, please use the following command to forward the port:
@@ -71,14 +71,14 @@ grafana by url `http://YOUR-NODE-IP:30091`
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.19.0-beta6 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+helm upgrade devlake devlake/devlake --version=0.19.1-beta1 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 **If you're upgrading from DevLake v0.18.x or later versions:**
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.19.0-beta6
+helm upgrade devlake devlake/devlake --version=0.19.1-beta1
 ```
 
 ## Uninstall
@@ -88,18 +88,6 @@ To uninstall/delete the `devlake` release:
 ```shell
 helm uninstall devlake
 ```
-
-## Original pr in apache/incubator-devlake
-
-https://github.com/apache/incubator-devlake/pulls?q=is%3Apr+helm+is%3Aclosed
-
-## How to upgrade helm chart after releasing new devlake images
-
-1. In [values.yaml](https://github.com/apache/incubator-devlake-helm-chart/blob/main/charts/devlake/values.yaml), change {{ imageTag }} to current image tag
-2. In [chart.yaml](https://github.com/apache/incubator-devlake-helm-chart/blob/main/charts/devlake/Chart.yaml), change {{ version }}, {{ appVersion }} to current image tag
-3. If we want to release a new chart without new release of devlake, we should increase both chart version and image tag.
-   - For example, right now both versions are 0.16.1-beta1, if we make change on chart, we should set chart-version to 0.16.1-beta1, also, we need to crate new images for devlake with tag 0.16.1-beta1
-4. If we release any new image for devlake, we just need to set a new version for chart.
 
 ## Original pr in apache/incubator-devlake
 
