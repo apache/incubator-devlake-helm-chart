@@ -35,7 +35,7 @@ jobs:
           helm repo add grafana https://grafana.github.io/helm-charts
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: ./.github/actions/chart-releaser-action
         with:
           charts_dir: charts
         env:
