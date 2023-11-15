@@ -38,7 +38,6 @@ jobs:
         uses: ./.github/actions/chart-releaser-action
         with:
           charts_dir: charts
-          pages_branch: main
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_SKIP_EXISTING: false
