@@ -20,7 +20,7 @@ github:
     issues: true
     projects: false
     
-  ghp_branch:  gh-pages
+  ghp_branch:  main
   ghp_path:    /
   enabled_merge_buttons:
     # only allow squash merge
