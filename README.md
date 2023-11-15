@@ -32,7 +32,7 @@ ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | hea
 helm install devlake devlake/devlake --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
-2. Install the latest development version with release name `devlake`:
+2. Install the latest development version with release name `devlake`: 
 
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
