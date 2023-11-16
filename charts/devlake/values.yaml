@@ -17,7 +17,7 @@
 
 # replica count for dev
 replicaCount: 1
-imageTag: v0.19.1-beta1
+imageTag: v0.19.1-beta2
 
 #the common environments for all pods except grafana, grafana needs to be set in grafana section seperately
 commonEnvs:
@@ -147,7 +147,7 @@ grafana:
     url: ""
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
-    tag: v0.19.1-beta1
+    tag: v0.19.1-beta2
   adminPassword: ""
   grafana.ini:
     server:
