@@ -158,12 +158,12 @@ spec:
             - name: PORT
               value: "{{ .Values.lake.port }}"
             {{- range $key1, $value1 := .Values.lake.envs }}
-            - name: "{{ tpl $key1 $ }}"
-              value: "{{ tpl (print $value1) $ }}"
+            - name: "{{ $key1 }}"
+              value: "{{ $value1 }}"
             {{- end }}
             {{- range $key2, $value2 := .Values.commonEnvs }}
-            - name: "{{ tpl $key2 $ }}"
-              value: "{{ tpl (print $value2) $ }}"
+            - name: "{{ $key2 }}"
+              value: "{{ $value2 }}"
             {{- end }}
           {{- with .Values.lake.resources }}
           resources:
