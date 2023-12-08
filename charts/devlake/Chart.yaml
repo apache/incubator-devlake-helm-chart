@@ -33,6 +33,7 @@ version: 0.20.0-beta4
 # devlake version
 appVersion: v0.20.0-beta4
 
+
 dependencies:
   - condition: grafana.enabled
     name: grafana
