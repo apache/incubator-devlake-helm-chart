@@ -32,7 +32,7 @@ ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | hea
 helm install devlake devlake/devlake --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
-2. Install the latest development version with release name `devlake`: 
+2. Install the latest development version with release name `devlake`:
 
 ```shell
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
@@ -72,7 +72,6 @@ grafana by url `http://YOUR-NODE-IP:30091`
 ```shell
 helm repo update
 helm upgrade devlake devlake/devlake --version=0.20.0-beta4 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
-helm upgrade devlake devlake/devlake --version=0.20.0-beta3 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 **If you're upgrading from DevLake v0.18.x or later versions:**
