@@ -206,6 +206,16 @@ lake:
 
   podAnnotations: {}
 
+  livenessProbe:
+    httpGet:
+      path: /ping
+      port: 8080
+      scheme: HTTP
+    initialDelaySeconds: 60
+    timeoutSeconds: 30
+
+  readinessProbe: {}
+
 ui:
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-config-ui
