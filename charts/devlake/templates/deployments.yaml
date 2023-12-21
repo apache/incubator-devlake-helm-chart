@@ -138,13 +138,14 @@ spec:
           imagePullPolicy: {{ .Values.lake.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.lake.port }}
+          {{- with .Values.lake.livenessProbe }}
           livenessProbe:
-            httpGet:
-              path: /ping
-              port: {{ .Values.lake.port }}
-              scheme: HTTP
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.lake.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "devlake.mysql.secret" . }}
