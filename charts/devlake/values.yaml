@@ -216,6 +216,9 @@ lake:
 
   readinessProbe: {}
 
+  deployment:
+    extraLabels: {}
+
 ui:
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-config-ui
@@ -259,6 +262,9 @@ ui:
     # capabilities:
     #   drop:
     #       - all
+
+  deployment:
+    extraLabels: {}
 
 # alpine image for some init containers
 alpine:

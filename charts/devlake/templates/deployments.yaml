@@ -22,6 +22,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-ui
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    {{- with .Values.ui.deployment.extraLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: 1
   selector:
@@ -102,6 +105,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-lake
   labels:
   {{- include "devlake.labels" . | nindent 4 }}
+  {{- with .Values.lake.deployment.extraLabels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: 1
   selector:
