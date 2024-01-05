@@ -17,7 +17,7 @@
 
 # replica count
 replicaCount: 1
-imageTag: v0.20.0-beta5
+imageTag: v0.20.0-beta6
 
 #the common environments for all pods except grafana, grafana needs to be set in grafana section seperately
 commonEnvs:
@@ -63,7 +63,7 @@ mysql:
 
   # init containers for mysql if have
   initContainers: []
-  
+
   # resources config for mysql if have
   resources: {}
 
@@ -147,7 +147,7 @@ grafana:
     url: ""
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
-    tag: v0.20.0-beta5
+    tag: v0.20.0-beta6
   adminPassword: ""
   grafana.ini:
     server:
@@ -158,7 +158,6 @@ grafana:
   #keep grafana timezone same as other pods, which is set by .Values.commonEnvs.TZ
   env:
     TZ: "UTC"
-
 
 lake:
   image:
