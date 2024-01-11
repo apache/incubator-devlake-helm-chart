@@ -176,11 +176,12 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | lake.encryptionSecret.secretName          | the k8s secret name for ENCRYPTION_SECRET                                             | ""                       |
 | lake.encryptionSecret.secret              | the secret for ENCRYPTION_SECRET                                                      | ""                       |
 | lake.encryptionSecret.autoCreateSecret    | whether let the helm chart create the secret                                          | true                     |
-| lake.extraLabels                          | extra labels for lake's statefulset                                                   | {}                       |
+| lake.extraLabels                          | extra labels for lake's deployment template                                           | {}                       |
 | lake.securityContext                      | pod security context values                                                           | {}                       |
 | lake.containerSecurityContext             | container security context values                                                     | {}                       |
 | lake.livenessProbe                        | container livenessprobe                                                               | see Values.yaml          |
 | lake.readinessProbe                       | container readinessProbe                                                              | {}                       |
+| lake.deployment.extraLabels               | extra labels for lake's deployment metadata                                           | {}                       |
 | ui.image.repository                       | repository for ui's image                                                             | apache/devlake-config-ui |
 | ui.image.pullPolicy                       | pullPolicy for ui's image                                                             | Always                   |
 | ui.basicAuth.enabled                      | If the basic auth in ui is enabled                                                    | false                    |
@@ -188,9 +189,10 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ui.basicAuth.password                     | The password for the basic auth                                                       | "admin"                  |
 | ui.basicAuth.autoCreateSecret             | If let the helm chart create the secret                                               | true                     |
 | ui.basicAuth.secretName                   | The basic auth secret name                                                            | ""                       |
-| ui.extraLabels                            | extra labels for ui's statefulset                                                     | {}                       |
+| ui.extraLabels                            | extra labels for ui's deployment template                                             | {}                       |
 | ui.securityContext                        | pod security context values                                                           | {}                       |
 | ui.containerSecurityContext               | container security context values                                                     | {}                       |
+| ui.deployment.extraLabels                 | extra labels for ui's deployment metadata                                             | {}                       |
 | service.type                              | Service type for exposed service                                                      | NodePort                 |
 | service.uiPort                            | Node port for config ui                                                               | 32001                    |
 | service.ingress.enabled                   | If enable ingress                                                                     | false                    |
