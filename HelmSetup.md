@@ -24,7 +24,7 @@ To install the chart with release name `devlake`:
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
-helm install devlake devlake/devlake --version=0.20.0-beta5 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+helm install devlake devlake/devlake --version=0.20.0-beta6 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 
 ```
 
@@ -50,14 +50,14 @@ _Notes for mac users with minikube:_
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.20.0-beta5 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+helm upgrade devlake devlake/devlake --version=0.20.0-beta6 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 **If you're upgrading from DevLake v0.18.x or later versions:**
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.20.0-beta5
+helm upgrade devlake devlake/devlake --version=0.20.0-beta6
 ```
 
 ### 2.3 Uninstall
@@ -176,11 +176,12 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | lake.encryptionSecret.secretName          | the k8s secret name for ENCRYPTION_SECRET                                             | ""                       |
 | lake.encryptionSecret.secret              | the secret for ENCRYPTION_SECRET                                                      | ""                       |
 | lake.encryptionSecret.autoCreateSecret    | whether let the helm chart create the secret                                          | true                     |
-| lake.extraLabels                          | extra labels for lake's statefulset                                                   | {}                       |
+| lake.extraLabels                          | extra labels for lake's deployment template                                           | {}                       |
 | lake.securityContext                      | pod security context values                                                           | {}                       |
 | lake.containerSecurityContext             | container security context values                                                     | {}                       |
 | lake.livenessProbe                        | container livenessprobe                                                               | see Values.yaml          |
 | lake.readinessProbe                       | container readinessProbe                                                              | {}                       |
+| lake.deployment.extraLabels               | extra labels for lake's deployment metadata                                           | {}                       |
 | ui.image.repository                       | repository for ui's image                                                             | apache/devlake-config-ui |
 | ui.image.pullPolicy                       | pullPolicy for ui's image                                                             | Always                   |
 | ui.basicAuth.enabled                      | If the basic auth in ui is enabled                                                    | false                    |
@@ -188,11 +189,12 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ui.basicAuth.password                     | The password for the basic auth                                                       | "admin"                  |
 | ui.basicAuth.autoCreateSecret             | If let the helm chart create the secret                                               | true                     |
 | ui.basicAuth.secretName                   | The basic auth secret name                                                            | ""                       |
-| ui.extraLabels                            | extra labels for ui's statefulset                                                     | {}                       |
+| ui.extraLabels                            | extra labels for ui's deployment template                                             | {}                       |
 | ui.securityContext                        | pod security context values                                                           | {}                       |
 | ui.containerSecurityContext               | container security context values                                                     | {}                       |
 | ui.livenessProbe                          | container livenessprobe                                                               | see Values.yaml          |
 | ui.readinessProbe                         | container readinessProbe                                                              | {}                       |
+| ui.deployment.extraLabels                 | extra labels for ui's deployment metadata                                             | {}                       |
 | service.type                              | Service type for exposed service                                                      | NodePort                 |
 | service.uiPort                            | Node port for config ui                                                               | 32001                    |
 | service.ingress.enabled                   | If enable ingress                                                                     | false                    |
