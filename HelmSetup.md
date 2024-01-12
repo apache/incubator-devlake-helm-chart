@@ -180,7 +180,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | lake.securityContext                      | pod security context values                                                           | {}                       |
 | lake.containerSecurityContext             | container security context values                                                     | {}                       |
 | lake.livenessProbe                        | container livenessprobe                                                               | see Values.yaml          |
-| lake.readinessProbe                       | container readinessProbe                                                              | {}                       |
+| lake.readinessProbe                       | container readinessProbe                                                              | see Values.yaml          |
 | lake.deployment.extraLabels               | extra labels for lake's deployment metadata                                           | {}                       |
 | ui.image.repository                       | repository for ui's image                                                             | apache/devlake-config-ui |
 | ui.image.pullPolicy                       | pullPolicy for ui's image                                                             | Always                   |
@@ -193,7 +193,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ui.securityContext                        | pod security context values                                                           | {}                       |
 | ui.containerSecurityContext               | container security context values                                                     | {}                       |
 | ui.livenessProbe                          | container livenessprobe                                                               | see Values.yaml          |
-| ui.readinessProbe                         | container readinessProbe                                                              | {}                       |
+| ui.readinessProbe                         | container readinessProbe                                                              | see Values.yaml          |
 | ui.deployment.extraLabels                 | extra labels for ui's deployment metadata                                             | {}                       |
 | service.type                              | Service type for exposed service                                                      | NodePort                 |
 | service.uiPort                            | Node port for config ui                                                               | 32001                    |
