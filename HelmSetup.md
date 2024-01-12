@@ -192,6 +192,8 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ui.extraLabels                            | extra labels for ui's deployment template                                             | {}                       |
 | ui.securityContext                        | pod security context values                                                           | {}                       |
 | ui.containerSecurityContext               | container security context values                                                     | {}                       |
+| ui.livenessProbe                          | container livenessprobe                                                               | see Values.yaml          |
+| ui.readinessProbe                         | container readinessProbe                                                              | {}                       |
 | ui.deployment.extraLabels                 | extra labels for ui's deployment metadata                                             | {}                       |
 | service.type                              | Service type for exposed service                                                      | NodePort                 |
 | service.uiPort                            | Node port for config ui                                                               | 32001                    |
