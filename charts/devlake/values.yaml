@@ -213,10 +213,22 @@ lake:
       path: /ping
       port: 8080
       scheme: HTTP
-    initialDelaySeconds: 60
-    timeoutSeconds: 30
+    failureThreshold: 5
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 5
 
-  readinessProbe: {}
+  readinessProbe:
+    httpGet:
+      path: /ping
+      port: 8080
+      scheme: HTTP
+    failureThreshold: 3
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 5
 
   deployment:
     extraLabels: {}
@@ -234,6 +246,28 @@ ui:
   tolerations: []
 
   affinity: {}
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 4000
+      scheme: HTTP
+    failureThreshold: 5
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 5
+
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 4000
+      scheme: HTTP
+    failureThreshold: 3
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    successThreshold: 1
+    timeoutSeconds: 5
 
   basicAuth:
     enabled: false
