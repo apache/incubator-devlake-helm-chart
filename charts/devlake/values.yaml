@@ -264,6 +264,15 @@ ui:
     # capabilities:
     #   drop:
     #       - all
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 4000
+      scheme: HTTP
+    initialDelaySeconds: 60
+    timeoutSeconds: 30
+
+  readinessProbe: { }
 
   deployment:
     extraLabels: {}
