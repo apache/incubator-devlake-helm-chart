@@ -197,14 +197,17 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ui.deployment.extraLabels                 | extra labels for ui's deployment metadata                                             | {}                       |
 | service.type                              | Service type for exposed service                                                      | NodePort                 |
 | service.uiPort                            | Node port for config ui                                                               | 32001                    |
-| service.ingress.enabled                   | If enable ingress                                                                     | false                    |
-| service.ingress.enableHttps               | If enable https                                                                       | false                    |
-| service.ingress.className                 | Name for ingressClass. leave empty for using default                                  | ""                       |
-| service.ingress.hostname                  | The hostname/domainname for ingress                                                   | localhost                |
-| service.ingress.prefix                    | The prefix for endpoints, currently not used                                          | /                        |
-| service.ingress.tlsSecretName             | The secret name for tls's certificate for https                                       | ""                       |
-| service.ingress.httpPort                  | The http port for ingress                                                             | 80                       |
-| service.ingress.httpsPort                 | The https port for ingress                                                            | 443                      |
+| ingress.enabled                           | If enable ingress                                                                     | false                    |
+| ingress.enableHttps                       | If enable https                                                                       | false                    |
+| ingress.useDefaultNginx                   | If use nginx ingress controller                                                       | true                     |
+| ingress.className                         | Name for ingressClass. leave empty for using default                                  | ""                       |
+| ingress.annotations                       | The ingress annotations                                                               | {}                       |
+| ingress.hostname                          | The hostname/domainname for ingress                                                   | localhost                |
+| ingress.prefix                            | The prefix for endpoints, currently not used                                          | /                        |
+| ingress.tlsSecretName                     | The secret name for tls's certificate for https                                       | ""                       |
+| ingress.httpPort                          | The http port for ingress                                                             | 80                       |
+| ingress.httpsPort                         | The https port for ingress                                                            | 443                      |
+| ingress.extraPaths                        | The extra paths for ingress                                                           | []                       |
 | option.database                           | The database type, valids: mysql                                                      | mysql                    |
 | option.connectionSecretName               | The database connection details secret name                                           | devlake-mysql-auth       |
 | option.autoCreateSecret                   | If let the helm chart create the secret                                               | true                     |

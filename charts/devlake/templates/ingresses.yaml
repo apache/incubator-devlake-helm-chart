@@ -16,6 +16,7 @@
 #
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "devlake.fullname" . -}}
+{{- $uiServiceName := printf "%s-%s" $fullName "ui" -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
@@ -67,12 +68,12 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) }}
+                name: {{ .Values.grafana.ingressServiceName | default ( include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) ) }}
                 port:
-                  number: {{ .Values.grafana.service.port }}
+                  number: {{ .Values.grafana.ingressServicePort | default .Values.grafana.service.port }}
               {{- else }}
-              serviceName: {{ include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) }}
-              servicePort: {{ .Values.grafana.service.port }}
+              serviceName: {{ .Values.grafana.ingressServiceName | default ( include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) ) }}
+              servicePort: {{ .Values.grafana.ingressServicePort | default .Values.grafana.service.port }}
               {{- end }}
           {{- end }}
           {{- if .Values.ingress.useDefaultNginx }}
@@ -86,14 +87,16 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ include "devlake.fullname" . }}-ui
+                name: {{ $uiServiceName }}
                 port:
                   number: 4000
               {{- else }}
-              serviceName: {{ include "devlake.fullname" . }}-ui
+              serviceName: {{ $uiServiceName }}
               servicePort: 4000
               {{- end }}
-
+          {{- if .Values.ingress.extraPaths }}
+            {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
+          {{- end }}
 {{- if and .Values.ingress.useDefaultNginx (not .Values.grafana.enabled) }}
 ---
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -135,11 +138,11 @@ spec:
             backend: # dummy to config-ui, actual 302 forearding for external grafana
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ include "devlake.fullname" . }}-ui
+                name: {{ $uiServiceName }}
                 port:
                   number: 4000
               {{- else }}
-              serviceName: {{ include "devlake.fullname" . }}-ui
+              serviceName: {{ $uiServiceName }}
               servicePort: 4000
               {{- end }}
 {{- end }}
