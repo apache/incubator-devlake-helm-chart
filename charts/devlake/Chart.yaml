@@ -28,7 +28,7 @@ keywords:
 type: application
 
 # Chart version
-version: 0.20.0-beta7
+version: 0.20.0-beta7.1
 
 # devlake version
 appVersion: v0.20.0-beta7
