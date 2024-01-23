@@ -131,7 +131,6 @@ The mysql server
 {{- end }}
 {{- end }}
 
-
 {{/*
 The mysql port
 */}}
@@ -143,7 +142,27 @@ The mysql port
 {{- end }}
 {{- end }}
 
+{{/*
+The pgsql server
+*/}}
+{{- define "pgsql.server" -}}
+{{- if .Values.pgsql.useExternal }}
+{{- .Values.pgsql.externalServer }}
+{{- else }}
+{{- print (include "devlake.fullname" . ) "-pgsql" }}
+{{- end }}
+{{- end }}
 
+{{/*
+The pgsql port
+*/}}
+{{- define "pgsql.port" -}}
+{{- if .Values.pgsql.useExternal }}
+{{- .Values.pgsql.externalPort }}
+{{- else }}
+{{- 5432 }}
+{{- end }}
+{{- end }}
 
 {{/*
 The database server
@@ -151,6 +170,8 @@ The database server
 {{- define "database.server" -}}
 {{- if eq .Values.option.database "mysql" }}
 {{- include "mysql.server" . }}
+{{- else if eq .Values.option.database "pgsql" }}
+{{- include "pgsql.server" . }}
 {{- end }}
 {{- end }}
 
@@ -161,6 +182,8 @@ The database port
 {{- define "database.port" -}}
 {{- if eq .Values.option.database "mysql" }}
 {{- include "mysql.port" . }}
+{{- else if eq .Values.option.database "pgsql" }}
+{{- include "pgsql.port" . }}
 {{- end }}
 {{- end }}
 
