@@ -24,7 +24,7 @@ To install the chart with release name `devlake`:
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
-helm install devlake devlake/devlake --version=0.20.0-beta8 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+helm install devlake devlake/devlake --version=0.20.0-beta9 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 
 ```
 
@@ -50,14 +50,14 @@ _Notes for mac users with minikube:_
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.20.0-beta8 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+helm upgrade devlake devlake/devlake --version=0.20.0-beta9 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 **If you're upgrading from DevLake v0.18.x or later versions:**
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=0.20.0-beta8
+helm upgrade devlake devlake/devlake --version=0.20.0-beta9
 ```
 
 ### 2.3 Uninstall
@@ -142,76 +142,75 @@ helm install devlake devlake/devlake \
 
 Some useful parameters for the chart, you could also check them in values.yaml
 
-| Parameter                                 | Description                                                                           | Default                  |
-| ----------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------ |
-| replicaCount                              | Replica Count for devlake, currently not used                                         | 1                        |
-| imageTag                                  | The version tag for all images                                                        | see Values.yaml          |
-| commonEnvs                                | The common envs for all pods except grafana                                           | {TZ: "UTC"}              |
-| mysql.useExternal                         | If use external mysql server, set true                                                | false                    |
-| mysql.externalServer                      | External mysql server address                                                         | 127.0.0.1                |
-| mysql.externalPort                        | External mysql server port                                                            | 3306                     |
-| mysql.username                            | username for mysql                                                                    | merico                   |
-| mysql.password                            | password for mysql                                                                    | merico                   |
-| mysql.database                            | database for mysql                                                                    | lake                     |
-| mysql.rootPassword                        | root password for mysql                                                               | admin                    |
-| mysql.storage.type                        | storage type, pvc or hostpath                                                         | pvc                      |
-| mysql.storage.class                       | storage class for mysql's volume                                                      | ""                       |
-| mysql.storage.size                        | volume size for mysql's data                                                          | 5Gi                      |
-| mysql.storage.hostPath                    | the host path if mysql.storage.type is hostpath                                       | /devlake/mysql/data      |
-| mysql.image.repository                    | repository for mysql's image                                                          | mysql                    |
-| mysql.image.tag                           | image tag for mysql's image                                                           | 8                        |
-| mysql.image.pullPolicy                    | pullPolicy for mysql's image                                                          | IfNotPresent             |
-| mysql.initContainers                      | init containers to run to complete before mysql                                       | []                       |
-| mysql.extraLabels                         | extra labels for mysql's statefulset                                                  | {}                       |
-| mysql.securityContext                     | pod security context values                                                           | {}                       |
-| mysql.containerSecurityContext            | container security context values                                                     | {}                       |
-| mysql.service.type                        | mysql service type                                                                    | ClusterIP                |
-| mysql.service.nodePort                    | specify mysql nodeport                                                                | ""                       |
-| grafana                                   | dashboard, datasource, etc. settings for grafana, installed by grafana official chart |                          |
-| lake.image.repository                     | repository for lake's image                                                           | apache/devlake           |
-| lake.image.pullPolicy                     | pullPolicy for lake's image                                                           | Always                   |
-| lake.port                                 | the port of devlake backend                                                           | 8080                     |
-| lake.envs                                 | initial envs for lake                                                                 | see Values.yaml          |
-| lake.extraEnvsFromSecret                  | existing secret name of extra envs                                                    | ""                       |
-| lake.encryptionSecret.secretName          | the k8s secret name for ENCRYPTION_SECRET                                             | ""                       |
-| lake.encryptionSecret.secret              | the secret for ENCRYPTION_SECRET                                                      | ""                       |
-| lake.encryptionSecret.autoCreateSecret    | whether let the helm chart create the secret                                          | true                     |
-| lake.extraLabels                          | extra labels for lake's deployment template                                           | {}                       |
-| lake.securityContext                      | pod security context values                                                           | {}                       |
-| lake.containerSecurityContext             | container security context values                                                     | {}                       |
-| lake.livenessProbe                        | container livenessprobe                                                               | see Values.yaml          |
-| lake.readinessProbe                       | container readinessProbe                                                              | see Values.yaml          |
-| lake.deployment.extraLabels               | extra labels for lake's deployment metadata                                           | {}                       |
-| ui.image.repository                       | repository for ui's image                                                             | apache/devlake-config-ui |
-| ui.image.pullPolicy                       | pullPolicy for ui's image                                                             | Always                   |
-| ui.basicAuth.enabled                      | If the basic auth in ui is enabled                                                    | false                    |
-| ui.basicAuth.user                         | The user name for the basic auth                                                      | "admin"                  |
-| ui.basicAuth.password                     | The password for the basic auth                                                       | "admin"                  |
-| ui.basicAuth.autoCreateSecret             | If let the helm chart create the secret                                               | true                     |
-| ui.basicAuth.secretName                   | The basic auth secret name                                                            | ""                       |
-| ui.extraLabels                            | extra labels for ui's deployment template                                             | {}                       |
-| ui.securityContext                        | pod security context values                                                           | {}                       |
-| ui.containerSecurityContext               | container security context values                                                     | {}                       |
-| ui.livenessProbe                          | container livenessprobe                                                               | see Values.yaml          |
-| ui.readinessProbe                         | container readinessProbe                                                              | see Values.yaml          |
-| ui.deployment.extraLabels                 | extra labels for ui's deployment metadata                                             | {}                       |
-| service.type                              | Service type for exposed service                                                      | NodePort                 |
-| service.uiPort                            | Node port for config ui                                                               | 32001                    |
-| ingress.enabled                           | If enable ingress                                                                     | false                    |
-| ingress.enableHttps                       | If enable https                                                                       | false                    |
-| ingress.useDefaultNginx                   | If use nginx ingress controller                                                       | true                     |
-| ingress.className                         | Name for ingressClass. leave empty for using default                                  | ""                       |
-| ingress.annotations                       | The ingress annotations                                                               | {}                       |
-| ingress.hostname                          | The hostname/domainname for ingress                                                   | localhost                |
-| ingress.prefix                            | The prefix for endpoints, currently not used                                          | /                        |
-| ingress.tlsSecretName                     | The secret name for tls's certificate for https                                       | ""                       |
-| ingress.httpPort                          | The http port for ingress                                                             | 80                       |
-| ingress.httpsPort                         | The https port for ingress                                                            | 443                      |
-| ingress.extraPaths                        | The extra paths for ingress                                                           | []                       |
-| option.database                           | The database type, valids: mysql                                                      | mysql                    |
-| option.connectionSecretName               | The database connection details secret name                                           | devlake-mysql-auth       |
-| option.autoCreateSecret                   | If let the helm chart create the secret                                               | true                     |
-
+| Parameter                              | Description                                                                           | Default                  |
+| -------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------ |
+| replicaCount                           | Replica Count for devlake, currently not used                                         | 1                        |
+| imageTag                               | The version tag for all images                                                        | see Values.yaml          |
+| commonEnvs                             | The common envs for all pods except grafana                                           | {TZ: "UTC"}              |
+| mysql.useExternal                      | If use external mysql server, set true                                                | false                    |
+| mysql.externalServer                   | External mysql server address                                                         | 127.0.0.1                |
+| mysql.externalPort                     | External mysql server port                                                            | 3306                     |
+| mysql.username                         | username for mysql                                                                    | merico                   |
+| mysql.password                         | password for mysql                                                                    | merico                   |
+| mysql.database                         | database for mysql                                                                    | lake                     |
+| mysql.rootPassword                     | root password for mysql                                                               | admin                    |
+| mysql.storage.type                     | storage type, pvc or hostpath                                                         | pvc                      |
+| mysql.storage.class                    | storage class for mysql's volume                                                      | ""                       |
+| mysql.storage.size                     | volume size for mysql's data                                                          | 5Gi                      |
+| mysql.storage.hostPath                 | the host path if mysql.storage.type is hostpath                                       | /devlake/mysql/data      |
+| mysql.image.repository                 | repository for mysql's image                                                          | mysql                    |
+| mysql.image.tag                        | image tag for mysql's image                                                           | 8                        |
+| mysql.image.pullPolicy                 | pullPolicy for mysql's image                                                          | IfNotPresent             |
+| mysql.initContainers                   | init containers to run to complete before mysql                                       | []                       |
+| mysql.extraLabels                      | extra labels for mysql's statefulset                                                  | {}                       |
+| mysql.securityContext                  | pod security context values                                                           | {}                       |
+| mysql.containerSecurityContext         | container security context values                                                     | {}                       |
+| mysql.service.type                     | mysql service type                                                                    | ClusterIP                |
+| mysql.service.nodePort                 | specify mysql nodeport                                                                | ""                       |
+| grafana                                | dashboard, datasource, etc. settings for grafana, installed by grafana official chart |                          |
+| lake.image.repository                  | repository for lake's image                                                           | apache/devlake           |
+| lake.image.pullPolicy                  | pullPolicy for lake's image                                                           | Always                   |
+| lake.port                              | the port of devlake backend                                                           | 8080                     |
+| lake.envs                              | initial envs for lake                                                                 | see Values.yaml          |
+| lake.extraEnvsFromSecret               | existing secret name of extra envs                                                    | ""                       |
+| lake.encryptionSecret.secretName       | the k8s secret name for ENCRYPTION_SECRET                                             | ""                       |
+| lake.encryptionSecret.secret           | the secret for ENCRYPTION_SECRET                                                      | ""                       |
+| lake.encryptionSecret.autoCreateSecret | whether let the helm chart create the secret                                          | true                     |
+| lake.extraLabels                       | extra labels for lake's deployment template                                           | {}                       |
+| lake.securityContext                   | pod security context values                                                           | {}                       |
+| lake.containerSecurityContext          | container security context values                                                     | {}                       |
+| lake.livenessProbe                     | container livenessprobe                                                               | see Values.yaml          |
+| lake.readinessProbe                    | container readinessProbe                                                              | see Values.yaml          |
+| lake.deployment.extraLabels            | extra labels for lake's deployment metadata                                           | {}                       |
+| ui.image.repository                    | repository for ui's image                                                             | apache/devlake-config-ui |
+| ui.image.pullPolicy                    | pullPolicy for ui's image                                                             | Always                   |
+| ui.basicAuth.enabled                   | If the basic auth in ui is enabled                                                    | false                    |
+| ui.basicAuth.user                      | The user name for the basic auth                                                      | "admin"                  |
+| ui.basicAuth.password                  | The password for the basic auth                                                       | "admin"                  |
+| ui.basicAuth.autoCreateSecret          | If let the helm chart create the secret                                               | true                     |
+| ui.basicAuth.secretName                | The basic auth secret name                                                            | ""                       |
+| ui.extraLabels                         | extra labels for ui's deployment template                                             | {}                       |
+| ui.securityContext                     | pod security context values                                                           | {}                       |
+| ui.containerSecurityContext            | container security context values                                                     | {}                       |
+| ui.livenessProbe                       | container livenessprobe                                                               | see Values.yaml          |
+| ui.readinessProbe                      | container readinessProbe                                                              | see Values.yaml          |
+| ui.deployment.extraLabels              | extra labels for ui's deployment metadata                                             | {}                       |
+| service.type                           | Service type for exposed service                                                      | NodePort                 |
+| service.uiPort                         | Node port for config ui                                                               | 32001                    |
+| ingress.enabled                        | If enable ingress                                                                     | false                    |
+| ingress.enableHttps                    | If enable https                                                                       | false                    |
+| ingress.useDefaultNginx                | If use nginx ingress controller                                                       | true                     |
+| ingress.className                      | Name for ingressClass. leave empty for using default                                  | ""                       |
+| ingress.annotations                    | The ingress annotations                                                               | {}                       |
+| ingress.hostname                       | The hostname/domainname for ingress                                                   | localhost                |
+| ingress.prefix                         | The prefix for endpoints, currently not used                                          | /                        |
+| ingress.tlsSecretName                  | The secret name for tls's certificate for https                                       | ""                       |
+| ingress.httpPort                       | The http port for ingress                                                             | 80                       |
+| ingress.httpsPort                      | The https port for ingress                                                            | 443                      |
+| ingress.extraPaths                     | The extra paths for ingress                                                           | []                       |
+| option.database                        | The database type, valids: mysql                                                      | mysql                    |
+| option.connectionSecretName            | The database connection details secret name                                           | devlake-mysql-auth       |
+| option.autoCreateSecret                | If let the helm chart create the secret                                               | true                     |
 
 ---
 
