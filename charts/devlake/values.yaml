@@ -329,17 +329,16 @@ ingress:
   # annotations required for your ingress controller; see the examples below
   # for nginx, use the first two lines of annotations
   # for alb (w/ external-dns), use the last 5 (6) lines of annotations
-  annotations:
-    {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-    #
-    # alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
-    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:xxx:certificate/xxx-xxx-xxx
-    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
-    # alb.ingress.kubernetes.io/scheme: internet-facing
-    # alb.ingress.kubernetes.io/target-type: ip
-    # external-dns.alpha.kubernetes.io/hostname: www.example.com
+  annotations:{}
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  #
+  # alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+  # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:xxx:certificate/xxx-xxx-xxx
+  # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}, {"HTTP":80}]'
+  # alb.ingress.kubernetes.io/scheme: internet-facing
+  # alb.ingress.kubernetes.io/target-type: ip
+  # external-dns.alpha.kubernetes.io/hostname: www.example.com
 
   # url prefix, not works right now, keep "/"
   prefix: /
