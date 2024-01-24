@@ -17,7 +17,7 @@
 
 # replica count
 replicaCount: 1
-imageTag: v0.20.0-beta8
+imageTag: v0.20.0-beta9
 
 #the common environments for all pods except grafana, grafana needs to be set in grafana section seperately
 commonEnvs:
@@ -147,7 +147,7 @@ grafana:
     url: ""
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
-    tag: v0.20.0-beta8
+    tag: v0.20.0-beta9
   adminPassword: ""
   grafana.ini:
     server:
@@ -329,7 +329,8 @@ ingress:
   # annotations required for your ingress controller; see the examples below
   # for nginx, use the first two lines of annotations
   # for alb (w/ external-dns), use the last 5 (6) lines of annotations
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     #
