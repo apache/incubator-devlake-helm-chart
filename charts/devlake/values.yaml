@@ -19,6 +19,9 @@
 replicaCount: 1
 imageTag: v0.21.0-beta1
 
+# image pull secrets
+imagePullSecrets: []
+
 #the common environments for all pods except grafana, grafana needs to be set in grafana section seperately
 commonEnvs:
   TZ: "UTC"
