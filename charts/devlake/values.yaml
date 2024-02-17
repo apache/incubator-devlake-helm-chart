@@ -196,6 +196,8 @@ lake:
 
   resources: {}
 
+  strategy: {}
+
   nodeSelector: {}
 
   tolerations: []
@@ -242,6 +244,8 @@ ui:
     # defaults to imageTag; if set, lake.image.tag will override imageTag
     # tag:
   resources: {}
+
+  strategy: {}
 
   nodeSelector: {}
 
