@@ -41,7 +41,7 @@ jobs:
         database_type: ["mysql-builtin", "mysql-external"]
     steps:
       - name: Creating kind cluster
-        uses: container-tools/kind-action@v1
+        uses: container-tools/kind-action@v2.0.3
 
       - name: Cluster information
         run: |
@@ -53,7 +53,7 @@ jobs:
           kubectl get storageclasses
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Helm install devlake
         if: matrix.database_type == 'mysql-external'
