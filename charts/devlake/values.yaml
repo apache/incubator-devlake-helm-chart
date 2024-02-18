@@ -196,7 +196,8 @@ lake:
 
   resources: {}
 
-  strategy: {}
+  strategy:
+    type: Recreate
 
   nodeSelector: {}
 
