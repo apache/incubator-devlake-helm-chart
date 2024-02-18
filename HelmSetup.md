@@ -146,6 +146,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | -------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------ |
 | replicaCount                           | Replica Count for devlake, currently not used                                         | 1                        |
 | imageTag                               | The version tag for all images                                                        | see Values.yaml          |
+| imagePullSecrets                       | Name of the Secret for accessing private image registries                             | []                       |
 | commonEnvs                             | The common envs for all pods except grafana                                           | {TZ: "UTC"}              |
 | mysql.useExternal                      | If use external mysql server, set true                                                | false                    |
 | mysql.externalServer                   | External mysql server address                                                         | 127.0.0.1                |
