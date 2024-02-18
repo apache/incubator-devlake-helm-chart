@@ -117,6 +117,8 @@ The ui endpoint
   {{- if .enabled -}}
 name: Authorization
 value: {{ printf "Basic %s" (printf "%s:%s" .user .password | b64enc) | quote }}
+  {{- else -}}
+[]
   {{- end }}
 {{- end }}
 {{- end }}
