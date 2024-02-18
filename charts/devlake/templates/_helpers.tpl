@@ -112,6 +112,17 @@ The ui endpoint
 {{- end -}}
 {{- end -}}
 
+{{- define "devlake.ui.auth.probe" -}}
+{{- with .Values.ui.basicAuth }}
+  {{- if .enabled -}}
+name: Authorization
+value: {{ printf "Basic %s" (printf "%s:%s" .user .password | b64enc) | quote }}
+  {{- else -}}
+[]
+  {{- end }}
+{{- end }}
+{{- end }}
+
 {{- define "devlake.lake.encryption.secret" -}}
 {{- if .Values.lake.encryptionSecret.secretName -}}
 {{- .Values.lake.encryptionSecret.secretName -}}
