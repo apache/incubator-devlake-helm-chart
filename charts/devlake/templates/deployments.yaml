@@ -27,6 +27,10 @@ metadata:
     {{- end }}
 spec:
   replicas: 1
+  {{- with .Values.ui.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "devlake.selectorLabels" . | nindent 6 }}
@@ -123,6 +127,10 @@ metadata:
   {{- end }}
 spec:
   replicas: 1
+  {{- with .Values.lake.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "devlake.selectorLabels" . | nindent 6 }}
