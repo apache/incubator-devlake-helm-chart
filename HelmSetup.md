@@ -179,6 +179,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | lake.encryptionSecret.autoCreateSecret | whether let the helm chart create the secret                                          | true                     |
 | lake.extraLabels                       | extra labels for lake's deployment template                                           | {}                       |
 | lake.securityContext                   | pod security context values                                                           | {}                       |
+| lake.strategy                          | pod update strategy                                                                   | {}                       |
 | lake.containerSecurityContext          | container security context values                                                     | {}                       |
 | lake.livenessProbe                     | container livenessprobe                                                               | see Values.yaml          |
 | lake.readinessProbe                    | container readinessProbe                                                              | see Values.yaml          |
@@ -192,6 +193,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | ui.basicAuth.secretName                | The basic auth secret name                                                            | ""                       |
 | ui.extraLabels                         | extra labels for ui's deployment template                                             | {}                       |
 | ui.securityContext                     | pod security context values                                                           | {}                       |
+| ui.strategy                            | pod update strategy                                                                   | {}                       |
 | ui.containerSecurityContext            | container security context values                                                     | {}                       |
 | ui.livenessProbe                       | container livenessprobe                                                               | see Values.yaml          |
 | ui.readinessProbe                      | container readinessProbe                                                              | see Values.yaml          |
