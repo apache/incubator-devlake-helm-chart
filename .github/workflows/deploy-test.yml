@@ -39,9 +39,11 @@ jobs:
       fail-fast: false
       matrix:
         database_type: ["mysql-builtin", "mysql-external"]
+    env:
+      UI_PORT: "30000"
     steps:
       - name: Creating kind cluster
-        uses: container-tools/kind-action@v1
+        uses: container-tools/kind-action@v2.0.3
 
       - name: Cluster information
         run: |
@@ -53,51 +55,53 @@ jobs:
           kubectl get storageclasses
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Helm install devlake
         if: matrix.database_type == 'mysql-external'
+        env:
+          DATABASE_TYPE: ${{ matrix.database_type }}
         run: |
-          helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm repo add grafana https://grafana.github.io/helm-charts
-          helm install mysql bitnami/mysql --set auth.rootPassword=admin --set auth.database=lake --set auth.username=merico --set auth.password=merico
-          # external mysql at service: mysql
-          helm dep build charts/devlake
-          helm install --wait --timeout 600s deploy-test charts/devlake \
-            --set service.uiPort=30000 \
-            --set mysql.useExternal=true \
-            --set mysql.externalServer=mysql \
-            --set lake.encryptionSecret.secret=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
-          kubectl get pods -o wide
-          kubectl get services -o wide
+          if [ "$DATABASE_TYPE" = "mysql-external" ]; then
+            helm repo add bitnami https://charts.bitnami.com/bitnami
+            helm install mysql bitnami/mysql \
+              --set auth.rootPassword=admin \
+              --set auth.database=lake \
+              --set auth.username=merico \
+              --set auth.password=merico
+            # external mysql at service: mysql
+            EXTRA_VALUES="--set mysql.useExternal=true --set mysql.externalServer=mysql"
+          elif [ "$DATABASE_TYPE" = "mysql-builtin" ]; then
+            EXTRA_VALUES="--set mysql.image.tag=8-debian"
+          fi
 
-      - name: Helm install devlake
-        if: matrix.database_type == 'mysql-builtin'
-        run: |
           helm repo add grafana https://grafana.github.io/helm-charts
           helm dep build charts/devlake
+
           export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-          echo Node IP: ${NODE_IP}
+          echo "NODE_IP=${NODE_IP}" | tee -a "${GITHUB_ENV}"
+
           helm install --wait --timeout 600s deploy-test charts/devlake \
-            --set service.uiPort=30000 \
-            --set mysql.image.tag=8-debian \
+            --set service.uiPort=${UI_PORT} \
+            ${EXTRA_VALUES} \
             --set lake.encryptionSecret.secret=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+
           kubectl get pods -o wide
           kubectl get services -o wide
 
       # TODO: using some e2e test code to replace it
       - name: Curl with endpoints
         run: |
-          export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
           failed=0
+          endpoint="http://${NODE_IP}:${UI_PORT}"
           for retry in {1..10} ; do
             failed=0
             # home
-            curl --fail http://${NODE_IP}:30000 || failed=1
+            curl --fail ${endpoint} || failed=1
             # API for devlake
-            curl --fail http://${NODE_IP}:30000/api/blueprints || failed=1
+            curl --fail ${endpoint}/api/blueprints || failed=1
             # API for grafana
-            curl --fail http://${NODE_IP}:30000/grafana/api/health || failed=1
+            curl --fail ${endpoint}/grafana/api/health || failed=1
             if [ $failed -eq 0 ] ; then
               break
             else
@@ -105,7 +109,7 @@ jobs:
             fi
           done
           if [ $failed -ne 0 ] ; then
-            echo 'Test apis failed, please check logs from the PODS'
+            echo '::error::Test apis failed, please check logs from the PODS'
             exit 1
           fi
 
@@ -113,8 +117,10 @@ jobs:
         if: ${{ always() }}
         run: |
           for pod in $(kubectl get pods -o jsonpath='{.items[*].metadata.name}') ; do
-            echo describe for $pod
-            kubectl describe pod $pod
-            echo logs for $pod
-            kubectl logs $pod || echo ""
+            echo "::group::describe for $pod"
+              kubectl describe pod $pod
+            echo "::endgroup::"
+            echo "::group::logs for $pod"
+              kubectl logs $pod || echo ""
+            echo "::endgroup::"
           done
