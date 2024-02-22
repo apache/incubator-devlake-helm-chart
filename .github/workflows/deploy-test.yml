@@ -60,7 +60,7 @@ jobs:
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add grafana https://grafana.github.io/helm-charts
-          helm install mysql bitnami/mysql --set auth.rootPassword=admin --set auth.database=lake --set auth.username=merico --set auth.password=merico
+          helm install mysql bitnami/mysql --version 9.19.1 --set auth.rootPassword=admin --set auth.database=lake --set auth.username=merico --set auth.password=merico
           # external mysql at service: mysql
           helm dep build charts/devlake
           helm install --wait --timeout 1000s deploy-test charts/devlake \
