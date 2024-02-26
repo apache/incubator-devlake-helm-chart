@@ -259,7 +259,7 @@ ui:
 
   livenessProbe:
     httpGet:
-      path: /
+      path: /health/
       port: 4000
       scheme: HTTP
     failureThreshold: 5
@@ -270,7 +270,7 @@ ui:
 
   readinessProbe:
     httpGet:
-      path: /
+      path: /health/
       port: 4000
       scheme: HTTP
     failureThreshold: 3
