@@ -28,10 +28,10 @@ keywords:
 type: application
 
 # Chart version
-version: 0.21.0-beta7
+version: 1.0-beta1
 
 # devlake version
-appVersion: v0.21.0-beta7
+appVersion: v1.0-beta1
 
 dependencies:
   - condition: grafana.enabled
