@@ -122,11 +122,13 @@ spec:
       securityContext:
       {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if not .Values.mysql.useExternal }}
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
         {{- with .Values.lake.containerSecurityContext }}
           securityContext:
           {{- toYaml . | nindent 12 }}
+      {{- end }}
       {{- end }}
       containers:
         - name: lake
@@ -172,6 +174,10 @@ spec:
           {{- with .Values.lake.containerSecurityContext }}
           securityContext:
           {{- toYaml . | nindent 12 }}
+          {{- with .Values.lake.volumeMounts }}
+          volumeMounts:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
       {{- end }}
       {{- if .Values.lake.hostNetwork }}
       hostNetwork: true
@@ -187,6 +193,10 @@ spec:
       {{- end }}
       {{- with .Values.lake.tolerations }}
       tolerations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.lake.volumes }}
+      volumes:
       {{- toYaml . | nindent 8 }}
   {{- end }}
 

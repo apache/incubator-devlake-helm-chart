@@ -206,6 +206,10 @@ lake:
 
   podAnnotations: {}
 
+  volumeMounts: []
+
+  volumes: []
+
 ui:
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-config-ui
