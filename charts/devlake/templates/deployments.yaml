@@ -174,11 +174,11 @@ spec:
           {{- with .Values.lake.containerSecurityContext }}
           securityContext:
           {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.lake.volumeMounts }}
           volumeMounts:
           {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- end }}
       {{- if .Values.lake.hostNetwork }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
