@@ -63,7 +63,11 @@ spec:
           - path: /{{ include "devlake.grafanaEndpointPrefix" . }}
           {{- end }}
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            {{- if .Values.ingress.useDefaultNginx }}
+            pathType: ImplementationSpecific
+            {{- else }}
             pathType: Prefix
+            {{- end }}
             {{- end }}
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
@@ -82,7 +86,11 @@ spec:
           - path: /{{ include "devlake.uiEndpointPrefix" . }}
           {{- end}}
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            {{- if .Values.ingress.useDefaultNginx }}
+            pathType: ImplementationSpecific
+            {{- else }}
             pathType: Prefix
+            {{- end }}
             {{- end }}
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
@@ -133,7 +141,7 @@ spec:
         paths:
           - path: /{{ include "devlake.grafanaEndpointPrefix" . }}(/|$)(.*)
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
-            pathType: Prefix
+            pathType: ImplementationSpecific
             {{- end }}
             backend: # dummy to config-ui, actual 302 forearding for external grafana
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
