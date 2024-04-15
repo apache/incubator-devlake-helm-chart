@@ -122,7 +122,7 @@ spec:
       securityContext:
       {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if not .Values.mysql.useExternal }}
+      {{- if or (and (eq .Values.option.database "mysql") (not .Values.mysql.useExternal)) (and (eq .Values.option.database "pgsql") (not .Values.pgsql.useExternal)) }}
       initContainers:
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
         {{- with .Values.lake.containerSecurityContext }}
