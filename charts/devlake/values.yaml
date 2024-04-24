@@ -151,6 +151,9 @@ grafana:
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
     tag: v1.0.0-beta5
+  deploymentStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
   adminPassword: ""
   grafana.ini:
     server:
