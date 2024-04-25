@@ -36,9 +36,6 @@ metadata:
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
   annotations:
-  {{- if .Values.ingress.useDefaultNginx }}
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-  {{- end}}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -57,11 +54,7 @@ spec:
       http:
         paths:
           {{- if .Values.grafana.enabled }}
-          {{- if .Values.ingress.useDefaultNginx }}
-          - path: /{{ include "devlake.grafanaEndpointPrefix" . }}(/|$)(.*)
-          {{- else }}
           - path: /{{ include "devlake.grafanaEndpointPrefix" . }}
-          {{- end }}
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
             {{- end }}
@@ -76,11 +69,7 @@ spec:
               servicePort: {{ .Values.grafana.ingressServicePort | default .Values.grafana.service.port }}
               {{- end }}
           {{- end }}
-          {{- if .Values.ingress.useDefaultNginx }}
-          - path: /{{ include "devlake.uiEndpointPrefix" . }}(/?|$)(.*)
-          {{- else }}
           - path: /{{ include "devlake.uiEndpointPrefix" . }}
-          {{- end}}
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
             {{- end }}
