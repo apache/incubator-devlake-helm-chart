@@ -36,6 +36,9 @@ metadata:
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
   annotations:
+  {{- if .Values.ingress.useDefaultNginx }}
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  {{- end}}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -53,7 +56,31 @@ spec:
     - host: {{ .Values.ingress.hostname | quote }}
       http:
         paths:
+          {{- if .Values.grafana.enabled }}
+          {{- if .Values.ingress.useDefaultNginx }}
+          - path: /{{ include "devlake.grafanaEndpointPrefix" . }}(/|$)(.*)
+          {{- else }}
+          - path: /{{ include "devlake.grafanaEndpointPrefix" . }}
+          {{- end }}
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ .Values.grafana.ingressServiceName | default ( include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) ) }}
+                port:
+                  number: {{ .Values.grafana.ingressServicePort | default .Values.grafana.service.port }}
+              {{- else }}
+              serviceName: {{ .Values.grafana.ingressServiceName | default ( include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) ) }}
+              servicePort: {{ .Values.grafana.ingressServicePort | default .Values.grafana.service.port }}
+              {{- end }}
+          {{- end }}
+          {{- if .Values.ingress.useDefaultNginx }}
+          - path: /{{ include "devlake.uiEndpointPrefix" . }}(/?|$)(.*)
+          {{- else }}
           - path: /{{ include "devlake.uiEndpointPrefix" . }}
+          {{- end}}
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
             {{- end }}
@@ -70,6 +97,7 @@ spec:
           {{- if .Values.ingress.extraPaths }}
             {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
           {{- end }}
+{{- if and .Values.ingress.useDefaultNginx (not .Values.grafana.enabled) }}
 ---
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
@@ -80,17 +108,12 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}-grafana
+  name: {{ $fullName }}-ext-grafana
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
   annotations:
-    {{- if .Values.ingress.useDefaultNginx }}
-    nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
-    {{- end}}
-    {{- if not .Values.ingress.enabled }}
     nginx.ingress.kubernetes.io/permanent-redirect: {{ .Values.grafana.external.url }}
-    {{- end }}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -108,27 +131,19 @@ spec:
     - host: {{ .Values.ingress.hostname | quote }}
       http:
         paths:
-          {{- if .Values.ingress.useDefaultNginx }}
           - path: /{{ include "devlake.grafanaEndpointPrefix" . }}(/|$)(.*)
-          {{- else }}
-          - path: /{{ include "devlake.grafanaEndpointPrefix" . }}
-          {{- end }}
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
-            {{- if .Values.ingress.useDefaultNginx }}
-            pathType: ImplementationSpecific
-            {{- else }}
             pathType: Prefix
             {{- end }}
-            {{- end }}
-            # dummy in case of external grafana (redirect 308)
-            backend:
+            backend: # dummy to config-ui, actual 302 forearding for external grafana
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ .Values.grafana.ingressServiceName | default ( include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) ) }}
+                name: {{ $uiServiceName }}
                 port:
-                  number: {{ .Values.grafana.ingressServicePort | default .Values.grafana.service.port }}
+                  number: 4000
               {{- else }}
-              serviceName: {{ .Values.grafana.ingressServiceName | default ( include "grafana.fullname" (dict "Values" .Values.grafana "Chart" (dict "Name" "grafana") "Release" .Release ) ) }}
-              servicePort: {{ .Values.grafana.ingressServicePort | default .Values.grafana.service.port }}
+              serviceName: {{ $uiServiceName }}
+              servicePort: 4000
               {{- end }}
-{{- end -}}
+{{- end }}
+{{- end }}
