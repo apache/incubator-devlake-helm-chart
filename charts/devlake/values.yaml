@@ -331,7 +331,7 @@ ingress:
   enabled: false
   enableHttps: false
   # Set to false if you want to use a different ingress controller
-  useDefaultNginx: true
+  useDefaultNginx: false
   # ingress class name, example: alb for AWS load balancer controller
   className:
   # domain name for hosting devlake, must be set if ingress is enabled
