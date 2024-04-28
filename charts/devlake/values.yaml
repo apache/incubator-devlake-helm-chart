@@ -186,6 +186,13 @@ lake:
     LOGGING_DIR: "/app/logs"
     # debug, info, warn, error
     LOGGING_LEVEL: "info"
+    ##########################
+    # ENABLE_SUBTASKS_BY_DEFAULT: This environment variable is used to enable or disable the execution of subtasks.
+    # The format is as follows: plugin_name1:subtask_name1:enabled_value,plugin_name2:subtask_name2:enabled_value,plugin_name3:subtask_name3:enabled_value
+    ##########################
+    # ENABLE_SUBTASKS_BY_DEFAULT default value as below:
+    # ENABLE_SUBTASKS_BY_DEFAULT: "jira:collectIssueChangelogs:true,jira:extractIssueChangelogs:true,jira:convertIssueChangelogs:true,tapd:collectBugChangelogs:true,tapd:extractBugChangelogs:true,tapd:convertBugChangelogs:true,zentao:collectBugRepoCommits:true,zentao:extractBugRepoCommits:true,zentao:convertBugRepoCommits:true,zentao:collectStoryRepoCommits:true,zentao:extractStoryRepoCommits:true,zentao:convertStoryRepoCommits:true,zentao:collectTaskRepoCommits:true,zentao:extractTaskRepoCommits:true,zentao:convertTaskRepoCommits:true"
+
   #extra envs from an existing secret
   extraEnvsFromSecret: ""
   encryptionSecret:
