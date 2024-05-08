@@ -156,6 +156,7 @@ grafana:
   adminPassword: ""
   grafana.ini:
     server:
+      serve_from_subpath: "true"
       root_url: "%(protocol)s://%(domain)s/grafana"
   #the secret name should be as same as .Values.option.connectionSecretName
   envFromSecrets:
