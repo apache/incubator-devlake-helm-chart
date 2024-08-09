@@ -17,7 +17,11 @@
 
 # replica count
 replicaCount: 1
+<<<<<<< Updated upstream
 imageTag: v1.0.1-beta5
+=======
+imageTag: v1.0.1-beta6
+>>>>>>> Stashed changes
 
 # image pull secrets
 imagePullSecrets: []
@@ -150,7 +154,11 @@ grafana:
     url: ""
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
+<<<<<<< Updated upstream
     tag: v1.0.1-beta5
+=======
+    tag: v1.0.1-beta6
+>>>>>>> Stashed changes
   deploymentStrategy:
     type: Recreate
   adminPassword: ""

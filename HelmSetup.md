@@ -24,7 +24,11 @@ To install the chart with release name `devlake`:
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+<<<<<<< Updated upstream
 helm install devlake devlake/devlake --version=1.0.1-beta5 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+=======
+helm install devlake devlake/devlake --version=1.0.1-beta6 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+>>>>>>> Stashed changes
 
 ```
 
@@ -50,14 +54,22 @@ _Notes for mac users with minikube:_
 
 ```shell
 helm repo update
+<<<<<<< Updated upstream
 helm upgrade devlake devlake/devlake --version=1.0.1-beta5 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+=======
+helm upgrade devlake devlake/devlake --version=1.0.1-beta6 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+>>>>>>> Stashed changes
 ```
 
 **If you're upgrading from DevLake v0.18.x or later versions:**
 
 ```shell
 helm repo update
+<<<<<<< Updated upstream
 helm upgrade devlake devlake/devlake --version=1.0.1-beta5
+=======
+helm upgrade devlake devlake/devlake --version=1.0.1-beta6
+>>>>>>> Stashed changes
 ```
 
 ### 2.3 Uninstall

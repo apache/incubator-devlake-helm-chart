@@ -28,10 +28,17 @@ keywords:
 type: application
 
 # Chart version
+<<<<<<< Updated upstream
 version: 1.0.1-beta5
 
 # devlake version
 appVersion: v1.0.1-beta5
+=======
+version: 1.0.1-beta6
+
+# devlake version
+appVersion: v1.0.1-beta6
+>>>>>>> Stashed changes
 
 dependencies:
   - condition: grafana.enabled
