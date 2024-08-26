@@ -187,6 +187,7 @@ lake:
     LOGGING_DIR: "/app/logs"
     # debug, info, warn, error
     LOGGING_LEVEL: "info"
+    JIRA_JQL_AUTO_FULL_REFRESH: "true"
     ##########################
     # ENABLE_SUBTASKS_BY_DEFAULT: This environment variable is used to enable or disable the execution of subtasks.
     # The format is as follows: plugin_name1:subtask_name1:enabled_value,plugin_name2:subtask_name2:enabled_value,plugin_name3:subtask_name3:enabled_value
