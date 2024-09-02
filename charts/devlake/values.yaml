@@ -323,6 +323,22 @@ ui:
   deployment:
     extraLabels: {}
 
+  ## Side Contaainer Configuration 
+  extraContainers: []
+#  - name: vault-agent
+#    image: vault:1.6.2
+#    args:
+#    - agent
+#    - -config
+#    - /vault/config/config.hcl
+#    env:
+#    - name: VAULT_ADDR
+#      value: https://vault:8200
+#    - name: VAULT_SKIP_VERIFY
+#      value: "false"
+#    - name: VAULT_CACERT
+#      value: /vault/tls/ca.crt
+
 # alpine image for some init containers
 alpine:
   image:
