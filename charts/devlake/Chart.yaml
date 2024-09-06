@@ -31,7 +31,7 @@ type: application
 version: 1.0.1-beta9
 
 # devlake version
-appVersion: v1.0.1-beta6
+appVersion: v1.0.1-beta9
 
 dependencies:
   - condition: grafana.enabled
