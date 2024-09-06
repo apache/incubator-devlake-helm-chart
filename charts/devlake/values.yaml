@@ -17,7 +17,7 @@
 
 # replica count
 replicaCount: 1
-imageTag: v1.0.1-beta7
+imageTag: v1.0.1-beta8
 
 # image pull secrets
 imagePullSecrets: []
@@ -150,7 +150,7 @@ grafana:
     url: ""
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
-    tag: v1.0.1-beta7
+    tag: v1.0.1-beta8
   deploymentStrategy:
     type: Recreate
   adminPassword: ""
@@ -323,7 +323,7 @@ ui:
   deployment:
     extraLabels: {}
 
-  ## Side Contaainer Configuration 
+  ## Side Contaainer Configuration
   extraContainers: []
 #  - name: vault-agent
 #    image: vault:1.6.2
