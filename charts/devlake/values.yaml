@@ -15,9 +15,8 @@
 # limitations under the License.
 #
 
-# global replica count was removed
-
 imageTag: v1.0.0-beta3
+
 
 # image pull secrets
 imagePullSecrets: []
@@ -151,10 +150,13 @@ grafana:
     url: ""
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
-    tag: v1.0.0-beta3
+    tag: v1.0.1
+  deploymentStrategy:
+    type: Recreate
   adminPassword: ""
   grafana.ini:
     server:
+      serve_from_subpath: "true"
       root_url: "%(protocol)s://%(domain)s/grafana"
   #the secret name should be as same as .Values.option.connectionSecretName
   envFromSecrets:
@@ -186,6 +188,14 @@ lake:
     LOGGING_DIR: "/app/logs"
     # debug, info, warn, error
     LOGGING_LEVEL: "info"
+    JIRA_JQL_AUTO_FULL_REFRESH: "true"
+    ##########################
+    # ENABLE_SUBTASKS_BY_DEFAULT: This environment variable is used to enable or disable the execution of subtasks.
+    # The format is as follows: plugin_name1:subtask_name1:enabled_value,plugin_name2:subtask_name2:enabled_value,plugin_name3:subtask_name3:enabled_value
+    ##########################
+    # ENABLE_SUBTASKS_BY_DEFAULT default value as below:
+    # ENABLE_SUBTASKS_BY_DEFAULT: "jira:collectIssueChangelogs:true,jira:extractIssueChangelogs:true,jira:convertIssueChangelogs:true,tapd:collectBugChangelogs:true,tapd:extractBugChangelogs:true,tapd:convertBugChangelogs:true,zentao:collectBugRepoCommits:true,zentao:extractBugRepoCommits:true,zentao:convertBugRepoCommits:true,zentao:collectStoryRepoCommits:true,zentao:extractStoryRepoCommits:true,zentao:convertStoryRepoCommits:true,zentao:collectTaskRepoCommits:true,zentao:extractTaskRepoCommits:true,zentao:convertTaskRepoCommits:true"
+
   #extra envs from an existing secret
   extraEnvsFromSecret: ""
   encryptionSecret:
@@ -315,6 +325,22 @@ ui:
   deployment:
     extraLabels: {}
 
+  ## Side Contaainer Configuration
+  extraContainers: []
+#  - name: vault-agent
+#    image: vault:1.6.2
+#    args:
+#    - agent
+#    - -config
+#    - /vault/config/config.hcl
+#    env:
+#    - name: VAULT_ADDR
+#      value: https://vault:8200
+#    - name: VAULT_SKIP_VERIFY
+#      value: "false"
+#    - name: VAULT_CACERT
+#      value: /vault/tls/ca.crt
+
 # alpine image for some init containers
 alpine:
   image:
@@ -332,7 +358,7 @@ ingress:
   enabled: false
   enableHttps: false
   # Set to false if you want to use a different ingress controller
-  useDefaultNginx: true
+  useDefaultNginx: false
   # ingress class name, example: alb for AWS load balancer controller
   className:
   # domain name for hosting devlake, must be set if ingress is enabled
