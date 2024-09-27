@@ -15,9 +15,8 @@
 # limitations under the License.
 #
 
-# replica count
-replicaCount: 1
-imageTag: v1.0.1
+imageTag: v1.0.0-beta3
+
 
 # image pull secrets
 imagePullSecrets: []
@@ -27,6 +26,7 @@ commonEnvs:
   TZ: "UTC"
 
 mysql:
+  replicaCount: 1
   # if use external mysql server, please set true
   # by default using false, chart will create a single mysql instance
   useExternal: false
@@ -171,6 +171,7 @@ grafana:
   ingressServicePort: ""
 
 lake:
+  replicaCount: 1
   image:
     repository: devlake.docker.scarf.sh/apache/devlake
     pullPolicy: Always
@@ -253,6 +254,7 @@ lake:
     extraLabels: {}
 
 ui:
+  replicaCount: 1
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-config-ui
     pullPolicy: Always
