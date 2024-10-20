@@ -231,7 +231,8 @@ spec:
       {{- end }}
       {{- with .Values.lake.affinity }}
       affinity:
-      {{- toYaml . | nindent 8 }}      {{- end }}
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.lake.tolerations }}
       tolerations:
       {{- toYaml . | nindent 8 }}
