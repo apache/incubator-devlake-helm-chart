@@ -252,6 +252,21 @@ lake:
   deployment:
     extraLabels: {}
 
+  # Additional volumes to include in the Pod. Example:
+  #
+  # volumes:
+  #   - name: my-volume
+  #     configMap: my-config-map
+  volumes: []
+
+  # Additional volume mounts to include in the Container. Example:
+  #
+  # volumeMounts:
+  #   - name: test-volume
+  #     mountPath: /opt/test_folder
+  #     subPath: test_file.yaml
+  volumeMounts: []
+
 ui:
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-config-ui
