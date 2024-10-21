@@ -205,9 +205,21 @@ spec:
           resources:
           {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if .Values.lake.volumeMounts }}
+          volumeMounts:
+            {{- range $volumeMount := .Values.lake.volumeMounts }}
+            - {{- $volumeMount | toYaml | nindent 14 }}
+            {{- end }}
+          {{- end }}
           {{- with .Values.lake.containerSecurityContext }}
           securityContext:
           {{- toYaml . | nindent 12 }}
+      {{- end }}
+      {{- if .Values.lake.volumes }}
+      volumes:
+        {{- range $volume := .Values.lake.volumes }}
+        - {{- $volume | toYaml | nindent 10 }}
+        {{- end }}
       {{- end }}
       {{- if .Values.lake.hostNetwork }}
       hostNetwork: true
