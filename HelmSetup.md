@@ -25,7 +25,6 @@ helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
 helm install devlake devlake/devlake --version=1.0.2-beta3 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
-
 ```
 
 Visit your devlake from the node port (32001 by default): http://YOUR-NODE-IP:32001.
