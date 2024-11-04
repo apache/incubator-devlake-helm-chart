@@ -415,3 +415,16 @@ option:
   # the existing k8s secret name of db connection auth. The secret name should be as same as .Values.grafana.envFromSecret
   connectionSecretName: "devlake-mysql-auth"
   autoCreateSecret: true
+
+# Define some extra resources to be created
+# This section is useful when you need ExternalResource or Secrets, etc.
+extraResources: []
+  # - apiVersion: v1
+  #   kind: Secret
+  #   metadata:
+  #     name: example-secret
+  #     labels: {}
+  #   type: Opaque
+  #   stringData:
+  #     username: admin
+  #     password: mypassword
