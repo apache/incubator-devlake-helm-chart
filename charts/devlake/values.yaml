@@ -90,6 +90,7 @@ mysql:
   service:
     type: "ClusterIP"
     nodePort: ""
+    loadBalancerIP: ""
 
 # pgsql:
 #   # if use external pgsql server, please set true
