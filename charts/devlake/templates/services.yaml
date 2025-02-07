@@ -27,6 +27,9 @@ metadata:
     {{- include "devlake.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.mysql.service.type }}
+  {{- if and (eq .Values.mysql.service.type "LoadBalancer") .Values.mysql.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.mysql.service.loadBalancerIP }}
+  {{- end }}
   selector:
     {{- include "devlake.selectorLabels" . | nindent 4 }}
     devlakeComponent: mysql
