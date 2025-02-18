@@ -35,6 +35,9 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    {{- with .Values.ingress.extraLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   annotations:
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
