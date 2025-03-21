@@ -91,6 +91,7 @@ mysql:
     type: "ClusterIP"
     nodePort: ""
     loadBalancerIP: ""
+    extraLabels: {}
 
 # pgsql:
 #   # if use external pgsql server, please set true
@@ -253,6 +254,9 @@ lake:
   deployment:
     extraLabels: {}
 
+  service:
+    extraLabels: {}
+
   # Additional volumes to include in the Pod. Example:
   #
   # volumes:
@@ -339,6 +343,9 @@ ui:
   deployment:
     extraLabels: {}
 
+  service:
+    extraLabels: {}
+
   ## Side Contaainer Configuration
   extraContainers: []
 #  - name: vault-agent
@@ -377,6 +384,7 @@ ingress:
   className:
   # domain name for hosting devlake, must be set if ingress is enabled
   hostname: localhost
+  extraLabels: {}
   # annotations required for your ingress controller; see the examples below
   # for nginx, use the first two lines of annotations
   # for alb (w/ external-dns), use the last 5 (6) lines of annotations
