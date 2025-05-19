@@ -25,7 +25,7 @@ metadata:
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
 spec:
-  replicas: {{ if gt .Values.mysql.replicaCount 1 }}1{{ else }}{{ .Values.mysql.replicaCount }}{{ end }}
+  replicas: {{ if gt (int .Values.mysql.replicaCount) 1 }}1{{ else }}{{ .Values.mysql.replicaCount }}{{ end }}
   serviceName: {{ include "devlake.fullname" . }}-mysql
   selector:
     matchLabels:
