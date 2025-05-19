@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-imageTag: v1.0.0-beta3
+imageTag: v1.0.1
 
 
 # image pull secrets
