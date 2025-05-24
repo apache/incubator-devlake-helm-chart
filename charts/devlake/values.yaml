@@ -15,8 +15,9 @@
 # limitations under the License.
 #
 
-imageTag: v1.0.1
-
+# replica count
+replicaCount: 1
+imageTag: v1.0.2-beta7
 
 # image pull secrets
 imagePullSecrets: []
@@ -90,6 +91,8 @@ mysql:
   service:
     type: "ClusterIP"
     nodePort: ""
+    loadBalancerIP: ""
+    extraLabels: {}
 
 # pgsql:
 #   # if use external pgsql server, please set true
@@ -150,7 +153,7 @@ grafana:
     url: ""
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-dashboard
-    tag: v1.0.1
+    tag: v1.0.2-beta7
   deploymentStrategy:
     type: Recreate
   adminPassword: ""
@@ -253,6 +256,24 @@ lake:
   deployment:
     extraLabels: {}
 
+  service:
+    extraLabels: {}
+
+  # Additional volumes to include in the Pod. Example:
+  #
+  # volumes:
+  #   - name: my-volume
+  #     configMap: my-config-map
+  volumes: []
+
+  # Additional volume mounts to include in the Container. Example:
+  #
+  # volumeMounts:
+  #   - name: test-volume
+  #     mountPath: /opt/test_folder
+  #     subPath: test_file.yaml
+  volumeMounts: []
+
 ui:
   replicaCount: 1
   image:
@@ -325,6 +346,9 @@ ui:
   deployment:
     extraLabels: {}
 
+  service:
+    extraLabels: {}
+
   ## Side Contaainer Configuration
   extraContainers: []
 #  - name: vault-agent
@@ -363,6 +387,7 @@ ingress:
   className:
   # domain name for hosting devlake, must be set if ingress is enabled
   hostname: localhost
+  extraLabels: {}
   # annotations required for your ingress controller; see the examples below
   # for nginx, use the first two lines of annotations
   # for alb (w/ external-dns), use the last 5 (6) lines of annotations
@@ -402,3 +427,16 @@ option:
   # the existing k8s secret name of db connection auth. The secret name should be as same as .Values.grafana.envFromSecret
   connectionSecretName: "devlake-mysql-auth"
   autoCreateSecret: true
+
+# Define some extra resources to be created
+# This section is useful when you need ExternalResource or Secrets, etc.
+extraResources: []
+  # - apiVersion: v1
+  #   kind: Secret
+  #   metadata:
+  #     name: example-secret
+  #     labels: {}
+  #   type: Opaque
+  #   stringData:
+  #     username: admin
+  #     password: mypassword
