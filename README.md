@@ -41,6 +41,8 @@ ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | hea
 helm install devlake devlake/devlake --version=1.0.2-beta8 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
+Helm chart are also published to GitHub container registry as OCI artifact.
+
 If you are using minikube inside your mac, please use the following command to forward the port:
 
 ```shell
