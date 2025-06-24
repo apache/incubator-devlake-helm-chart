@@ -79,6 +79,8 @@ mysql:
   # affinity config for mysql if have
   affinity: {}
 
+  extraArgs: []
+
   extraLabels: {}
 
   securityContext: {}
