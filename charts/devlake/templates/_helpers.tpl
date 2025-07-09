@@ -104,6 +104,10 @@ The ui endpoint
 {{- end -}}
 {{- end -}}
 
+{{- define "devlake.mysql.configmap" -}}
+{{ include "devlake.fullname" . }}-config
+{{- end -}}
+
 {{- define "devlake.ui.auth.secret" -}}
 {{- if .Values.ui.basicAuth.secretName -}}
 {{- .Values.ui.basicAuth.secretName -}}
@@ -161,16 +165,6 @@ The database port
 {{- define "database.port" -}}
 {{- if eq .Values.option.database "mysql" }}
 {{- include "mysql.port" . }}
-{{- end }}
-{{- end }}
-
-
-{{/*
-The database url
-*/}}
-{{- define "database.url" -}}
-{{- if eq .Values.option.database "mysql" -}}
-mysql://{{ .Values.mysql.username }}:{{ .Values.mysql.password }}@{{ include "mysql.server" . }}:{{ include "mysql.port" . }}/{{ .Values.mysql.database }}?charset=utf8mb4&parseTime=True&loc={{ .Values.commonEnvs.TZ }}
 {{- end }}
 {{- end }}
 
