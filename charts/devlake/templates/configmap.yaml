@@ -14,27 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-apiVersion: v2
-name: devlake
-description: Apache DevLake is an open-source dev data platform that ingests, analyzes, and visualizes the fragmented data from DevOps tools to distill insights for engineering productivity.
-home: https://devlake.apache.org/
-icon: https://devlake.apache.org/img/logo.svg
-sources:
-  - https://github.com/apache/incubator-devlake
-  - https://github.com/apache/incubator-devlake-website
-keywords:
-  - devlake
-
-type: application
-
-# Chart version
-version: 1.0.3-beta1
-
-# devlake version
-appVersion: v1.0.3-beta1
-
-dependencies:
-  - condition: grafana.enabled
-    name: grafana
-    version: "6.56.6"
-    repository: "https://grafana.github.io/helm-charts"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devlake.mysql.configmap" . }}
+  labels:
+    {{- include "devlake.labels" . | nindent 4 }}
+data:
+  # Database connection configuration (non-sensitive)
+{{- if (eq .Values.option.database "mysql") }}
+  MYSQL_USER: "{{ .Values.mysql.username }}"
+  MYSQL_DATABASE: "{{ .Values.mysql.database }}"
+  MYSQL_URL: "{{ include "mysql.server" . }}:{{ include "mysql.port" . }}"
+  MYSQL_SERVER: "{{ include "mysql.server" . }}"
+  MYSQL_PORT: "{{ include "mysql.port" . }}"
+  DB_CHARSET: "utf8mb4"
+  DB_PARSE_TIME: "True"
+  DB_LOCATION: "{{ .Values.commonEnvs.TZ }}"
+{{- end }}
