@@ -177,6 +177,7 @@ grafana:
 
 lake:
   replicaCount: 1
+  revisionHistoryLimit: 10
   image:
     repository: devlake.docker.scarf.sh/apache/devlake
     pullPolicy: Always
@@ -278,6 +279,7 @@ lake:
 
 ui:
   replicaCount: 1
+  revisionHistoryLimit: 10
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-config-ui
     pullPolicy: Always
