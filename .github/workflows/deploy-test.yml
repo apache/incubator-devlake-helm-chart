@@ -68,8 +68,6 @@ jobs:
             --set mysql.useExternal=true \
             --set mysql.externalServer=mysql \
             --set lake.encryptionSecret.secret=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
-          kubectl get pods -o wide
-          kubectl get services -o wide
 
       - name: Helm install devlake
         if: matrix.database_type == 'mysql-builtin'
@@ -82,8 +80,16 @@ jobs:
             --set service.uiPort=30000 \
             --set mysql.image.tag=8-debian \
             --set lake.encryptionSecret.secret=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+
+      - name: List cluster resources
+        if: ${{ always() }}
+        run: |
           kubectl get pods -o wide
           kubectl get services -o wide
+          kubectl get deployments -o wide
+          kubectl get cm
+          kubectl get secrets
+          kubectl get pvc
 
       # TODO: using some e2e test code to replace it
       - name: Curl with endpoints
