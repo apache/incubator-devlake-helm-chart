@@ -154,7 +154,8 @@ grafana:
   external:
     url: ""
   image:
-    repository: devlake.docker.scarf.sh/apache/devlake-dashboard
+    registry: devlake.docker.scarf.sh
+    repository: apache/devlake-dashboard
     tag: v1.0.3-beta3
   deploymentStrategy:
     type: Recreate
