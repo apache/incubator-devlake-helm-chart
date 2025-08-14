@@ -507,6 +507,22 @@ extraSecretMounts: []
   #    nodePublishSecretRef:                       # Only required when using service principal mode
   #       name: grafana-akv-creds                  # Only required when using service principal mode
 
+## Additional Grafana server volumes
+extraVolumes: []
+  # - name: extra-volume-0
+  #   existingClaim: volume-claim
+  # - name: extra-volume-1
+  #   hostPath:
+  #     path: /usr/shared/
+  #     type: ""
+  # - name: grafana-secrets
+  #   csi:
+  #     driver: secrets-store.csi.k8s.io
+  #     readOnly: true
+  #     volumeAttributes:
+  #       secretProviderClass: "grafana-env-spc"
+
+
 ## Additional grafana server volume mounts
 # Defines additional volume mounts.
 extraVolumeMounts: []

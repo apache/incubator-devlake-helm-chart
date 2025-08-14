@@ -1134,17 +1134,20 @@ volumes:
       {{- toYaml .csi | nindent 6 }}
   {{- end }}
   {{- end }}
-  {{- range .Values.extraVolumeMounts }}
+  {{- range .Values.extraVolumes }}
   - name: {{ .name }}
     {{- if .existingClaim }}
     persistentVolumeClaim:
       claimName: {{ .existingClaim }}
     {{- else if .hostPath }}
     hostPath:
-      path: {{ .hostPath }}
+      {{ toYaml .hostPath | nindent 6 }}
     {{- else if .csi }}
     csi:
       {{- toYaml .data | nindent 6 }}
+    {{- else if .configMap }}
+    configMap:
+      {{- toYaml .configMap | nindent 6 }}
     {{- else }}
     emptyDir: {}
     {{- end }}
