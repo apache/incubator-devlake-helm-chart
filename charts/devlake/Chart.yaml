@@ -36,5 +36,5 @@ appVersion: v1.0.3-beta3
 dependencies:
   - condition: grafana.enabled
     name: grafana
-    version: "9.3.1"
+    version: "9.3.2"
     repository: "https://grafana.github.io/helm-charts"
