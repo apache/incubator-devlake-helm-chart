@@ -21,20 +21,20 @@ home: https://devlake.apache.org/
 icon: https://devlake.apache.org/img/logo.svg
 sources:
   - https://github.com/apache/incubator-devlake
-  - https://github.com/apache/incubator-devlake-website
+  - https://github.com/apache/incubator-devlake-helm-chart
 keywords:
   - devlake
 
 type: application
 
 # Chart version
-version: 1.0.3-beta2
+version: 1.0.3-beta3
 
 # devlake version
-appVersion: v1.0.3-beta2
+appVersion: v1.0.3-beta3
 
 dependencies:
   - condition: grafana.enabled
     name: grafana
-    version: "6.56.6"
+    version: "9.3.2"
     repository: "https://grafana.github.io/helm-charts"

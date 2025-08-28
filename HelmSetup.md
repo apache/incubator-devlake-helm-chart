@@ -24,7 +24,7 @@ To install the chart with release name `devlake`:
 helm repo add devlake https://apache.github.io/incubator-devlake-helm-chart
 helm repo update
 ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
-helm install devlake devlake/devlake --version=1.0.3-beta2 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+helm install devlake devlake/devlake --version=1.0.3-beta3 --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
 Visit your devlake from the node port (32001 by default): http://YOUR-NODE-IP:32001.
@@ -49,14 +49,14 @@ _Notes for mac users with minikube:_
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=1.0.3-beta2 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
+helm upgrade devlake devlake/devlake --version=1.0.3-beta3 --set lake.encryptionSecret.secret=<ENCRYPTION_SECRET>
 ```
 
 **If you're upgrading from DevLake v0.18.x or later versions:**
 
 ```shell
 helm repo update
-helm upgrade devlake devlake/devlake --version=1.0.3-beta2
+helm upgrade devlake devlake/devlake --version=1.0.3-beta3
 ```
 
 ### 2.3 Uninstall
@@ -143,10 +143,11 @@ Some useful parameters for the chart, you could also check them in values.yaml
 
 | Parameter                              | Description                                                                           | Default                  |
 | -------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------ |
-| replicaCount                           | Replica Count for devlake, currently not used                                         | 1                        |
+| replicaCount                           | Replica Count for devlake, currently not used (removed)                               | 1                        |
 | imageTag                               | The version tag for all images                                                        | see Values.yaml          |
 | imagePullSecrets                       | Name of the Secret for accessing private image registries                             | []                       |
 | commonEnvs                             | The common envs for all pods except grafana                                           | {TZ: "UTC"}              |
+| mysql.replicaCount                     | Replica count can only be 0 or 1                                                      | 1                        |
 | mysql.useExternal                      | If use external mysql server, set true                                                | false                    |
 | mysql.externalServer                   | External mysql server address                                                         | 127.0.0.1                |
 | mysql.externalPort                     | External mysql server port                                                            | 3306                     |
@@ -168,6 +169,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | mysql.service.type                     | mysql service type                                                                    | ClusterIP                |
 | mysql.service.nodePort                 | specify mysql nodeport                                                                | ""                       |
 | grafana                                | dashboard, datasource, etc. settings for grafana, installed by grafana official chart |                          |
+| lake.replicaCount                      | Replica count can only be 0 or 1                                                      | 1                        |
 | lake.image.repository                  | repository for lake's image                                                           | apache/devlake           |
 | lake.image.pullPolicy                  | pullPolicy for lake's image                                                           | Always                   |
 | lake.port                              | the port of devlake backend                                                           | 8080                     |
@@ -183,6 +185,7 @@ Some useful parameters for the chart, you could also check them in values.yaml
 | lake.livenessProbe                     | container livenessprobe                                                               | see Values.yaml          |
 | lake.readinessProbe                    | container readinessProbe                                                              | see Values.yaml          |
 | lake.deployment.extraLabels            | extra labels for lake's deployment metadata                                           | {}                       |
+| ui.replicaCount                        | Replica count for ui                                                                  | 1                        |
 | ui.image.repository                    | repository for ui's image                                                             | apache/devlake-config-ui |
 | ui.image.pullPolicy                    | pullPolicy for ui's image                                                             | Always                   |
 | ui.basicAuth.enabled                   | If the basic auth in ui is enabled                                                    | false                    |

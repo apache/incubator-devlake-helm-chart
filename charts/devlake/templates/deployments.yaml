@@ -26,7 +26,8 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.ui.replicaCount }}
+  revisionHistoryLimit: {{ .Values.ui.revisionHistoryLimit }}
   {{- with .Values.ui.strategy }}
   strategy:
     {{- toYaml . | nindent 4 }}
@@ -129,7 +130,8 @@ metadata:
   {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  replicas: 1
+  replicas: {{ if gt (int .Values.lake.replicaCount) 1 }}1{{ else }}{{ .Values.lake.replicaCount }}{{ end }}
+  revisionHistoryLimit: {{ .Values.lake.revisionHistoryLimit }}
   {{- with .Values.lake.strategy }}
   strategy:
     {{- toYaml . | nindent 4 }}

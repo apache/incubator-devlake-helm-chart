@@ -17,7 +17,7 @@
 
 # replica count
 replicaCount: 1
-imageTag: v1.0.3-beta2
+imageTag: v1.0.3-beta3
 
 # image pull secrets
 imagePullSecrets: []
@@ -27,6 +27,7 @@ commonEnvs:
   TZ: "UTC"
 
 mysql:
+  replicaCount: 1
   # if use external mysql server, please set true
   # by default using false, chart will create a single mysql instance
   useExternal: false
@@ -153,8 +154,9 @@ grafana:
   external:
     url: ""
   image:
-    repository: devlake.docker.scarf.sh/apache/devlake-dashboard
-    tag: v1.0.3-beta2
+    registry: devlake.docker.scarf.sh
+    repository: apache/devlake-dashboard
+    tag: v1.0.3-beta3
   deploymentStrategy:
     type: Recreate
   adminPassword: ""
@@ -175,6 +177,8 @@ grafana:
   ingressServicePort: ""
 
 lake:
+  replicaCount: 1
+  revisionHistoryLimit: 10
   image:
     repository: devlake.docker.scarf.sh/apache/devlake
     pullPolicy: Always
@@ -275,6 +279,8 @@ lake:
   volumeMounts: []
 
 ui:
+  replicaCount: 1
+  revisionHistoryLimit: 10
   image:
     repository: devlake.docker.scarf.sh/apache/devlake-config-ui
     pullPolicy: Always
