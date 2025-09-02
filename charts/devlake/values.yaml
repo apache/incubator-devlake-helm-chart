@@ -47,6 +47,11 @@ mysql:
   # the database for devlake
   database: lake
 
+  # extra MySQL DSN query params appended to DB_URL.
+  # Note: include a leading '&' yourself. Empty string means no change.
+  # example: "&tls=skip-verify" or "&tls=skip-verify&autocommit=true"
+  extraParams: ""
+
   # root password for mysql, only used when use_external=false
   rootPassword: admin
 
