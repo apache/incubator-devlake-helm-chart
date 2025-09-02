@@ -197,7 +197,7 @@ spec:
           env:
             - name: PORT
               value: "{{ .Values.lake.port }}"
-            {{- if (eq .Values.option.database "mysql") }}
+            {{- if and (eq .Values.option.database "mysql") (.Values.option.assembleDbUrl) }}
             - name: DB_URL
               value: "mysql://$(MYSQL_USER):$(MYSQL_PASSWORD)@$(MYSQL_SERVER):$(MYSQL_PORT)/$(MYSQL_DATABASE)?charset=$(DB_CHARSET)&parseTime=$(DB_PARSE_TIME)&loc=$(DB_LOCATION){{ .Values.mysql.extraParams }}"
             {{- end }}
