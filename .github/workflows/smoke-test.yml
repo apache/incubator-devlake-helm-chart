@@ -18,16 +18,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v4
-
-      - name: Create kind cluster
-        uses: helm/kind-action@v1.12.0
-        with:
-          cluster_name: devlake-e2e
-
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v4
+        run: |
+          KVER="$(curl -sL https://dl.k8s.io/release/stable.txt)"
+          curl -L -o kubectl "https://dl.k8s.io/release/${KVER}/bin/linux/amd64/kubectl"
+          chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+
+      - name: Set up Helm
+        run: |
+          HELM_VER="v3.18.6"
+          curl -L "https://get.helm.sh/helm-${HELM_VER}-linux-amd64.tar.gz" | tar xz
+          sudo mv linux-amd64/helm /usr/local/bin/helm
+
+      - name: Set up kind
+        run: |
+          KIND_VER="v0.30.0"
+          curl -L -o kind "https://kind.sigs.k8s.io/dl/${KIND_VER}/kind-linux-amd64"
+          chmod +x kind && sudo mv kind /usr/local/bin/kind
+
+      - name: Create cluster
+        run: |
+          kind create cluster --name devlake-smoke-test
 
       - name: Add Helm repos
         run: |
