@@ -101,7 +101,7 @@ mysql:
       command:
         - "sh"
         - "-c"
-        - "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"
+        - "mysqladmin ping --protocol=TCP -h 127.0.0.1 -u root -p$MYSQL_ROOT_PASSWORD"
     initialDelaySeconds: 120
     periodSeconds: 10
     timeoutSeconds: 10
