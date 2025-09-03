@@ -171,11 +171,11 @@ grafana:
       root_url: "%(protocol)s://%(domain)s/grafana"
   # the Secret name should be the same as .Values.option.connectionSecretName
   envFromSecrets:
-    - name: "devlake-mysql-auth"
+    - name: &devlake_mysql_auth "devlake-mysql-auth"
   # the ConfigMap name should be the same as .Values.option.connectionConfigmapName
   extraEnvFrom:
     - configMapRef:
-        name: "devlake-mysql-auth-config"
+        name: &devlake_mysql_auth_config "devlake-mysql-auth-config"
   #keep grafana timezone same as other pods, which is set by .Values.commonEnvs.TZ
   env:
     TZ: "UTC"
@@ -439,10 +439,10 @@ option:
   # database type, supported: [mysql]
   database: mysql
   # the existing k8s secret name of db connection auth. The secret name should be as same as .Values.grafana.envFromSecret
-  connectionSecretName: "devlake-mysql-auth"
+  connectionSecretName: *devlake_mysql_auth
   # Optional: override the ConfigMap name for non-sensitive DB envs used across components
   # Default is a fixed name to align references from subcharts
-  connectionConfigmapName: "devlake-mysql-auth-config"
+  connectionConfigmapName: *devlake_mysql_auth_config
   autoCreateSecret: true
   # If true, the chart assembles DB_URL automatically for MySQL. Set to false
   # to disable auto-assembly and provide DB_URL yourself via `lake.envs` or
