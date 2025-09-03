@@ -69,22 +69,18 @@ spec:
             - name: mysql
               containerPort: 3306
               protocol: TCP
+          {{- with .Values.mysql.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.mysql.livenessProbe }}
           livenessProbe:
-            exec:
-              command:
-                - "sh"
-                - "-c"
-                - "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.mysql.readinessProbe }}
           readinessProbe:
-            exec:
-              command:
-                - "sh"
-                - "-c"
-                - "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"
-            initialDelaySeconds: 5
-            timeoutSeconds: 10
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.mysql.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

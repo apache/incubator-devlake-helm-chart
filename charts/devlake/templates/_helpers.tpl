@@ -105,7 +105,11 @@ The ui endpoint
 {{- end -}}
 
 {{- define "devlake.mysql.configmap" -}}
+{{- if .Values.option.connectionConfigmapName -}}
+{{- .Values.option.connectionConfigmapName -}}
+{{- else -}}
 {{ include "devlake.fullname" . }}-config
+{{- end -}}
 {{- end -}}
 
 {{- define "devlake.ui.auth.secret" -}}
