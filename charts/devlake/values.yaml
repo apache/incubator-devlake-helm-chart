@@ -95,6 +95,32 @@ mysql:
 
   podAnnotations: {}
 
+  # Probes for MySQL container
+  startupProbe:
+    exec: &mysql_ping_exec
+      command:
+        - "sh"
+        - "-c"
+        - "mysqladmin ping -u root -p$MYSQL_ROOT_PASSWORD"
+    initialDelaySeconds: 120
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 60
+
+  livenessProbe:
+    exec: *mysql_ping_exec
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 30
+    failureThreshold: 5
+
+  readinessProbe:
+    exec: *mysql_ping_exec
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 10
+    failureThreshold: 3
+
   service:
     type: "ClusterIP"
     nodePort: ""
