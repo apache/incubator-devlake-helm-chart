@@ -1,0 +1,72 @@
+name: DevLake Helm Smoke Test
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      RELEASE_NAME: devlake
+      NAMESPACE: devlake
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.12.0
+        with:
+          cluster_name: devlake-e2e
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Add Helm repos
+        run: |
+          helm repo add grafana https://grafana.github.io/helm-charts
+          helm repo update
+
+      - name: Build chart dependencies
+        run: |
+          helm dependency build charts/devlake
+
+      - name: Install DevLake chart
+        run: |
+          kubectl get events -n "$NAMESPACE" -w &
+          kubectl get pods -n "$NAMESPACE" -w &
+          ENCRYPTION_SECRET=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+          helm install "$RELEASE_NAME" ./charts/devlake \
+            --namespace "$NAMESPACE" \
+            --create-namespace \
+            --wait \
+            --set lake.encryptionSecret.secret="${ENCRYPTION_SECRET}"
+
+      - name: Dump diagnostics on failure
+        if: failure()
+        run: |
+          echo "=== Helm status for release ==="
+          helm status "$RELEASE_NAME" -n "$NAMESPACE" || true
+          echo "=== Kubernetes resources (all) ==="
+          kubectl get all -n "$NAMESPACE" -o wide || true
+          echo "=== Kubernetes events (latest 200) ==="
+          kubectl get events -n "$NAMESPACE" --sort-by=.lastTimestamp | tail -n 200 || true
+          echo "=== Describe deployments/statefulsets ==="
+          kubectl describe deploy -n "$NAMESPACE" || true
+          kubectl describe statefulset -n "$NAMESPACE" || true
+          echo "=== Describe pods ==="
+          kubectl describe pods -n "$NAMESPACE" || true
+          echo "=== Logs from all pods (current and previous, last 200 lines) ==="
+          for pod in $(kubectl get pods -n "$NAMESPACE" -o jsonpath='{.items[*].metadata.name}'); do
+            echo "----- logs for ${pod} -----"
+            kubectl logs -n "$NAMESPACE" "$pod" --all-containers --tail=200 || true
+            echo "----- previous logs for ${pod} -----"
+            kubectl logs -n "$NAMESPACE" "$pod" --all-containers --previous --tail=200 || true
+          done
