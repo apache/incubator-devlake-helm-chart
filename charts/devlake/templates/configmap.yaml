@@ -32,4 +32,5 @@ data:
   DB_CHARSET: "utf8mb4"
   DB_PARSE_TIME: "True"
   DB_LOCATION: "{{ .Values.commonEnvs.TZ }}"
+  DB_CUSTOM_PARAMS: "{{ .Values.mysql.extraParams }}"
 {{- end }}

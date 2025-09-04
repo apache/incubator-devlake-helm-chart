@@ -17,7 +17,7 @@
 
 # replica count
 replicaCount: 1
-imageTag: v1.0.3-beta3
+imageTag: v1.0.3-beta4
 
 # image pull secrets
 imagePullSecrets: []
@@ -46,6 +46,11 @@ mysql:
 
   # the database for devlake
   database: lake
+
+  # extra MySQL DSN query params appended to DB_URL.
+  # Note: include a leading '&' yourself. Empty string means no change.
+  # example: "&tls=skip-verify" or "&tls=skip-verify&autocommit=true"
+  extraParams: ""
 
   # root password for mysql, only used when use_external=false
   rootPassword: admin
@@ -89,6 +94,32 @@ mysql:
   containerSecurityContext: {}
 
   podAnnotations: {}
+
+  # Probes for MySQL container
+  startupProbe:
+    exec: &mysql_ping_exec
+      command:
+        - "sh"
+        - "-c"
+        - "mysqladmin ping --protocol=TCP -h 127.0.0.1 -u root -p$MYSQL_ROOT_PASSWORD"
+    initialDelaySeconds: 120
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 60
+
+  livenessProbe:
+    exec: *mysql_ping_exec
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 30
+    failureThreshold: 5
+
+  readinessProbe:
+    exec: *mysql_ping_exec
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 10
+    failureThreshold: 3
 
   service:
     type: "ClusterIP"
@@ -156,7 +187,7 @@ grafana:
   image:
     registry: devlake.docker.scarf.sh
     repository: apache/devlake-dashboard
-    tag: v1.0.3-beta3
+    tag: v1.0.3-beta4
   deploymentStrategy:
     type: Recreate
   adminPassword: ""
@@ -164,9 +195,13 @@ grafana:
     server:
       serve_from_subpath: "true"
       root_url: "%(protocol)s://%(domain)s/grafana"
-  #the secret name should be as same as .Values.option.connectionSecretName
+  # the Secret name should be the same as .Values.option.connectionSecretName
   envFromSecrets:
-    - name: "devlake-mysql-auth"
+    - name: &devlake_mysql_auth "devlake-mysql-auth"
+  # the ConfigMap name should be the same as .Values.option.connectionConfigmapName
+  extraEnvFrom:
+    - configMapRef:
+        name: &devlake_mysql_auth_config "devlake-mysql-auth-config"
   #keep grafana timezone same as other pods, which is set by .Values.commonEnvs.TZ
   env:
     TZ: "UTC"
@@ -430,8 +465,15 @@ option:
   # database type, supported: [mysql]
   database: mysql
   # the existing k8s secret name of db connection auth. The secret name should be as same as .Values.grafana.envFromSecret
-  connectionSecretName: "devlake-mysql-auth"
+  connectionSecretName: *devlake_mysql_auth
+  # Optional: override the ConfigMap name for non-sensitive DB envs used across components
+  # Default is a fixed name to align references from subcharts
+  connectionConfigmapName: *devlake_mysql_auth_config
   autoCreateSecret: true
+  # If true, the chart assembles DB_URL automatically for MySQL. Set to false
+  # to disable auto-assembly and provide DB_URL yourself via `lake.envs` or
+  # an external secret referenced by `lake.extraEnvsFromSecret`.
+  assembleDbUrl: true
 
 # Define some extra resources to be created
 # This section is useful when you need ExternalResource or Secrets, etc.
