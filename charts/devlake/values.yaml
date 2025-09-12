@@ -199,9 +199,8 @@ grafana:
   envFromSecrets:
     - name: &devlake_mysql_auth "devlake-mysql-auth"
   # the ConfigMap name should be the same as .Values.option.connectionConfigmapName
-  extraEnvFrom:
-    - configMapRef:
-        name: &devlake_mysql_auth_config "devlake-mysql-auth-config"
+  envFromConfigMaps:
+    - name: &devlake_mysql_auth_config "devlake-mysql-auth-config"
   #keep grafana timezone same as other pods, which is set by .Values.commonEnvs.TZ
   env:
     TZ: "UTC"
