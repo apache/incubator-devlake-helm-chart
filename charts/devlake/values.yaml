@@ -17,7 +17,7 @@
 
 # replica count
 replicaCount: 1
-imageTag: v1.0.3-beta4
+imageTag: v1.0.3-beta5
 
 # image pull secrets
 imagePullSecrets: []
@@ -187,7 +187,7 @@ grafana:
   image:
     registry: devlake.docker.scarf.sh
     repository: apache/devlake-dashboard
-    tag: v1.0.3-beta4
+    tag: v1.0.3-beta5
   deploymentStrategy:
     type: Recreate
   adminPassword: ""
@@ -199,9 +199,8 @@ grafana:
   envFromSecrets:
     - name: &devlake_mysql_auth "devlake-mysql-auth"
   # the ConfigMap name should be the same as .Values.option.connectionConfigmapName
-  extraEnvFrom:
-    - configMapRef:
-        name: &devlake_mysql_auth_config "devlake-mysql-auth-config"
+  envFromConfigMaps:
+    - name: &devlake_mysql_auth_config "devlake-mysql-auth-config"
   #keep grafana timezone same as other pods, which is set by .Values.commonEnvs.TZ
   env:
     TZ: "UTC"
