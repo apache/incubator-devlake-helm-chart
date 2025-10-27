@@ -51,6 +51,9 @@ jobs:
           helm version
           kubectl version
           kubectl get storageclasses
+          # Fix StorageClass binding mode for kind cluster
+          kubectl patch storageclass standard -p '{"volumeBindingMode":"Immediate"}' || true
+          kubectl get storageclasses
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -60,14 +63,15 @@ jobs:
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add grafana https://grafana.github.io/helm-charts
-          helm install mysql bitnami/mysql --version 9.19.1 --set auth.rootPassword=admin --set auth.database=lake --set auth.username=merico --set auth.password=merico
+          helm install mysql bitnami/mysql --version 9.19.1 --set auth.rootPassword=admin --set auth.database=lake --set auth.username=merico --set auth.password=merico --set persistence.storageClass=standard
           # external mysql at service: mysql
           helm dep build charts/devlake
           helm install --debug --wait --timeout 2400s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.useExternal=true \
             --set mysql.externalServer=mysql \
-            --set lake.encryptionSecret.secret=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+            --set lake.encryptionSecret.secret=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1) \
+            --set grafana.persistence.storageClass=standard
 
       - name: Helm install devlake
         if: matrix.database_type == 'mysql-builtin'
@@ -79,7 +83,9 @@ jobs:
           helm install --debug --wait --timeout 2400s deploy-test charts/devlake \
             --set service.uiPort=30000 \
             --set mysql.image.tag=8-debian \
-            --set lake.encryptionSecret.secret=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1)
+            --set mysql.persistence.storageClass=standard \
+            --set lake.encryptionSecret.secret=$(openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1) \
+            --set grafana.persistence.storageClass=standard
 
       - name: List cluster resources
         if: ${{ always() }}
