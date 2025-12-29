@@ -269,6 +269,8 @@ lake:
 
   podAnnotations: {}
 
+  initContainers: []
+
   livenessProbe:
     httpGet:
       path: /ping

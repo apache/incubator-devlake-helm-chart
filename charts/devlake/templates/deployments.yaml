@@ -160,6 +160,9 @@ spec:
       {{- toYaml . | nindent 8 }}
       {{- end }}
       initContainers:
+        {{- if .Values.lake.initContainers }}
+          {{- toYaml .Values.lake.initContainers | nindent 8 }}
+        {{- end }}
         {{- include "common.initContainerWaitDatabase" . | nindent 8 }}
         {{- with .Values.lake.containerSecurityContext }}
           securityContext:
