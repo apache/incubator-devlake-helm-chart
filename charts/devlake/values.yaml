@@ -267,6 +267,8 @@ lake:
 
   containerSecurityContext: {}
 
+  initContainerSecurityContext: {}
+
   podAnnotations: {}
 
   initContainers: []
