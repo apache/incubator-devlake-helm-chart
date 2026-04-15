@@ -265,6 +265,11 @@ lake:
   #     subPath: test_file.yaml
   volumeMounts: []
 
+  # Name of an existing ServiceAccount to use for the lake pod.
+  # If empty, the pod uses the namespace default ServiceAccount.
+  serviceAccount:
+    name: ""
+
 ui:
   replicaCount: 1
   revisionHistoryLimit: 10
@@ -343,6 +348,11 @@ ui:
 
   ## Side Contaainer Configuration
   extraContainers: []
+
+  # Name of an existing ServiceAccount to use for the config-ui pod.
+  # If empty, the pod uses the namespace default ServiceAccount.
+  serviceAccount:
+    name: ""
 #  - name: vault-agent
 #    image: vault:1.6.2
 #    args:
