@@ -51,6 +51,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.ui.serviceAccount.name }}
+      serviceAccountName: {{ . }}
+      {{- end }}
       {{- with .Values.ui.securityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
@@ -154,6 +157,9 @@ spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.lake.serviceAccount.name }}
+      serviceAccountName: {{ . }}
       {{- end }}
       {{- with .Values.lake.securityContext }}
       securityContext:
