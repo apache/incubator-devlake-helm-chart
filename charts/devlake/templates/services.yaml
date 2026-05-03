@@ -14,37 +14,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# database services
+# database services (v2.0.0: refactored for database.type selector)
 ---
 
-{{- if eq .Values.option.database "mysql" }}
-{{- if not .Values.mysql.useExternal }}
+{{- if not .Values.database.useExternal }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "devlake.fullname" . }}-mysql
+  name: {{ include "devlake.fullname" . }}-{{ .Values.database.type }}
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
-    {{- with .Values.mysql.service.extraLabels }}
+    {{- with .Values.database.service.extraLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  type: {{ .Values.mysql.service.type }}
-  {{- if and (eq .Values.mysql.service.type "LoadBalancer") .Values.mysql.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.mysql.service.loadBalancerIP }}
+  type: {{ .Values.database.service.type }}
+  {{- if and (eq .Values.database.service.type "LoadBalancer") .Values.database.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.database.service.loadBalancerIP }}
   {{- end }}
   selector:
     {{- include "devlake.selectorLabels" . | nindent 4 }}
-    devlakeComponent: mysql
+    devlakeComponent: {{ .Values.database.type }}
   ports:
     - protocol: TCP
-      name: mysql
-      port: 3306
-      targetPort: 3306
-      {{- if and (eq .Values.mysql.service.type "NodePort") .Values.mysql.service.nodePort }}
-      nodePort: {{ .Values.mysql.service.nodePort }}
+      name: {{ .Values.database.type }}
+      port: {{ include "database.port" . }}
+      targetPort: {{ include "database.port" . }}
+      {{- if and (eq .Values.database.service.type "NodePort") .Values.database.service.nodePort }}
+      nodePort: {{ .Values.database.service.nodePort }}
       {{- end }}
-{{- end }}
 {{- end }}
 # devlake services
 ---
@@ -54,16 +52,23 @@ metadata:
   name: {{ include "devlake.fullname" . }}-lake
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    devlakeComponent: lake
     {{- with .Values.lake.service.extraLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- if .Values.metrics.enabled }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/metrics"
+  {{- end }}
 spec:
   selector:
     {{- include "devlake.selectorLabels" . | nindent 4 }}
     devlakeComponent: lake
   ports:
     - protocol: TCP
-      name: devlake
+      name: http
       port: {{ .Values.lake.port }}
       targetPort: {{ .Values.lake.port }}
 
@@ -75,9 +80,16 @@ metadata:
   name: {{ include "devlake.fullname" . }}-ui
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    devlakeComponent: ui
     {{- with .Values.ui.service.extraLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  {{- if .Values.metrics.enabled }}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "4000"
+    prometheus.io/path: "/metrics"
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   selector:
@@ -85,9 +97,6 @@ spec:
     devlakeComponent: ui
   ports:
     - protocol: TCP
-      name: ui
+      name: http
       port: 4000
       targetPort: 4000
-      {{- if eq .Values.service.type "NodePort" }}
-      nodePort: {{ .Values.service.uiPort }}
-      {{- end }}

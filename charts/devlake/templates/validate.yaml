@@ -1,21 +1,43 @@
-{{- if and .Values.lake.encryptionSecret.autoCreateSecret (not .Values.lake.encryptionSecret.secret) }}
+{{- if and (not .Values.externalSecrets.enabled) .Values.lake.encryptionSecret.autoCreateSecret (not .Values.lake.encryptionSecret.secret) }}
 {{- fail
 "Helm test requires lake.encryptionSecret.secret.\n\n  - If you're upgrading from DevLake v0.17.x or earlier versions, please get the encryption secret by copying the ENCODE_KEY value from /app/config/.env of the lake pod (e.g. devlake-lake-0);\n  - If upgrading from v0.18.0+, get the original secret in k8s secret and decode it\n  - If new installation, get the encryption secret via command `openssl rand -base64 2000 | tr -dc 'A-Z' | fold -w 128 | head -n 1`.\n\nFor more information, please check https://github.com/apache/incubator-devlake-helm-chart"
 }}
 {{- end }}
 
-{{- if and .Values.ui.basicAuth.enabled .Values.ui.basicAuth.autoCreateSecret (or (not .Values.ui.basicAuth.user) (not .Values.ui.basicAuth.password)) }}
+{{- if and (not .Values.externalSecrets.enabled) .Values.ui.basicAuth.enabled .Values.ui.basicAuth.autoCreateSecret (or (not .Values.ui.basicAuth.user) (not .Values.ui.basicAuth.password)) }}
 {{- fail "Helm test requires ui.basicAuth.user and ui.basicAuth.password" }}
 {{- end }}
 
-{{- if and (eq .Values.option.database "mysql") .Values.option.autoCreateSecret (or (not .Values.mysql.username) (not .Values.mysql.password) (not .Values.mysql.database)) }}
-{{- fail "Helm test requires mysql.username, mysql.password and mysql.database" }}
+{{- if not (has .Values.database.type (list "mysql" "postgresql")) }}
+{{- fail "database.type must be 'mysql' or 'postgresql'" }}
 {{- end }}
 
-{{- if and .Values.option.autoCreateSecret (eq .Values.option.database "mysql") (not .Values.mysql.useExternal) (not .Values.mysql.rootPassword) }}
-{{- fail "Helm test requires mysql.rootPassword" }}
+{{- if and (not .Values.externalSecrets.enabled) .Values.option.autoCreateSecret (or (not .Values.database.username) (not .Values.database.password) (not .Values.database.database)) }}
+{{- fail "Helm test requires database.username, database.password and database.database" }}
 {{- end }}
 
-{{- if and (not .Values.grafana.enabled) (not .Values.grafana.external.url) }}
-{{- fail "Helm test requires grafana.enabled to be true or grafana.external.url to be provided" }}
+{{- if and (not .Values.externalSecrets.enabled) .Values.option.autoCreateSecret (eq .Values.database.type "mysql") (not .Values.database.useExternal) (not .Values.database.mysql.rootPassword) }}
+{{- fail "Helm test requires database.mysql.rootPassword when using embedded MySQL" }}
+{{- end }}
+
+{{- if and (eq .Values.database.type "postgresql") .Values.grafana.enabled }}
+{{- fail "Grafana dashboards currently only support MySQL datasources. Set grafana.enabled=false when using PostgreSQL, or provide an external Grafana instance with manually configured PostgreSQL datasources via grafana.external.url" }}
+{{- end }}
+
+{{- if .Values.lake.hostNetwork }}
+{{- fail "SECURITY VIOLATION: hostNetwork is not allowed. Remove lake.hostNetwork or use LoadBalancer/NodePort service type for external access. hostNetwork bypasses NetworkPolicies and exposes the node's network namespace." }}
+{{- end }}
+
+{{- if not .Values.lake.resources.requests }}
+{{- fail "lake.resources.requests is required. Set cpu and memory requests for production deployments (e.g., requests: { cpu: 500m, memory: 512Mi })" }}
+{{- end }}
+
+{{- if not .Values.ui.resources.requests }}
+{{- fail "ui.resources.requests is required. Set cpu and memory requests for production deployments (e.g., requests: { cpu: 100m, memory: 128Mi })" }}
+{{- end }}
+
+{{- if not .Values.database.resources.requests }}
+{{- if not .Values.database.useExternal }}
+{{- fail "database.resources.requests is required when using embedded database. Set cpu and memory requests (e.g., requests: { cpu: 500m, memory: 1Gi })" }}
+{{- end }}
 {{- end }}

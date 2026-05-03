@@ -17,3 +17,4 @@
 *.tgz
 
 charts/*/charts
+**/.omc
