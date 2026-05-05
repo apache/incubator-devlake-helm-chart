@@ -24,9 +24,12 @@ metadata:
   name: {{ include "devlake.fullname" . }}-{{ .Values.database.type }}
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
     {{- with .Values.database.service.extraLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   type: {{ .Values.database.service.type }}
   {{- if and (eq .Values.database.service.type "LoadBalancer") .Values.database.service.loadBalancerIP }}
@@ -52,16 +55,18 @@ metadata:
   name: {{ include "devlake.fullname" . }}-lake
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: lake
     devlakeComponent: lake
     {{- with .Values.lake.service.extraLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- if .Values.metrics.enabled }}
   annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
+    {{- if .Values.metrics.enabled }}
     prometheus.io/scrape: "true"
     prometheus.io/port: "8080"
     prometheus.io/path: "/metrics"
-  {{- end }}
+    {{- end }}
 spec:
   selector:
     {{- include "devlake.selectorLabels" . | nindent 4 }}
@@ -80,16 +85,18 @@ metadata:
   name: {{ include "devlake.fullname" . }}-ui
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ui
     devlakeComponent: ui
     {{- with .Values.ui.service.extraLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- if .Values.metrics.enabled }}
   annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
+    {{- if .Values.metrics.enabled }}
     prometheus.io/scrape: "true"
     prometheus.io/port: "4000"
     prometheus.io/path: "/metrics"
-  {{- end }}
+    {{- end }}
 spec:
   type: {{ .Values.service.type }}
   selector:

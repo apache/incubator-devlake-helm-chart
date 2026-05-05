@@ -22,6 +22,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-lake
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: lake
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   {{- include "devlake.podDisruptionBudget" (dict "pdb" .Values.lake.podDisruptionBudget "replicaCount" .Values.lake.replicaCount) | nindent 2 }}
   selector:
@@ -37,6 +40,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-ui
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ui
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   {{- include "devlake.podDisruptionBudget" (dict "pdb" .Values.ui.podDisruptionBudget "replicaCount" .Values.ui.replicaCount) | nindent 2 }}
   selector:

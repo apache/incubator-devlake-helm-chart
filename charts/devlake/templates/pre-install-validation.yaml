@@ -20,7 +20,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-pre-install-validation
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: validation
   annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-5"
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded,hook-failed

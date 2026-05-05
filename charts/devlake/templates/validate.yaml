@@ -20,24 +20,28 @@
 {{- fail "Helm test requires database.mysql.rootPassword when using embedded MySQL" }}
 {{- end }}
 
+{{- if and .Values.database.useExternal (or (not .Values.database.externalServer) (eq .Values.database.externalServer "127.0.0.1")) }}
+{{- fail "database.externalServer must be set to a valid hostname/IP when database.useExternal=true" }}
+{{- end }}
+
+{{- if and .Values.backup.enabled .Values.database.useExternal }}
+{{- fail "backup.enabled=true is not supported with database.useExternal=true. Backups must be configured on the external database server directly." }}
+{{- end }}
+
 {{- if and (eq .Values.database.type "postgresql") .Values.grafana.enabled }}
 {{- fail "Grafana dashboards currently only support MySQL datasources. Set grafana.enabled=false when using PostgreSQL, or provide an external Grafana instance with manually configured PostgreSQL datasources via grafana.external.url" }}
 {{- end }}
 
-{{- if .Values.lake.hostNetwork }}
-{{- fail "SECURITY VIOLATION: hostNetwork is not allowed. Remove lake.hostNetwork or use LoadBalancer/NodePort service type for external access. hostNetwork bypasses NetworkPolicies and exposes the node's network namespace." }}
+{{- if or (not .Values.lake.resources.requests) (not .Values.lake.resources.requests.cpu) (not .Values.lake.resources.requests.memory) }}
+{{- fail "lake.resources.requests with cpu and memory is required. Set cpu and memory requests for production deployments (e.g., requests: { cpu: 500m, memory: 512Mi })" }}
 {{- end }}
 
-{{- if not .Values.lake.resources.requests }}
-{{- fail "lake.resources.requests is required. Set cpu and memory requests for production deployments (e.g., requests: { cpu: 500m, memory: 512Mi })" }}
+{{- if or (not .Values.ui.resources.requests) (not .Values.ui.resources.requests.cpu) (not .Values.ui.resources.requests.memory) }}
+{{- fail "ui.resources.requests with cpu and memory is required. Set cpu and memory requests for production deployments (e.g., requests: { cpu: 100m, memory: 128Mi })" }}
 {{- end }}
 
-{{- if not .Values.ui.resources.requests }}
-{{- fail "ui.resources.requests is required. Set cpu and memory requests for production deployments (e.g., requests: { cpu: 100m, memory: 128Mi })" }}
-{{- end }}
-
-{{- if not .Values.database.resources.requests }}
 {{- if not .Values.database.useExternal }}
-{{- fail "database.resources.requests is required when using embedded database. Set cpu and memory requests (e.g., requests: { cpu: 500m, memory: 1Gi })" }}
+{{- if or (not .Values.database.resources.requests) (not .Values.database.resources.requests.cpu) (not .Values.database.resources.requests.memory) }}
+{{- fail "database.resources.requests with cpu and memory is required when using embedded database. Set cpu and memory requests (e.g., requests: { cpu: 500m, memory: 1Gi })" }}
 {{- end }}
 {{- end }}

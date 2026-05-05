@@ -24,6 +24,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-postgresql
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   replicas: {{ if gt (int .Values.database.replicaCount) 1 }}1{{ else }}{{ .Values.database.replicaCount }}{{ end }}
   serviceName: {{ include "devlake.fullname" . }}-postgresql
@@ -51,9 +54,12 @@ spec:
         runAsNonRoot: {{ .Values.database.securityContext.runAsNonRoot }}
         runAsUser: {{ include "database.uid" . }}
         fsGroup: {{ include "database.uid" . }}
+        fsGroupChangePolicy: "OnRootMismatch"
         seccompProfile:
           type: {{ .Values.database.securityContext.seccompProfile.type }}
+      {{- if or .Values.database.postgresql.enableFixPermissions .Values.database.initContainers }}
       initContainers:
+      {{- if .Values.database.postgresql.enableFixPermissions }}
         - name: fix-permissions
           image: {{ include "database.image" . }}
           command: ['sh', '-c']
@@ -67,8 +73,10 @@ spec:
           securityContext:
             runAsUser: 0
             runAsNonRoot: false
+      {{- end }}
       {{- with .Values.database.initContainers}}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- end }}
       containers:
         - name: postgresql
@@ -154,7 +162,6 @@ spec:
             allowPrivilegeEscalation: {{ .Values.database.containerSecurityContext.allowPrivilegeEscalation }}
             capabilities:
               drop: {{ toYaml .Values.database.containerSecurityContext.capabilities.drop | nindent 16 }}
-              add: ["CHOWN", "FOWNER", "DAC_OVERRIDE"]
       {{- with .Values.database.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

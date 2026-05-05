@@ -22,9 +22,12 @@ metadata:
   name: {{ include "devlake.fullname" . }}-ui
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ui
     {{- with .Values.ui.deployment.extraLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.ui.replicaCount }}
   revisionHistoryLimit: {{ .Values.ui.revisionHistoryLimit }}
@@ -127,10 +130,13 @@ kind: Deployment
 metadata:
   name: {{ include "devlake.fullname" . }}-lake
   labels:
-  {{- include "devlake.labels" . | nindent 4 }}
-  {{- with .Values.lake.deployment.extraLabels }}
-  {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: lake
+    {{- with .Values.lake.deployment.extraLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.lake.replicaCount }}
   revisionHistoryLimit: {{ .Values.lake.revisionHistoryLimit }}
@@ -256,11 +262,6 @@ spec:
         {{- range $volume := .Values.lake.volumes }}
         - {{- $volume | toYaml | nindent 10 }}
         {{- end }}
-      {{- end }}
-      {{- if .Values.lake.hostNetwork }}
-      # DEPRECATED in 2.1.0. Will be removed in 2.2.0.
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
       {{- with .Values.lake.nodeSelector }}
       nodeSelector:

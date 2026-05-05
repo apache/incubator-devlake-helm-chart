@@ -26,6 +26,9 @@ imagePullSecrets: []
 networkPolicy:
   enabled: false  # Production: set to true. See NOTES.txt for required egress config.
   externalEgressCIDRs: []
+  # External database access CIDRs (required when database.useExternal=true and networkPolicy.enabled=true)
+  # Example: ["10.0.0.0/8"] or leave empty to allow all destinations (0.0.0.0/0)
+  externalDatabaseCIDRs: []
   ui:
     # Restrict UI ingress sources (optional)
     # When not set, UI accepts traffic from all sources
@@ -163,6 +166,11 @@ database:
     # root password for mysql, only used when useExternal=false
     rootPassword: ""
 
+    # Enable root initContainer to fix permissions
+    # Set to false for Pod Security Standards "restricted" compliance
+    # When false, ensure PVC/volume permissions are correct (fsGroup may handle this)
+    enableFixPermissions: true
+
     # extra MySQL DSN query params appended to DB_URL.
     # Note: include a leading '&' yourself. Empty string means no change.
     # example: "&tls=skip-verify" or "&tls=skip-verify&autocommit=true"
@@ -170,6 +178,11 @@ database:
 
   # PostgreSQL-specific settings (only used when database.type: postgresql)
   postgresql:
+    # Enable root initContainer to fix permissions
+    # Set to false for Pod Security Standards "restricted" compliance
+    # When false, ensure PVC/volume permissions are correct (fsGroup may handle this)
+    enableFixPermissions: true
+
     # extra PostgreSQL DSN query params appended to DB_URL.
     # Note: must include a leading '?' for first param. Empty string means no change.
     # example: "?sslmode=disable" or "?sslmode=disable&search_path=public"
@@ -250,9 +263,6 @@ lake:
     # Example: helm install --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
     secret: ""
     autoCreateSecret: true
-
-  # If hostNetwork is true, then dnsPolicy is set to ClusterFirstWithHostNet
-  hostNetwork: false
 
   resources:
     requests:
@@ -596,11 +606,17 @@ backup:
   backoffLimit: 2
   retentionDays: 7
   image:
+    # Image for MySQL backups (used when database.type=mysql)
     repository: mysql
     tag: "8"
+    # Image tag for PostgreSQL backups (used when database.type=postgresql)
+    # Uses postgres:<postgresTag>
+    postgresTag: "14"
     pullPolicy: IfNotPresent
   pvc:
+    # Use existing PVC (leave empty to create new PVC with name: <fullname>-backup)
     existingClaim: ""
-    # If existingClaim is empty, create PVC with name: <fullname>-backup
-    # storageClassName: ""
-    # size: 10Gi
+    # Storage class for backup PVC (leave empty for default)
+    storageClassName: ""
+    # Storage size for backup PVC
+    size: 10Gi

@@ -14,14 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-{{- if .Values.serviceAccount.create }}
+{{- if and .Values.backup.enabled (not .Values.backup.pvc.existingClaim) }}
 apiVersion: v1
-kind: ServiceAccount
+kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "devlake.serviceAccountName" . }}
+  name: {{ include "devlake.fullname" . }}-backup
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
-    app.kubernetes.io/component: rbac
+    app.kubernetes.io/component: storage
   annotations:
     {{- include "devlake.annotations" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- with .Values.backup.pvc.storageClassName }}
+  storageClassName: "{{ . }}"
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.backup.pvc.size | default "10Gi" }}
 {{- end }}

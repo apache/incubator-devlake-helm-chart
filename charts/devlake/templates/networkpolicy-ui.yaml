@@ -22,6 +22,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-ui
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: network-policy
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:

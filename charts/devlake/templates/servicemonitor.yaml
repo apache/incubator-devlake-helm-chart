@@ -22,6 +22,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-lake
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: monitoring
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -38,6 +41,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-ui
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: monitoring
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   selector:
     matchLabels:

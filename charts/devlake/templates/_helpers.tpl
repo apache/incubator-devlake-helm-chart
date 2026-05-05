@@ -40,6 +40,15 @@ helm.sh/chart: {{ include "devlake.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/part-of: devlake
+{{- end -}}
+
+{{/*
+Common annotations
+*/}}
+{{- define "devlake.annotations" -}}
+meta.helm.sh/release-name: {{ .Release.Name }}
+meta.helm.sh/release-namespace: {{ .Release.Namespace }}
 {{- end -}}
 
 {{/*
@@ -66,8 +75,10 @@ Create the name of the service account to use
 {{- define "devlake.serviceAccountName" -}}
 {{- if .Values.serviceAccount.name -}}
 {{- .Values.serviceAccount.name -}}
-{{- else -}}
+{{- else if .Values.serviceAccount.create -}}
 {{- include "devlake.fullname" . }}-sa
+{{- else -}}
+default
 {{- end -}}
 {{- end -}}
 

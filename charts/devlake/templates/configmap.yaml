@@ -21,8 +21,15 @@ metadata:
   name: {{ include "devlake.db.configmap" . }}
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: config
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 data:
   # Database connection configuration (non-sensitive)
+  # Note: Environment variable naming differs by database type:
+  #   - MySQL: MYSQL_* prefix (standard MySQL client convention)
+  #   - PostgreSQL: DB_* prefix (PostgreSQL client convention)
+  # This follows each database's standard naming to avoid conflicts
 {{- if eq .Values.database.type "mysql" }}
   MYSQL_USER: "{{ .Values.database.username }}"
   MYSQL_DATABASE: "{{ .Values.database.database }}"

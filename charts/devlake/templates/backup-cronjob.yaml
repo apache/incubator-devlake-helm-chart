@@ -21,6 +21,9 @@ metadata:
   name: {{ include "devlake.fullname" . }}-backup
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backup
+  annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
 spec:
   schedule: "{{ .Values.backup.schedule }}"
   successfulJobsHistoryLimit: {{ .Values.backup.successfulJobsHistoryLimit }}
@@ -45,7 +48,11 @@ spec:
               type: RuntimeDefault
           containers:
           - name: backup
+            {{- if eq .Values.database.type "mysql" }}
             image: "{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"
+            {{- else if eq .Values.database.type "postgresql" }}
+            image: "postgres:{{ .Values.backup.image.postgresTag | default "14" }}"
+            {{- end }}
             imagePullPolicy: {{ .Values.backup.image.pullPolicy }}
             securityContext:
               readOnlyRootFilesystem: true
@@ -69,10 +76,10 @@ spec:
               echo "Starting backup at ${TIMESTAMP}..."
 
               {{- if eq .Values.database.type "mysql" }}
-              mysqldump -h$(MYSQL_SERVER) -P$(MYSQL_PORT) -u$(MYSQL_USER) -p$(MYSQL_PASSWORD) $(MYSQL_DATABASE) \
+              mysqldump -h"${MYSQL_SERVER}" -P"${MYSQL_PORT}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" "${MYSQL_DATABASE}" \
                 --single-transaction --quick --lock-tables=false | gzip > "${BACKUP_FILE}"
               {{- else if eq .Values.database.type "postgresql" }}
-              PGPASSWORD=$(DB_PASSWORD) pg_dump -h $(DB_SERVER) -p $(DB_PORT) -U $(DB_USER) $(DB_DATABASE) \
+              PGPASSWORD="${DB_PASSWORD}" pg_dump -h "${DB_SERVER}" -p "${DB_PORT}" -U "${DB_USER}" "${DB_DATABASE}" \
                 --no-owner --no-acl | gzip > "${BACKUP_FILE}"
               {{- end }}
 
