@@ -1,0 +1,17 @@
+header:
+  license:
+    spdx-id: Apache-2.0
+    copyright-owner: Apache Software Foundation
+
+  paths-ignore:
+    - '**/*.md'
+    - '**/*.json'
+    - '**/*.txt'
+    - '**/LICENSE'
+    - '**/NOTICE'
+    - '.gitignore'
+    - '.gitmodules'
+    - 'charts/**/charts/**'
+    - 'charts/**/Chart.lock'
+
+  comment: on-failure

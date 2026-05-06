@@ -17,4 +17,5 @@
 *.tgz
 
 charts/*/charts
-**/.omc
+**/.omc.github/WORKFLOWS.md
+.github/RUNBOOK.md
