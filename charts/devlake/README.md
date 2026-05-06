@@ -37,7 +37,7 @@ Apache DevLake is an open-source dev data platform that ingests, analyzes, and v
 | database.containerSecurityContext.readOnlyRootFilesystem | bool | `true` |  |
 | database.containerSecurityContext.runAsNonRoot | bool | `true` |  |
 | database.database | string | `"lake"` |  |
-| database.externalPort | int | `5432` |  |
+| database.externalPort | int | `3306` |  |
 | database.externalServer | string | `"127.0.0.1"` |  |
 | database.extraLabels | object | `{}` |  |
 | database.image.pullPolicy | string | `"IfNotPresent"` |  |
@@ -68,7 +68,7 @@ Apache DevLake is an open-source dev data platform that ingests, analyzes, and v
 | database.storage.size | string | `"50Gi"` |  |
 | database.storage.type | string | `"pvc"` |  |
 | database.tolerations | list | `[]` |  |
-| database.type | string | `"postgresql"` |  |
+| database.type | string | `"mysql"` |  |
 | database.useExternal | bool | `false` |  |
 | database.username | string | `"merico"` |  |
 | externalSecrets.enabled | bool | `false` |  |
@@ -84,7 +84,7 @@ Apache DevLake is an open-source dev data platform that ingests, analyzes, and v
 | grafana."grafana.ini".server.serve_from_subpath | string | `"true"` |  |
 | grafana.adminPassword | string | `""` |  |
 | grafana.deploymentStrategy.type | string | `"Recreate"` |  |
-| grafana.enabled | bool | `false` |  |
+| grafana.enabled | bool | `true` |  |
 | grafana.env.TZ | string | `"UTC"` |  |
 | grafana.envFromConfigMaps[0].name | string | `"devlake-db-auth-config"` |  |
 | grafana.envFromSecrets[0].name | string | `"devlake-db-auth"` |  |
@@ -98,6 +98,15 @@ Apache DevLake is an open-source dev data platform that ingests, analyzes, and v
 | grafana.persistence.size | string | `"4Gi"` |  |
 | grafana.serviceAccount.create | bool | `false` |  |
 | grafana.serviceAccount.nameOverride | string | `"{{ include \"devlake.serviceAccountName\" . }}"` |  |
+| httpRoute.annotations | object | `{}` |  |
+| httpRoute.enabled | bool | `false` |  |
+| httpRoute.extraLabels | object | `{}` |  |
+| httpRoute.extraPaths | list | `[]` |  |
+| httpRoute.gatewayName | string | `""` |  |
+| httpRoute.gatewayNamespace | string | `""` |  |
+| httpRoute.hostnames | list | `[]` |  |
+| httpRoute.prefix | string | `"/"` |  |
+| httpRoute.sectionName | string | `""` |  |
 | imageDigests.database.mysql | string | `""` |  |
 | imageDigests.database.postgresql | string | `""` |  |
 | imageDigests.grafana | string | `""` |  |
@@ -110,7 +119,6 @@ Apache DevLake is an open-source dev data platform that ingests, analyzes, and v
 | ingress.enableHttps | bool | `false` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.extraLabels | object | `{}` |  |
-| ingress.extraPaths | list | `[]` |  |
 | ingress.hostname | string | `"localhost"` |  |
 | ingress.httpPort | int | `80` |  |
 | ingress.httpsPort | int | `443` |  |

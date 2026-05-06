@@ -132,8 +132,7 @@ helm install devlake devlake/devlake \
 helm install devlake devlake/devlake \
   --set database.type=postgresql \
   --set database.password=<strong-password> \
-  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET \
-  --set grafana.enabled=false
+  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
 ```
 
 5. **Access the application**:
@@ -261,7 +260,7 @@ database:
   database: "lake"
 ```
 
-**Important**: PostgreSQL support requires `grafana.enabled=false` unless using external Grafana configured for PostgreSQL.
+**Note**: Grafana is enabled by default (since v2.0.0) and supports both MySQL and PostgreSQL databases.
 
 ### Storage Configuration
 
@@ -366,6 +365,29 @@ helm install devlake devlake/devlake \
 ```
 
 Access at: `https://devlake.example.com`
+
+### Gateway API HTTPRoute
+
+For Kubernetes Gateway API integration:
+
+```bash
+helm install devlake devlake/devlake \
+  --set httpRoute.enabled=true \
+  --set httpRoute.gatewayName=my-gateway \
+  --set httpRoute.gatewayNamespace=gateway-system \
+  --set httpRoute.hostnames[0]=devlake.example.com \
+  --set database.password=<password> \
+  --set database.mysql.rootPassword=<root-password> \
+  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+```
+
+**Configuration options**:
+- `httpRoute.prefix`: Path prefix (default: `/`)
+- `httpRoute.sectionName`: Gateway listener name (optional)
+- `httpRoute.annotations`: Additional HTTPRoute annotations
+- `httpRoute.extraPaths`: Additional path-based routes
+
+Access at: `http://devlake.example.com` (HTTPS via Gateway TLS configuration)
 
 ### Production Deployment (Full Security)
 
