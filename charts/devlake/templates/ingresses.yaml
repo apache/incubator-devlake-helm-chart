@@ -35,10 +35,15 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "devlake.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ingress
     {{- with .Values.ingress.extraLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   annotations:
+    {{- include "devlake.annotations" . | nindent 4 }}
+  {{- if .Values.ingress.useDefaultNginx }}
+    nginx.ingress.kubernetes.io/rate-limit: {{ .Values.ingress.rateLimit | quote }}
+  {{- end }}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}

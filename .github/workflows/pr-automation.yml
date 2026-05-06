@@ -15,30 +15,43 @@
 # limitations under the License.
 #
 
-name: yaml-lint
+name: PR Automation
+
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  pull-requests: write
 
 jobs:
-  helm-lint:
-    name: lint for helm chart
+  label-pr:
+    name: Auto-label PR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - name: Setup environment
-        uses: ./.github/actions/setup-environment
+      - name: Label by path
+        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
 
-      - name: lint helm chart
-        run: helm lint charts/devlake --strict
+      - name: Label by size
+        uses: codelytv/pr-size-labeler@56f6f0fc35c7cc0f72963b8467729e1c96935148 # v1.10.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          xs_label: 'size/XS'
+          xs_max_size: 10
+          s_label: 'size/S'
+          s_max_size: 100
+          m_label: 'size/M'
+          m_max_size: 500
+          l_label: 'size/L'
+          l_max_size: 1000
+          xl_label: 'size/XL'
+
+# Note: Reviewer assignment handled automatically by GitHub via CODEOWNERS file
+# Create .github/CODEOWNERS to enable automatic reviewer requests on PR creation
