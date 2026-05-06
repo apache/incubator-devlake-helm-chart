@@ -132,7 +132,8 @@ helm install devlake devlake/devlake \
 helm install devlake devlake/devlake \
   --set database.type=postgresql \
   --set database.password=<strong-password> \
-  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET
+  --set lake.encryptionSecret.secret=$ENCRYPTION_SECRET \
+  --set grafana.enabled=false
 ```
 
 5. **Access the application**:
@@ -260,7 +261,7 @@ database:
   database: "lake"
 ```
 
-**Note**: Grafana is enabled by default (since v2.0.0) and supports both MySQL and PostgreSQL databases.
+**Important**: Grafana dashboards currently only support MySQL datasources. When using PostgreSQL, set `grafana.enabled=false` and provide an external Grafana instance via `grafana.external.url`, or use the UI without Grafana dashboards.
 
 ### Storage Configuration
 
