@@ -15,33 +15,24 @@
 # limitations under the License.
 #
 
-github:
-  features:
-    issues: true
-    projects: false
+name: License Check
 
-  ghp_branch:  gh-pages
-  ghp_path:    /
-  enabled_merge_buttons:
-    # only allow squash merge
-    squash:  true
-    merge:   false
-    rebase:  false
-  # delete origin branch after merged
-  del_branch_on_merge: true
-  protected_branches:
-    main:
-      required_status_checks:
-        # strict means "Require branches to be up to date before merging".
-        strict: true
-      required_pull_request_reviews:
-        dismiss_stale_reviews: true
-        require_code_owner_reviews: false
-        required_approving_review_count: 1
-  collaborators:
-    - daniel-hutao
+on:
+  pull_request:
 
-notifications:
-  commits: commits@devlake.apache.org
-  issues:  commits@devlake.apache.org
-  pullrequests: commits@devlake.apache.org
+permissions:
+  contents: read
+
+jobs:
+  license-header-check:
+    name: Apache License Header Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Check License Headers
+        uses: apache/skywalking-eyes/header@cd7b195c51fd3d6ad52afceb760719ddc6b3ee91 # v0.6.0
+        with:
+          mode: check
+          config: .github/.licenserc.yaml

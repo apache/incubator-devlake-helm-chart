@@ -1,3 +1,4 @@
+# Trivy Ignore File
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -15,33 +16,18 @@
 # limitations under the License.
 #
 
-github:
-  features:
-    issues: true
-    projects: false
+# Trivy False Positive Suppressions
+#
+# Format: AVD-ID or CVE-ID # Rationale | Mitigation | Review date
+#
+# Guidelines:
+# - Only suppress findings that are verified false positives or accepted risks
+# - Include detailed rationale explaining why suppression is safe
+# - Add mitigation steps if applicable
+# - Review suppressions quarterly (every 3 months)
+# - Remove suppressions when underlying issue is fixed
+#
+# Example:
+# AVD-KSV-0012 # Grafana container runs as UID 472 by design (upstream chart default). Non-root UID with read-only filesystem. | Review: 2026-05-06
 
-  ghp_branch:  gh-pages
-  ghp_path:    /
-  enabled_merge_buttons:
-    # only allow squash merge
-    squash:  true
-    merge:   false
-    rebase:  false
-  # delete origin branch after merged
-  del_branch_on_merge: true
-  protected_branches:
-    main:
-      required_status_checks:
-        # strict means "Require branches to be up to date before merging".
-        strict: true
-      required_pull_request_reviews:
-        dismiss_stale_reviews: true
-        require_code_owner_reviews: false
-        required_approving_review_count: 1
-  collaborators:
-    - daniel-hutao
-
-notifications:
-  commits: commits@devlake.apache.org
-  issues:  commits@devlake.apache.org
-  pullrequests: commits@devlake.apache.org
+# Add suppressions below this line
