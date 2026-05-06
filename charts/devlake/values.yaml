@@ -72,7 +72,7 @@ commonEnvs:
 database:
   # Database type selector - supported: mysql, postgresql
   # REQUIRED FOR POSTGRESQL: Set type to 'postgresql'
-  type: postgresql
+  type: mysql
 
   replicaCount: 1
 
@@ -84,8 +84,7 @@ database:
   externalServer: 127.0.0.1
 
   # external database port (default: 3306 for mysql, 5432 for postgresql)
-  # REQUIRED FOR POSTGRESQL: Set to 5432
-  externalPort: 5432
+  externalPort: 3306
 
   # the username for devlake database
   username: merico
@@ -190,7 +189,7 @@ database:
 
 # dependency chart values
 grafana:
-  enabled: false
+  enabled: true
   #if grafana enabled is false, then external url should be provided
   external:
     url: ""
@@ -545,6 +544,25 @@ ingress:
   httpsPort: 443
   # rate limiting for default nginx ingress controller
   rateLimit: "100"
+
+# Gateway API HTTPRoute configuration
+httpRoute:
+  enabled: false
+  # Gateway name to attach to
+  gatewayName: ""
+  # Gateway namespace (if different from release namespace)
+  gatewayNamespace: ""
+  # Listener/section name on the Gateway
+  sectionName: ""
+  # Hostnames for the HTTPRoute
+  hostnames: []
+  #  - devlake.example.com
+  # Path prefix
+  prefix: /
+  # Extra labels
+  extraLabels: {}
+  # Annotations
+  annotations: {}
 
   extraPaths: []
 #  extraPaths:

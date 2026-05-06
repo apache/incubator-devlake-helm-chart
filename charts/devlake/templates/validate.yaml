@@ -1,20 +1,18 @@
 {{/*
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 */}}
 
 {{- if and (not .Values.externalSecrets.enabled) .Values.lake.encryptionSecret.autoCreateSecret (not .Values.lake.encryptionSecret.secret) }}
@@ -49,6 +47,10 @@
 
 {{- if and (eq .Values.database.type "postgresql") .Values.grafana.enabled }}
 {{- fail "Grafana dashboards currently only support MySQL datasources. Set grafana.enabled=false when using PostgreSQL, or provide an external Grafana instance with manually configured PostgreSQL datasources via grafana.external.url" }}
+{{- end }}
+
+{{- if and (eq .Values.database.type "mysql") (not .Values.grafana.enabled) (or (not .Values.grafana.external.url) (eq .Values.grafana.external.url "")) }}
+{{- fail "When using MySQL with grafana.enabled=false, grafana.external.url must be set to a valid Grafana endpoint URL (e.g., http://grafana.example.com). Alternatively, set grafana.enabled=true to use the built-in Grafana instance." }}
 {{- end }}
 
 {{- if or (not .Values.lake.resources.requests) (not .Values.lake.resources.requests.cpu) (not .Values.lake.resources.requests.memory) }}

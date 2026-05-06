@@ -200,6 +200,62 @@
         }
       }
     },
+    "httpRoute": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable Gateway API HTTPRoute"
+        },
+        "gatewayName": {
+          "type": "string",
+          "description": "Name of the Gateway to attach to"
+        },
+        "gatewayNamespace": {
+          "type": "string",
+          "description": "Namespace of the Gateway (optional)"
+        },
+        "sectionName": {
+          "type": "string",
+          "description": "Listener/section name on the Gateway (optional)"
+        },
+        "hostnames": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^([a-z0-9-]+\\.)*[a-z0-9-]+\\.[a-z]{2,}$",
+            "description": "Valid hostname for HTTPRoute"
+          },
+          "description": "List of hostnames for the HTTPRoute"
+        },
+        "prefix": {
+          "type": "string",
+          "pattern": "^/.*$",
+          "description": "Path prefix (must start with /)"
+        },
+        "extraLabels": {
+          "type": "object"
+        },
+        "annotations": {
+          "type": "object"
+        }
+      },
+      "if": {
+        "properties": {
+          "enabled": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": ["gatewayName"],
+        "properties": {
+          "gatewayName": {
+            "minLength": 1
+          }
+        }
+      }
+    },
     "networkPolicy": {
       "type": "object",
       "properties": {
@@ -268,6 +324,45 @@
           "type": "string"
         }
       }
+    },
+    "grafana": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable built-in Grafana instance"
+        },
+        "external": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "pattern": "^(https?://[^\\s]+)?$",
+              "description": "External Grafana URL (required when enabled=false with MySQL)"
+            }
+          }
+        },
+        "adminPassword": {
+          "type": "string",
+          "description": "Grafana admin password"
+        }
+      }
+    },
+    "imageTag": {
+      "type": "string",
+      "description": "Global image tag override"
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Image pull secrets"
+    },
+    "replicaCount": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Global replica count (deprecated - use lake.replicaCount and ui.replicaCount)"
     }
   }
 }
